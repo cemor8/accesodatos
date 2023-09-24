@@ -7,6 +7,18 @@ public class Contacto {
         this.numero = numero;
     }
 
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getNombre() {
         return nombre;
     }
