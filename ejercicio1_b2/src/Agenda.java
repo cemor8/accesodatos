@@ -14,6 +14,7 @@ public class Agenda {
         }
         this.contactos.add(contacto);
         System.out.println("contacto añadido correctamente");
+
     }
     public void buscar(String nombre){
         for(Contacto cada_contacto : contactos){
