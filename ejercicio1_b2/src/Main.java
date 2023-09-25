@@ -6,10 +6,11 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        Contacto contacto1= new Contacto("pepe","615232334");
-    Agenda agenda=new Agenda(new ArrayList<Contacto>(List.of(contacto1)));
-    //agenda.añadir(new Contacto("pep2e","3213131"));
-        agenda.vaciar();
+        Contacto contacto1= new Contacto("pepe W","615232334");
+    Agenda agenda=new Agenda(new ArrayList<Contacto>(List.of(contacto1,new Contacto("paco","615-79-67-54"))));
+    agenda.añadir(new Contacto("pepe A","673-23-45-21"));
+    agenda.mostrar();
+
 
     }
 }

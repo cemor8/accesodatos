@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class ListaNumerosEnteros {
-    private ArrayList<Integer> numeros;
+    private final ArrayList<Integer> numeros;
 
     public ListaNumerosEnteros() {
         this.numeros = new ArrayList<>();

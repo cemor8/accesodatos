@@ -1,7 +1,7 @@
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.*;
 
 public class Controller {
+    
     public int ej1() {
         String texto = null;
         Scanner textoIN = new Scanner(System.in);
@@ -35,48 +35,41 @@ public class Controller {
         }
         return contador;
     }
-    public String ej2(){
-       String producto1=pideProducto();
-       Float precio1=pidePrecio();
-       Integer unidades1=pideUnidades();
-
-        String producto2=pideProducto();
-        Float precio2=pidePrecio();
-        Integer unidades2=pideUnidades();
-
-        String producto3=pideProducto();
-        Float precio3=pidePrecio();
-        Integer unidades3=pideUnidades();
-
-        Float total=(precio1*unidades1)+(precio2*unidades2)+(precio3*unidades3);
-        System.out.println("-------------------");
-        System.out.println("producto--Unidades--Precio/unidad--Total");
-        System.out.println("--------------------");
-        System.out.println(producto1+" -- "+unidades1+"---"+precio1);
-        System.out.println(producto2+" -- "+unidades2+"---"+precio2);
-        System.out.println(producto3+" -- "+unidades3+"---"+precio3);
-        System.out.println("--------------------");
-        System.out.println("total "+total);
-        return "hola";
+    public void ej2(){
+        double total=0;
+        StringBuilder texto= new StringBuilder("-------------------\nproducto--Unidades--Precio/unidad--Total\n--------------------");
+        for (int i=0;i<3;i++){
+            String producto1=pideProducto();
+            Float precio1=pidePrecio();
+            Integer unidades1=pideUnidades();
+            texto.append("\n").append(producto1).append(" -- ").append(unidades1).append("---").append(precio1).append("---").append(precio1*unidades1);
+            total+=precio1*unidades1;
+        }
+        texto.append("\n--------------------\ntotal ").append(total);
+        System.out.println(texto);
 
 
     }
     public String pideProducto(){
         System.out.println("Introduce el nombre del producto");
         String producto = null;
-        Scanner productoIN = new Scanner(System.in);
-        try {
-            producto=productoIN.nextLine();
-        }catch (Exception error){
-            return ej2();
+
+        while (producto==null){
+            Scanner productoIN = new Scanner(System.in);
+            try {
+                producto=productoIN.nextLine();
+            }catch (Exception error){
+                System.out.println("Nombre inválido");
+            }
         }
         return producto;
     }
     public Integer pideUnidades(){
         System.out.println("Introduce las unidades");
         Integer producto = null;
-        Scanner productoIN = new Scanner(System.in);
+
         while (producto==null){
+            Scanner productoIN = new Scanner(System.in);
             try {
                 producto=productoIN.nextInt();
             }catch (Exception error){
@@ -88,8 +81,9 @@ public class Controller {
     public Float pidePrecio(){
         System.out.println("Introduce el precio");
         Float precio = null;
-        Scanner precioIN = new Scanner(System.in);
+
         while (precio==null){
+            Scanner precioIN = new Scanner(System.in);
             try {
                 precio=precioIN.nextFloat();
             }catch (Exception error){
@@ -100,29 +94,39 @@ public class Controller {
     }
     public ArrayList<Integer> ej3(){
         ArrayList<Integer> lista=new ArrayList<>(List.of(1,2,3,4,5,5,6,7,5));
-        Integer numero=5;
+        Integer opcion=null;
+        System.out.println("Introduce un numero");
+        while (opcion==null){
+            Scanner opcionIN=new Scanner(System.in);
+            try {
+                opcion=opcionIN.nextInt();
+            }catch (Exception error){
+                System.out.println("Error al introducir el numero");
+
+            }
+        }
+        Integer numero=opcion;
         for(Integer i=lista.size()-1;i>=0;i--){
 
-            if(lista.get(i)==numero){
+            if(lista.get(i).equals(numero)){
                 lista.remove(lista.get(i));
             }
         }
 
        return lista;
     }
-    public String ej4(){
-        HashMap<String,Double> notas=new HashMap<String,Double>();
+    public void ej4(){
+        HashMap<String,Double> notas=new HashMap<>();
         notas.put("Pepe",10.0);
         notas.put("Pepe G",7.0);
         notas.put("Pepe M",6.0);
         notas.put("Paco",5.0);
         String nombre="Pepe M";
         for(Map.Entry<String,Double>cada : notas.entrySet()){
-            if(cada.getKey()==nombre){
+            if(cada.getKey().equals(nombre)){
                 System.out.println(cada.getValue());
             }
         }
-        return "hola";
     }
     public ArrayList<Integer> ej5(){
         ArrayList<Integer> numeros=new ArrayList<>(List.of(1,2,3,4,5,6));
@@ -132,18 +136,22 @@ public class Controller {
         }
         return numeros2;
     }
-    public String ej6(){
+    public void ej6(){
         System.out.println("introduce el numero de comensales");
         Integer comensales=null;
-        Scanner comensalesIN=new Scanner(System.in);
-        try {
-            comensales=comensalesIN.nextInt();
-        }catch (Exception error){
-            return ej6();
-        }
-        if(comensales>5 || comensales<1){
-            System.out.println("comensales incorrecto");
-            return ej6();
+
+        while (comensales==null){
+            Scanner comensalesIN=new Scanner(System.in);
+            try {
+                comensales=comensalesIN.nextInt();
+            }catch (Exception error){
+                System.out.println("Error al introducir los comensales");
+                continue;
+            }
+            if(comensales>5 || comensales<1){
+                System.out.println("comensales incorrecto");
+                comensales=null;
+            }
         }
         ArrayList<Integer> menus=new ArrayList<>();
         for(int i=1;i<=comensales;i++){
@@ -154,18 +162,18 @@ public class Controller {
         for(int i=0;i<comensales;i++){
             System.out.println("Comensal "+(i+1)+" menu "+menus.get(i));
         }
-        return "hola";
     }
     public Integer pideMenu(){
 
         System.out.println("introduce el numero del menu");
         Integer menu=null;
-        Scanner menuIN=new Scanner(System.in);
+
         while (menu==null){
+            Scanner menuIN=new Scanner(System.in);
             try {
                 menu=menuIN.nextInt();
             }catch (Exception error){
-
+                continue;
             }
             if(menu<1 ||menu>3){
                 menu=null;

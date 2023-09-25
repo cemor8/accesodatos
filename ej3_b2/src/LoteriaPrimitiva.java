@@ -2,9 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LoteriaPrimitiva {
-    private EntradaTeclado entradaTeclado;
-    private GeneradorNumerosAleatorios generadorNumerosAleatorios;
-    private  ListaNumerosEnteros listaNumerosEnteros;
+    private final EntradaTeclado entradaTeclado;
+    private final GeneradorNumerosAleatorios generadorNumerosAleatorios;
 
     public LoteriaPrimitiva(EntradaTeclado entradaTeclado, GeneradorNumerosAleatorios generadorNumerosAleatorios) {
         this.entradaTeclado = entradaTeclado;
@@ -34,13 +33,14 @@ public class LoteriaPrimitiva {
         System.out.println("Aciertos: "+aciertos);
         System.out.println("Quieres volver a jugar\n1.Si\n2.No");
         Integer opcion=null;
-        Scanner opcionIN=new Scanner(System.in);
+
         while (opcion==null){
+            Scanner opcionIN=new Scanner(System.in);
             try {
                 opcion=opcionIN.nextInt();
             }catch (Exception error){
                 System.out.println("Opcion invalida");
-                opcion=null;
+                continue;
             }
             switch (opcion){
                 case 1:

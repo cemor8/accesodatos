@@ -14,14 +14,11 @@ public class EntradaTeclado {
             System.out.println("Opcion invalida");
             return apostar();
         }
-        switch (opcion){
-            case 1:
-                return "a";
-            case 2:
-                return "b";
-            default:
-                return apostar();
-        }
+        return switch (opcion) {
+            case 1 -> "a";
+            case 2 -> "b";
+            default -> apostar();
+        };
 
     }
 }

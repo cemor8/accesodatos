@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Controller ej1=new Controller();
-        System.out.println(ej1.ej6());
+        ej1.ej2();
 
 
     }

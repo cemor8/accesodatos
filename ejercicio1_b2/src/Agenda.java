@@ -19,7 +19,7 @@ public class Agenda {
         this.contactos.add(contacto);
         ordenarPorNombre();
         System.out.println("contacto añadido correctamente");
-        System.out.println(this.contactos);
+
 
     }
     public void buscar(String nombre){
@@ -38,7 +38,7 @@ public class Agenda {
         if (numeroTelefono.length() < 7 || numeroTelefono.length() > 15) {
             return false;
         }
-        // Verificar que solo contiene dígitos y caracteres especiales permitidos
+
         if (!numeroTelefono.matches("[0-9()-]+")) {
             return false;
         }
