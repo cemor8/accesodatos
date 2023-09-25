@@ -5,8 +5,11 @@ import java.util.List;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-    Agenda agenda=new Agenda(new ArrayList<Contacto>(List.of(new Contacto("pepe","615-23-23-34"))));
-    agenda.añadir(new Contacto("pep2e","3213131"));
-        System.out.println();
+
+        Contacto contacto1= new Contacto("pepe","615232334");
+    Agenda agenda=new Agenda(new ArrayList<Contacto>(List.of(contacto1)));
+    //agenda.añadir(new Contacto("pep2e","3213131"));
+        agenda.vaciar();
+
     }
 }
