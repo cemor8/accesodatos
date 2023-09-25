@@ -1,7 +1,11 @@
 import java.util.*;
 
 public class Controller {
-    
+    /**
+     *Ejercicio1: pide por terminal un texto y una letra para devolver cuantas veces
+     * aparece esa letra en el texto
+     * @return int
+     * */
     public int ej1() {
         String texto = null;
         Scanner textoIN = new Scanner(System.in);
@@ -35,6 +39,10 @@ public class Controller {
         }
         return contador;
     }
+    /**
+     * Ejercicio 2: pide por terminal los datos de una factura y luego los presenta por pantalla,
+     * pide el nombre del producto, el precio y las cantidades del precio
+     * */
     public void ej2(){
         double total=0;
         StringBuilder texto= new StringBuilder("-------------------\nproducto--Unidades--Precio/unidad--Total\n--------------------");
@@ -50,6 +58,10 @@ public class Controller {
 
 
     }
+    /**
+     * Pide por terminal el nombre de un producto y lo devuelve
+     * @return String
+     * */
     public String pideProducto(){
         System.out.println("Introduce el nombre del producto");
         String producto = null;
@@ -64,6 +76,10 @@ public class Controller {
         }
         return producto;
     }
+    /**
+     * Pide por terminal la cantidad de unidades que hay del producto y lo devuelve
+     * @return Integer
+     * */
     public Integer pideUnidades(){
         System.out.println("Introduce las unidades");
         Integer producto = null;
@@ -78,6 +94,10 @@ public class Controller {
         }
         return producto;
     }
+    /**
+     * Pide por terminal el precio por cada unidad de producto y lo devuelve
+     * @return Float
+     * */
     public Float pidePrecio(){
         System.out.println("Introduce el precio");
         Float precio = null;
@@ -92,6 +112,11 @@ public class Controller {
         }
         return precio;
     }
+    /**
+     * Pide por terminal el numero que se desea borrar de una lista previamente creada, para luego
+     * devolver la lista sin ese numero
+     * @return Arraylist
+     * */
     public ArrayList<Integer> ej3(){
         ArrayList<Integer> lista=new ArrayList<>(List.of(1,2,3,4,5,5,6,7,5));
         Integer opcion=null;
@@ -115,6 +140,9 @@ public class Controller {
 
        return lista;
     }
+    /**
+     * Muestra por pantalla la nota de un estudiante
+     * */
     public void ej4(){
         HashMap<String,Double> notas=new HashMap<>();
         notas.put("Pepe",10.0);
@@ -128,6 +156,10 @@ public class Controller {
             }
         }
     }
+    /**
+     * Invierte un array para luego devolverlo
+     * @return Arraylist
+     * */
     public ArrayList<Integer> ej5(){
         ArrayList<Integer> numeros=new ArrayList<>(List.of(1,2,3,4,5,6));
         ArrayList<Integer> numeros2=new ArrayList<>();
@@ -136,6 +168,11 @@ public class Controller {
         }
         return numeros2;
     }
+    /**
+     * Pide por pantalla el numero de comensales que hay en una mesa, entre 1 y 5.
+     * Luego introduce el menu que ha pedido cada comensal para al final, imprimir por pantalla
+     * todos los datos introducidos.
+     * */
     public void ej6(){
         System.out.println("introduce el numero de comensales");
         Integer comensales=null;
@@ -163,6 +200,10 @@ public class Controller {
             System.out.println("Comensal "+(i+1)+" menu "+menus.get(i));
         }
     }
+    /**
+     * Metodo que pide por terminal el numero que identifica a un menu para luego devolverlo.
+     * @return Integer
+     * */
     public Integer pideMenu(){
 
         System.out.println("introduce el numero del menu");
