@@ -11,10 +11,9 @@ public class Agenda {
         this.contactos = contactos;
         ordenarPorNombre();
     }
-    public void añadir(Contacto contacto){
+    public void asignar(Contacto contacto){
         if(contactos.stream().anyMatch(contacto1 -> contacto1.getNombre().equals(contacto.getNombre()))){
-            System.out.println("ya existe un contacto con ese nombre");
-            return;
+            System.out.println("ya existe un contacto con ese nombre, pero se añadira igualmente");
         }
         this.contactos.add(contacto);
         ordenarPorNombre();
@@ -24,7 +23,7 @@ public class Agenda {
     }
     public void buscar(String nombre){
         for(Contacto cada_contacto : contactos){
-            if(cada_contacto.getNombre().equals(nombre)){
+            if(cada_contacto.getNombre().equalsIgnoreCase(nombre)){
                 System.out.println(cada_contacto.getNombre()+" "+cada_contacto.getNumero());
             }
         }

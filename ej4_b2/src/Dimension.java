@@ -39,8 +39,7 @@ public class Dimension {
         return profundidad;
     }
     public double getVolumen(){
-        double volumen=this.getAlto()*this.getAncho()*this.getProfundidad();
-        return volumen;
+        return this.getAlto()* this.getAncho()* this.getProfundidad();
     }
 
     @Override

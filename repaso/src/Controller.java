@@ -17,7 +17,7 @@ public class Controller {
             return ej1();
 
         }
-        System.out.println("Introduce un texto");
+        System.out.println("Introduce una letra");
         String letra=null;
         Scanner letraIN = new Scanner(System.in);
         try {

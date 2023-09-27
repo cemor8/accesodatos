@@ -18,7 +18,9 @@ public class Coleccion {
     public void setNombreColeccion(String nombreColeccion) {
         this.nombreColeccion = nombreColeccion;
     }
+    public void asignarFiguras(Figura figura){
 
+    }
 
     public String toString() {
         String texto="";
