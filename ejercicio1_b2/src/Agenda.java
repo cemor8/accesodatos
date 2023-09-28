@@ -11,6 +11,9 @@ public class Agenda {
         this.contactos = contactos;
         ordenarPorNombre();
     }
+    public ArrayList<Contacto> getContactos() {
+        return contactos;
+    }
     public void asignar(Contacto contacto){
         if(contactos.stream().anyMatch(contacto1 -> contacto1.getNombre().equals(contacto.getNombre()))){
             System.out.println("ya existe un contacto con ese nombre, pero se añadira igualmente");
@@ -22,10 +25,15 @@ public class Agenda {
 
     }
     public void buscar(String nombre){
+        boolean hay=false;
         for(Contacto cada_contacto : contactos){
             if(cada_contacto.getNombre().equalsIgnoreCase(nombre)){
                 System.out.println(cada_contacto.getNombre()+" "+cada_contacto.getNumero());
+                hay=true;
             }
+        }
+        if (!hay){
+            System.out.println("No hay ningun contacto con ese nombre");
         }
     }
 
@@ -100,13 +108,17 @@ public class Agenda {
         });
     }
     public void eliminar(Contacto contacto){
-        contacto.setNombre("");
-        contacto.setNumero("");
+        this.contactos.remove(contacto);
 
     }
     public void mostrar(){
+        boolean hay=false;
         for(Contacto cada_contacto:this.contactos){
             System.out.println("Nombre: "+cada_contacto.getNombre()+" "+"Número: "+cada_contacto.getNumero());
+            hay=true;
+        }
+        if(!hay){
+            System.out.println("No hay contactos, la agenda esta vacía");
         }
 
     }
@@ -122,7 +134,8 @@ public class Agenda {
         }
         switch (opcion){
             case 1:
-                this.setContactos(new ArrayList<>());
+                this.contactos.clear();
+                //this.setContactos(new ArrayList<>());
                 System.out.println("Agenda vaciada correctamente");
             case 2:
                 break;
