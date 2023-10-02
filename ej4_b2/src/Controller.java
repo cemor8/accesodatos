@@ -160,6 +160,10 @@ public class Controller {
         }
         return colecciones();
     }
+    /**
+     * Método que pide el nombre de una coleccion para mostrar sus figuras.
+     * @return Menu colecciones
+     * */
     public String mostrarContenidoColeccion(){
         String nombre_colección=pideString("Introduce el nombre de la coleccion");
         Optional<Coleccion>coleccion_encontrada=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_colección)).findFirst();
@@ -170,12 +174,16 @@ public class Controller {
                 return menu();
             }
             System.out.println(coleccion_final);
-            return menu();
         }
         System.out.println("No se encontro la coleccion, asegurese de que esa coleccion existe");
-        return menu();
+        return colecciones();
 
     }
+    /**
+     * Método que pide un código de una figura para luego introducirla en una coleccion la cual se pide su nombre tambien por
+     * terminal.
+     * @return menu
+     * */
     public String meterFigura(){
         String figura_codigo=pideString("Introduce el codigo de la figura");
 
@@ -201,6 +209,6 @@ public class Controller {
             return meterFigura();
 
         }
-        return menu();
+        return colecciones();
     }
 }
