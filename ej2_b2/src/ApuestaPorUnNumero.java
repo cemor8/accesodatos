@@ -31,15 +31,19 @@ public class ApuestaPorUnNumero {
                     }
                     Double jugador=null;
                     Double ia=null;
-                    switch (this.entradaTeclado.apostar()){
-                        case "a":
-                            jugador=num1;
-                            ia=num2;
-                            break;
-                        case "b":
-                            ia=num1;
-                            jugador=num2;
-                            break;
+                    while (ia==null&&jugador==null){
+                        switch (this.entradaTeclado.apostar().toLowerCase()) {
+                            case "a" -> {
+                                jugador = num1;
+                                ia = num2;
+                            }
+                            case "b" -> {
+                                ia = num1;
+                                jugador = num2;
+                            }
+                            default -> System.out.println("opcion invalida");
+                        }
+
                     }
                     if(jugador>ia){
                         this.marcador.añadirAciertos();

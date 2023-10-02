@@ -44,11 +44,11 @@ public class Controller {
     return menu();
 
     }
-    public void figuras(){
+    public String figuras(){
         System.out.println("-----MENU-----");
         System.out.println("1. Crear Figura");
         System.out.println("2. Mostrar figuras sin coleccion");
-        System.out.println("3. Salir");
+        System.out.println("3. Volver atras");
         Integer opcion=null;
         while (opcion==null){
             Scanner opcionIN=new Scanner(System.in);
@@ -69,12 +69,13 @@ public class Controller {
                     }
                     break;
                 case 3:
-                    System.exit(0);
+                    return menu();
                 default:
                     System.out.println("Opcion inválida");
                     opcion=null;
             }
         }
+        return figuras();
     }
     public void crearFigura(){
         String codigo=pideString("Introduce un código para la figura");
@@ -124,11 +125,12 @@ public class Controller {
         }
         return cantidad;
     }
-    public  void colecciones(){
+    public  String colecciones(){
         System.out.println("-----MENU-----");
         System.out.println("1. Crear Coleccion");
         System.out.println("2. Añadir figura a coleccion");
-        System.out.println("3. Salir");
+        System.out.println("3. Mostrar Contenido de la colección");
+        System.out.println("4. Volver atras");
         Integer opcion=null;
         while (opcion==null){
             Scanner opcionIN=new Scanner(System.in);
@@ -147,12 +149,32 @@ public class Controller {
                     meterFigura();
                     break;
                 case 3:
-                System.exit(0);
+                    mostrarContenidoColeccion();
+                    break;
+                case 4:
+                return menu();
                 default:
                     System.out.println("Opcion inválida");
                     opcion=null;
             }
         }
+        return colecciones();
+    }
+    public String mostrarContenidoColeccion(){
+        String nombre_colección=pideString("Introduce el nombre de la coleccion");
+        Optional<Coleccion>coleccion_encontrada=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_colección)).findFirst();
+        if(coleccion_encontrada.isPresent()){
+            Coleccion coleccion_final=coleccion_encontrada.get();
+            if(coleccion_final.getListaFiguras().size()<=0){
+                System.out.println("La coleccion esta vacia");
+                return menu();
+            }
+            System.out.println(coleccion_final);
+            return menu();
+        }
+        System.out.println("No se encontro la coleccion, asegurese de que esa coleccion existe");
+        return menu();
+
     }
     public String meterFigura(){
         String figura_codigo=pideString("Introduce el codigo de la figura");

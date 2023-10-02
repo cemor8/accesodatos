@@ -6,6 +6,10 @@ public class Coleccion {
     private String nombreColeccion;
     private ArrayList<Figura> listaFiguras;
 
+    public ArrayList<Figura> getListaFiguras() {
+        return listaFiguras;
+    }
+
     public Coleccion(String nombreColeccion, ArrayList<Figura> listaFiguras) {
         this.nombreColeccion = nombreColeccion;
         this.listaFiguras = new ArrayList<Figura>();
@@ -19,7 +23,7 @@ public class Coleccion {
         this.nombreColeccion = nombreColeccion;
     }
     public void asignarFiguras(Figura figura){
-
+        this.listaFiguras.add(figura);
     }
 
     public String toString() {
