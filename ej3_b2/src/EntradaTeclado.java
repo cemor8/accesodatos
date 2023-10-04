@@ -4,6 +4,9 @@ public class EntradaTeclado {
 
     public EntradaTeclado() {
     }
+    /**
+     * Método que pide por pantalla los numeros que se quieren añadir a la loteria.
+     * */
     public Integer pedir_numeros(){
 
         System.out.println("Introduce un numero entre el 1 y el 49");

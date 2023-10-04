@@ -9,6 +9,11 @@ public class LoteriaPrimitiva {
         this.entradaTeclado = entradaTeclado;
         this.generadorNumerosAleatorios = generadorNumerosAleatorios;
     }
+    /**
+     * Método que empieza una partida de la loteria, genera una lista de numeros aleatorios y otra se la pide al
+     * jugador, mostrará los numeros elegidos por terminal, luego empezará a recorrer los numeros premiados, buscando
+     * si el jugador acerto alguno, al final mostrará los aciertos y preguntará si se quiere volver a jugar.
+     * */
     public String partida(){
         ListaNumerosEnteros numeros_elegidos=new ListaNumerosEnteros();
         ListaNumerosEnteros numeros_premiados=new ListaNumerosEnteros();

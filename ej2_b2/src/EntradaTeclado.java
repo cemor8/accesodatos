@@ -4,6 +4,9 @@ import java.util.Scanner;
 public class EntradaTeclado {
     public EntradaTeclado() {
     }
+    /**
+     * Método que muestra el menu de opciones de apuestas.
+     * */
     public String apostar(){
         System.out.println("Haz tu apuesta\n1.A\n2.B");
         Integer opcion=null;

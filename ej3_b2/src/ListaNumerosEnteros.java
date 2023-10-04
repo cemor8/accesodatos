@@ -10,7 +10,10 @@ public class ListaNumerosEnteros {
     public ArrayList<Integer> getNumeros() {
         return numeros;
     }
-
+    /**
+     * Método que recibe un numero, si este ya esta en la lista de numeros, no lo mete y lo indica,
+     * si no, lo añade a esta.
+     * */
     public void lista(Integer numero){
         if(!numeros.contains(numero)){
             numeros.add(numero);

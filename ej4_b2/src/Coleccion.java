@@ -43,6 +43,9 @@ public class Coleccion {
        }
        return texto;
     }
+    /**
+     *Método que muestra los datos de las figuras de la coleccion que tengan capa.
+     * */
     public String conCapa(){
         String texto="";
         for (Figura cada_figura : this.listaFiguras){
@@ -63,19 +66,20 @@ public class Coleccion {
         return texto;
 
     }
+    /**
+     *Método que ordena la lista de figuras por precio y devuelve la mas cara.
+     * */
     public Figura masValioso(){
         ArrayList<Figura> figuras= (ArrayList<Figura>) this.listaFiguras.clone();
-        Collections.sort(figuras, new Comparator<Figura>() {
-            @Override
-            public int compare(Figura figura1, Figura figura2) {
-
-                return Double.compare(figura1.getPrecio(), figura2.getPrecio());
-            }
-        });
+        figuras.sort((figura1, figura2) -> Double.compare(figura1.getPrecio(), figura2.getPrecio()));
         return figuras.get(0);
 
 
     }
+    /**
+     *Método que recorre las figuras de la coleccion para devolver el precio total de la coleccion.
+     * @return double
+     * */
     public double getValorColeccion(){
         double precio=0;
         for (Figura cada_figura : this.listaFiguras){
@@ -83,6 +87,10 @@ public class Coleccion {
         }
         return precio;
     }
+    /**
+     * Método que devuelve una cantidad de volumen aproximada de la coleccion de figuras.
+     * @return double.
+     * */
     public double getVolumenColeccion(){
         double figurasVolumen=0;
         for (Figura cada_figura : this.listaFiguras){

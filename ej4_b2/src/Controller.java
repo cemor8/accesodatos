@@ -12,7 +12,9 @@ public class Controller {
         this.colecciones = colecciones;
         this.figuras = figuras;
     }
-
+    /**
+     * Método que muestra el menu del programa, lleva a los submenus relaccionados con las figuras y colecciones.
+     * */
     public String menu(){
         System.out.println("-----MENU-----");
         System.out.println("1. Editar/Mostrar Figuras");
@@ -44,6 +46,9 @@ public class Controller {
     return menu();
 
     }
+    /**
+     * Método que muestra las opciones a realizar con las figuras.
+     * */
     public String figuras(){
         System.out.println("-----MENU-----");
         System.out.println("1. Crear Figura");
@@ -77,15 +82,17 @@ public class Controller {
         }
         return figuras();
     }
+    /**
+     * Método que se encarga de pedir los datos para crar un figura.
+     * */
     public void crearFigura(){
-        String codigo=pideString("Introduce un código para la figura");
-        String nombre_superheroe=pideString("Introduce el nombre del superheroe");
-        Double precio=pideDouble("Introduce un precio para la fiugra");
-        Double ancho=pideDouble("Introduce un ancho para la figura");
-        Double alto=pideDouble("Introduce un alto para la figura");
-        Double profundidad=pideDouble("Introduce la profundidad de la figura");
         String nombre_coleccion=pideString("Introduce el nombre de la coleccion a la que pertenece");
-        Figura figura= new Figura(codigo,precio,new Superheroe(nombre_superheroe),new Dimension(alto,ancho,profundidad));
+        Figura figura= new Figura(pideString("Introduce un código para la figura"),
+                pideDouble("Introduce un precio para la fiugra"),
+                new Superheroe(pideString("Introduce el nombre del superheroe")),
+                new Dimension(pideDouble("Introduce un alto para la figura"),pideDouble("Introduce un ancho para la figura"),pideDouble("Introduce la profundidad de la figura"))
+        );
+
         Optional<Coleccion> coleccion_final=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_coleccion)).findFirst();
         Coleccion coleccion;
         if(coleccion_final.isPresent()){
@@ -96,9 +103,10 @@ public class Controller {
             this.figuras.add(figura);
         }
 
-
-
     }
+    /**
+     * Método que recibe una string, la muestra por pantalla y pide una string por terminal, luego la devuelve.
+     * */
     public String pideString(String string){
         String texto=null;
         while (texto==null){
@@ -112,6 +120,9 @@ public class Controller {
         }
         return texto;
     }
+    /**
+     * Método igual a pideString solo que devulve un Double.
+     * */
     public Double pideDouble(String texto){
         Double cantidad=null;
         while (cantidad==null){
@@ -125,6 +136,9 @@ public class Controller {
         }
         return cantidad;
     }
+    /**
+     * Método que muestra el menu referente a las colecciones.
+     * */
     public  String colecciones(){
         System.out.println("-----MENU-----");
         System.out.println("1. Crear Coleccion");

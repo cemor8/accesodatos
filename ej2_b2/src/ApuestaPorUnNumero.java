@@ -10,7 +10,11 @@ public class ApuestaPorUnNumero {
         this.marcador = marcador;
         this.generadorNumerosAleatorios = generadorNumerosAleatorios;
     }
-
+    /**
+     * Método que inicia una partida, pide por pantalla el menu del programa, si se apuesta, se llama al menu de la apuesta el
+     * cual pedira el numero por el que se querrá apostar, luego los genera,
+     * comprobará que sean diferentes y comprobará si el jugador gana o pierde.
+     * */
     public String partida(){
         System.out.println("Que quieres Hacer\n1.Apostar\n2.Salir");
         Integer opcion=null;
@@ -26,7 +30,7 @@ public class ApuestaPorUnNumero {
                 case 1:
                     Double num1= this.generadorNumerosAleatorios.generar();
                     Double num2= this.generadorNumerosAleatorios.generar();
-                    while (num1==null){
+                    while (num1.equals(num2)){
                         num2= this.generadorNumerosAleatorios.generar();
                     }
                     Double jugador=null;

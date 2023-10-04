@@ -12,7 +12,9 @@ public class Controller {
         this.leerArchivo();
 
     }
-
+    /**
+     * Método que mustra el menu de la agenda.
+     * */
     public void menu() throws IOException {
         Integer opcion = null;
         while (opcion == null) {
@@ -34,7 +36,6 @@ public class Controller {
             switch (opcion) {
                 case 1:
                     String nombre = pideString("Introduce el nombre del contacto");
-
                     String numero = null;
                     while (numero == null) {
                         numero = pideString("Introduce el numero del contacto");
@@ -52,12 +53,16 @@ public class Controller {
                     break;
                 case 3:
                     Contacto contacto_modificar = buscaContacto("Introduce un contacto para modificar");
-                    this.agenda.modificar(contacto_modificar);
+                    if (contacto_modificar!=null){
+                        this.agenda.modificar(contacto_modificar);
+                    }
                     opcion = null;
                     break;
                 case 4:
                     Contacto contacto_eliminar = buscaContacto("Introduce un contacto para eliminar los datos");
-                    this.agenda.eliminar(contacto_eliminar);
+                    if(contacto_eliminar!=null) {
+                        this.agenda.eliminar(contacto_eliminar);
+                    }
                     opcion = null;
                     break;
                 case 5:
@@ -79,7 +84,9 @@ public class Controller {
 
         }
     }
-
+    /**
+     * Método que lee el archivo txt donde estan guardados los contactos
+     * */
     public void leerArchivo() throws IOException, ClassNotFoundException {
         String rutaArchivo = "./directorioAgenda/agenda.txt";
         FileInputStream fin=new FileInputStream(rutaArchivo);
@@ -87,7 +94,9 @@ public class Controller {
         this.agenda.setContactos((ArrayList<Contacto>)ois.readObject());
 
     }
-
+    /**
+     * Método que reescribe los contactos de la agenda.
+     * */
     public void escribe_agenda() throws IOException {
         String rutaArchivo = "./directorioAgenda/agenda.txt";
         ArrayList<Contacto> lista1=this.agenda.getContactos();
@@ -98,7 +107,9 @@ public class Controller {
 
 
     }
-
+    /**
+     * Método que recibe una string, la muestra por terminal y pide un texto.
+     * */
     public String pideString(String mostrar) {
         String texto = null;
         while (texto == null) {
@@ -112,11 +123,18 @@ public class Controller {
         }
         return texto;
     }
-
+    /**
+     * Método que busca un contacto, si no hay contactos devuleve null, si no, muestra los contactos y pide uno para seleccionar,
+     * luego lo devuelve.
+     * */
     public Contacto buscaContacto(String mostrar) {
         Integer opcion = null;
         Contacto contacto = null;
         while (opcion == null) {
+            if(this.agenda.getContactos().isEmpty()){
+                System.out.println("No hay contactos actualmente");
+                return null;
+            }
             System.out.println(mostrar);
             for (int i = 0; i < this.agenda.getContactos().size(); i++) {
                 System.out.println(i + " " + this.agenda.getContactos().get(i).getNombre() + "---" + this.agenda.getContactos().get(i).getNumero());
