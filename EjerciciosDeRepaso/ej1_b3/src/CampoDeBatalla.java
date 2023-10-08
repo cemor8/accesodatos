@@ -41,10 +41,12 @@ public class CampoDeBatalla {
         int ganadas=0;
         double totales= (double) this.ejercito_villanos.size() /2;
         for(int i=0;i<this.ejercito_villanos.size();i++){
+            System.out.println("Combate: "+(i+1));
             ganadas+=pelear(this.ejercito_villanos.get(i),this.ejercito_heroes.get(i));
             resetearTurno();
-            System.out.println(ganadas+" "+totales+" "+ejercito_villanos.size());
+
         }
+        System.out.println("Heroes: "+ganadas+" Villanos: "+(ejercito_villanos.size()-ganadas));
         if(ganadas<totales){
             System.out.println("Gano el ejercito de los villanos");
         } else if (ganadas>totales) {
@@ -60,13 +62,11 @@ public class CampoDeBatalla {
     public int pelear(Villano villano,Heroe heroe){
         int cantidad=0;
         while (villano.getVida()>0||heroe.getVida()>0){
-            System.out.println("vida villano: "+villano.getVida()+" "+"vida heroe: "+heroe.getVida());
             if(this.turno%2==0){
                 int tirada1= heroe.tirarDado();
                 int tirada2=heroe.tirarDado();
 
                 int ataque_heroe = Math.max(tirada1, tirada2);
-                System.out.println("Ataque heroe "+ataque_heroe);
                 if(ataque_heroe>villano.getPoder_escudo()){
                     villano.restarVida(ataque_heroe/ villano.getPoder_escudo());
                 }

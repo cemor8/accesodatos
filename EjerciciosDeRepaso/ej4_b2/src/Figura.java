@@ -10,7 +10,7 @@ public class Figura {
         this.superheroe = superheroe;
         this.dimension = dimension;
     }
-    private void subirPrecio(double cantidad){
+    public void subirPrecio(double cantidad){
         this.precio+=cantidad;
     }
 

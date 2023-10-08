@@ -47,13 +47,47 @@ public class Controller {
 
     }
     /**
+     * Método que pide el nombre de una coleccion, para buscarla
+     * y devolverla si existe, si no devuelve null
+     * @return Coleccion
+     * */
+    public Coleccion pideColeccion(){
+        Coleccion coleccionFinal;
+        String nombre_coleccion=pideString("Introduce el nombre de la coleccion");
+        Optional<Coleccion> coleccionOptional=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_coleccion)).findAny();
+        if (coleccionOptional.isEmpty()){
+            return null;
+        }
+        coleccionFinal=coleccionOptional.get();
+        return coleccionFinal;
+    }
+    /**
+     * Método que pide el codigo de una Figura, para buscarla
+     * en la lista que se le pasa al metodo
+     * y devolverla si existe, si no devuelve null
+     * @return Figura
+     * */
+    public Figura pideFigura(ArrayList<Figura> figuras){
+        Figura figuraFinal;
+        String codFigura=pideString("Introduce el codigo de la figura");
+        Optional<Figura> figuraOptional=figuras.stream().filter(figura -> figura.getCodigo().equals(codFigura)).findFirst();
+        if(figuraOptional.isEmpty()){
+            return null;
+        }
+        figuraFinal=figuraOptional.get();
+        return figuraFinal;
+    }
+    /**
      * Método que muestra las opciones a realizar con las figuras.
+     * @return String menu figuras.
      * */
     public String figuras(){
         System.out.println("-----MENU-----");
         System.out.println("1. Crear Figura");
         System.out.println("2. Mostrar figuras sin coleccion");
-        System.out.println("3. Volver atras");
+        System.out.println("3. Subir precio a una figura de coleccion");
+        System.out.println("4. Poner capa a superheroe");
+        System.out.println("5. Volver atras");
         Integer opcion=null;
         while (opcion==null){
             Scanner opcionIN=new Scanner(System.in);
@@ -63,24 +97,49 @@ public class Controller {
                 System.out.println("Opción inválida");
                 continue;
             }
-            switch (opcion){
-                case 1:
-                    crearFigura();
-                    break;
-                case 2:
-                    for(Figura cada_figura : this.figuras){
+            switch (opcion) {
+                case 1 -> crearFigura();
+                case 2 -> {
+                    for (Figura cada_figura : this.figuras) {
 
                         System.out.println(cada_figura.toString());
                     }
-                    break;
-                case 3:
+                }
+                case 3 -> subir();
+                case 4-> asignarCapa();
+                case 5 -> {
                     return menu();
-                default:
+                }
+                default -> {
                     System.out.println("Opcion inválida");
-                    opcion=null;
+                    opcion = null;
+                }
             }
         }
         return figuras();
+    }
+    /**
+     * Método que pide una coleccion y una figura para subirle el precio a esta.
+     * */
+    public void subir(){
+        Coleccion coleccionFinal=pideColeccion();
+        if(coleccionFinal==null){
+            System.out.println("no se encontro la coleccion");
+            return;
+        }
+        Figura figuraFinal=pideFigura(coleccionFinal.getListaFiguras());
+        if(figuraFinal==null){
+            System.out.println("no se encontro la figura");
+            return;
+        }
+        Double precio=pideDouble("Introduce un nuevo precio para la figura");
+        if(precio<=0){
+            System.out.println("precio incorrecto, intentalo de nuevo");
+        }else {
+            figuraFinal.subirPrecio(precio);
+            System.out.println("Precio añadido correctamente");
+        }
+
     }
     /**
      * Método que se encarga de pedir los datos para crar un figura.
@@ -92,7 +151,6 @@ public class Controller {
                 new Superheroe(pideString("Introduce el nombre del superheroe")),
                 new Dimension(pideDouble("Introduce un alto para la figura"),pideDouble("Introduce un ancho para la figura"),pideDouble("Introduce la profundidad de la figura"))
         );
-
         Optional<Coleccion> coleccion_final=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_coleccion)).findFirst();
         Coleccion coleccion;
         if(coleccion_final.isPresent()){
@@ -144,7 +202,11 @@ public class Controller {
         System.out.println("1. Crear Coleccion");
         System.out.println("2. Añadir figura a coleccion");
         System.out.println("3. Mostrar Contenido de la colección");
-        System.out.println("4. Volver atras");
+        System.out.println("4. Mostrar figura mas cara de coleccion");
+        System.out.println("5. Mostrar Volumen de una coleccion");
+        System.out.println("6. Mostrar precio total de coleccion");
+        System.out.println("7. Mostrar figuras con capa");
+        System.out.println("8. Volver atras");
         Integer opcion=null;
         while (opcion==null){
             Scanner opcionIN=new Scanner(System.in);
@@ -154,22 +216,29 @@ public class Controller {
                 System.out.println("Opción inválida");
                 continue;
             }
-            switch (opcion){
-                case 1:
-                    String nombre_coleccion=pideString("Introduce un nombre para la coleccion");
-                    this.colecciones.add(new Coleccion(nombre_coleccion,new ArrayList<>()));
-                    break;
-                case 2:
-                    meterFigura();
-                    break;
-                case 3:
-                    mostrarContenidoColeccion();
-                    break;
-                case 4:
-                return menu();
-                default:
+            switch (opcion) {
+                case 1 -> {
+                    String nombre_coleccion = pideString("Introduce un nombre para la coleccion");
+                    this.colecciones.add(new Coleccion(nombre_coleccion, new ArrayList<>()));
+                }
+                case 2 -> meterFigura();
+                case 3 -> {
+                        Coleccion coleccionTemporal=mostrarContenidoColeccion();
+                        if(coleccionTemporal!=null){
+                            System.out.println(coleccionTemporal);
+                        }
+                    }
+                case 4 -> devuelvePropiedad("cara");
+                case 5 -> devuelvePropiedad("volumen");
+                case 6 -> devuelvePropiedad("precio");
+                case 7 -> devuelvePropiedad("capa");
+                case 8 -> {
+                    return menu();
+                }
+                default -> {
                     System.out.println("Opcion inválida");
-                    opcion=null;
+                    opcion = null;
+                }
             }
         }
         return colecciones();
@@ -178,19 +247,23 @@ public class Controller {
      * Método que pide el nombre de una coleccion para mostrar sus figuras.
      * @return Menu colecciones
      * */
-    public String mostrarContenidoColeccion(){
-        String nombre_colección=pideString("Introduce el nombre de la coleccion");
-        Optional<Coleccion>coleccion_encontrada=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_colección)).findFirst();
-        if(coleccion_encontrada.isPresent()){
-            Coleccion coleccion_final=coleccion_encontrada.get();
-            if(coleccion_final.getListaFiguras().size()<=0){
-                System.out.println("La coleccion esta vacia");
-                return menu();
-            }
-            System.out.println(coleccion_final);
+    public Coleccion mostrarContenidoColeccion(){
+
+        Coleccion coleccionFinal=pideColeccion();
+        if(coleccionFinal==null){
+            System.out.println("no se encontro la coleccion");
+            return null;
         }
-        System.out.println("No se encontro la coleccion, asegurese de que esa coleccion existe");
-        return colecciones();
+        if(coleccionFinal.getListaFiguras().size()<=0){
+            System.out.println("La coleccion esta vacia");
+            return null;
+        }else {
+            System.out.println("hola");
+            return coleccionFinal;
+        }
+
+
+
 
     }
     /**
@@ -199,30 +272,51 @@ public class Controller {
      * @return menu
      * */
     public String meterFigura(){
-        String figura_codigo=pideString("Introduce el codigo de la figura");
-
-        Optional<Figura>figura_encontrada=this.figuras.stream().filter(figura -> figura.getCodigo().equals(figura_codigo)).findFirst();
-
-        if(figura_encontrada.isPresent()){
-            Figura figura;
-            figura=figura_encontrada.get();
-            String nombre_coleccion=pideString("Introduce el nombre de la coleccion");
-            Optional<Coleccion>coleccion_encontrada=this.colecciones.stream().filter(coleccion -> coleccion.getNombreColeccion().equals(nombre_coleccion)).findFirst();
-            if(coleccion_encontrada.isPresent()){
-                System.out.println("Figura introducida correctamente");
-                Coleccion coleccion;
-                coleccion=coleccion_encontrada.get();
-                coleccion.asignarFiguras(figura);
-            }else {
-                System.out.println("Coleccion erronea, vuelve a empezar");
-                return meterFigura();
-            }
-
-        }else {
-            System.out.println("Figura erronea, vuelve a empezar");
-            return meterFigura();
-
+        Coleccion coleccionFinal=pideColeccion();
+        if(coleccionFinal==null){
+            return menu();
         }
+        Figura figuraFinal=pideFigura(this.figuras);
+        if(figuraFinal==null){
+            return menu();
+        }
+        coleccionFinal.asignarFiguras(figuraFinal);
+        System.out.println("Figura introducida correctamente");
         return colecciones();
+
     }
+    /**
+     * Método que recibe una string y dependiendo de el valor de esta string, muestra
+     * la figura mas cara, el precio total de la coleccion, su volumen total o los datos
+     * de las figuras con capa.
+     * */
+    public void devuelvePropiedad(String propiedad){
+        Coleccion coleccionFinal=pideColeccion();
+        if(coleccionFinal!=null){
+            switch (propiedad) {
+                case "cara" -> System.out.println(coleccionFinal.masValioso());
+                case "precio" -> System.out.println(coleccionFinal.getValorColeccion());
+                case "volumen" -> System.out.println(coleccionFinal.getVolumenColeccion());
+                case "capa"-> System.out.println(coleccionFinal.conCapa());
+                default -> System.out.println("error");
+            }
+        }else {
+            System.out.println("coleccion no encontrada");
+        }
+    }
+    public void asignarCapa(){
+        Coleccion coleccionFinal=pideColeccion();
+        if (coleccionFinal==null){
+            System.out.println("coleccion no encontrada");
+            return;
+        }
+        Figura figuraFinal=pideFigura(coleccionFinal.getListaFiguras());
+        if (figuraFinal==null){
+            System.out.println("figura no encontrada");
+            return;
+        }
+        figuraFinal.getSuperheroe().setCapa(true);
+        System.out.println("capa añadida correctamente");
+    }
+
 }

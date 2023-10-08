@@ -6,9 +6,7 @@ public class Coleccion {
     private String nombreColeccion;
     private ArrayList<Figura> listaFiguras;
 
-    public ArrayList<Figura> getListaFiguras() {
-        return listaFiguras;
-    }
+
 
     public Coleccion(String nombreColeccion, ArrayList<Figura> listaFiguras) {
         this.nombreColeccion = nombreColeccion;
@@ -18,7 +16,9 @@ public class Coleccion {
     public String getNombreColeccion() {
         return nombreColeccion;
     }
-
+    public ArrayList<Figura> getListaFiguras() {
+        return listaFiguras;
+    }
     public void setNombreColeccion(String nombreColeccion) {
         this.nombreColeccion = nombreColeccion;
     }
@@ -43,6 +43,8 @@ public class Coleccion {
        }
        return texto;
     }
+
+
     /**
      *Método que muestra los datos de las figuras de la coleccion que tengan capa.
      * */
@@ -63,6 +65,9 @@ public class Coleccion {
 
             }
             }
+        if(texto.length()==0){
+            texto="No hay ninguna con capa";
+        }
         return texto;
 
     }
@@ -96,7 +101,11 @@ public class Coleccion {
         for (Figura cada_figura : this.listaFiguras){
             figurasVolumen+=cada_figura.getDimension().getVolumen();
         }
+        if(figurasVolumen==0){
+            return 0;
+        }
         return figurasVolumen+200;
     }
+
 
 }

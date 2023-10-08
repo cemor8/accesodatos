@@ -21,12 +21,15 @@ public class Juego {
      * Método que inicia una ronda del juego, cada jugador se dispara y si se muere, el juego se acaba.
      * */
     public void ronda() {
-        for (Jugador cada_jugador : jugadores) {
-            cada_jugador.Disparar(this.revolver);
-            if (this.finJuego()) {
-                return ;
+        for (int i =0;i<this.jugadores.size();i++){
+            this.jugadores.get(i).Disparar(this.revolver);
+            if(this.finJuego()){
+                return;
+            }else if(i==this.jugadores.size()-1){
+                i=-1;
             }
         }
+
 
 
     }
