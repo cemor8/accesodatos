@@ -48,6 +48,8 @@ public class Controller {
                     opcion = null;
                     break;
                 case 5:
+                    eliminaLibro();
+                    opcion=null;
                     break;
                 case 6:
                     escribeArchivo();
@@ -171,6 +173,11 @@ public class Controller {
 
         }
         return libroEncontradoOptional.get();
+    }
+    public void eliminaLibro(){
+        Libro liroEliminar=pideLibro();
+        this.libros.remove(liroEliminar);
+        System.out.println("libro eliminado correctamente");
     }
     /**
      * Método que recibe una string, la muestra por terminal, y devuelve
