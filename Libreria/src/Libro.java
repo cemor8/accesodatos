@@ -53,6 +53,8 @@ public class Libro {
         return "Libro{" +
                 "nombre='" + nombre + '\'' +
                 ", autor='" + autor + '\'' +
+                ", paginas=" + paginas +
+                ", año=" + año +
                 '}';
     }
 }

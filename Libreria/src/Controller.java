@@ -20,7 +20,8 @@ public class Controller {
             System.out.println("3. Borrar libros");
             System.out.println("4. Ver libros");
             System.out.println("5. Borrar un libro");
-            System.out.println("6. Salir");
+            System.out.println("6. Encontrar un libro directamente en el almacen");
+            System.out.println("7. Salir");
             Scanner opcionIN = new Scanner(System.in);
             try {
                 opcion = opcionIN.nextInt();
@@ -51,7 +52,7 @@ public class Controller {
                     eliminaLibro();
                     opcion=null;
                     break;
-                case 6:
+                case 7:
                     escribeArchivo();
                     System.exit(0);
                 default:
@@ -68,6 +69,8 @@ public class Controller {
         String rutaArchivo = "./almacen/almacen.txt";
         ArrayList<Libro> librosLeer = new ArrayList<>();
         // asi el bufferedreader se cierra despues del try, sin tener que cerrarlo.
+
+
         try (BufferedReader bufferedReader= new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
             while ((linea=bufferedReader.readLine())!=null){
@@ -77,14 +80,29 @@ public class Controller {
                     String autor=partes[1];
                     Integer paginas=Integer.parseInt(partes[2]);
                     Integer año=Integer.parseInt(partes[3]);
-                    librosLeer.add(new Libro(nombre,autor,paginas,año));
+                    Libro libroCreado=new Libro(nombre,autor,paginas,año);
+                    librosLeer.add(libroCreado);
+                    System.out.println(libroCreado);
                 }
             }
+
+        }catch (FileNotFoundException fil){
+            System.out.println("No se encontro el archivo, se creara uno vacio");
+            this.crearArchivo();
 
         } catch (IOException err) {
             err.printStackTrace();
         }
         return librosLeer;
+    }
+    public void crearArchivo(){
+        try(FileWriter fileWriter=new FileWriter("./almacen/almacen.txt")) {
+            fileWriter.close();
+            System.out.println("Archivo creado correctamente");
+        }catch (IOException err){
+            System.out.println("error al crear el archivo cuando no existe");
+        }
+
     }
     /**
      * Método que escribe un archivo con la informacion guardada en la lista de libros
@@ -202,7 +220,7 @@ public class Controller {
      *  la informacion introducida por terminal.
      * @return Integer
      * */
-    private Integer pideInteger(String texto) {
+    public Integer pideInteger(String texto) {
         Integer contenido = null;
         while (contenido == null) {
             System.out.println(texto);
@@ -214,5 +232,20 @@ public class Controller {
             }
         }
         return contenido;
+    }
+    public void leerUno(){
+        String nombreLibro=pideString("Introduce el nombre del libro");
+        try {
+            RandomAccessFile randomAccessFile=new RandomAccessFile("./almacen/almacen.txt","r");
+            String linea;
+            while ((linea= randomAccessFile.readLine())!=null){
+                String[] datos=linea.split("\\|");
+                if(datos.length>0&&datos[0].equals(nombreLibro)){
+                    System.out.println("Se encontro un libro con el nombre deseado.");
+                }
+            }
+        }catch (IOException err){
+            err.printStackTrace();
+        }
     }
 }
