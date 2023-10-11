@@ -233,10 +233,10 @@ public class Controller {
         }
         return contenido;
     }
-    public void leerUno(){
+    public void modificarDirectamente(){
         String nombreLibro=pideString("Introduce el nombre del libro");
         try {
-            RandomAccessFile randomAccessFile=new RandomAccessFile("./almacen/almacen.txt","r");
+            RandomAccessFile randomAccessFile=new RandomAccessFile("./almacen/almacen.txt","rw");
             String linea;
             while ((linea= randomAccessFile.readLine())!=null){
                 String[] datos=linea.split("\\|");
@@ -244,6 +244,7 @@ public class Controller {
                     System.out.println("Se encontro un libro con el nombre deseado.");
                 }
             }
+
         }catch (IOException err){
             err.printStackTrace();
         }
