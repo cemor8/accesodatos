@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -14,14 +15,13 @@ public class Controller {
 
         Integer opcion = null;
         while (opcion == null) {
-            System.out.println("Menu");
+            System.out.println("\nMenu");
             System.out.println("1. Crear libro");
-            System.out.println("2. Actualizar informacion de libro");
-            System.out.println("3. Borrar libros");
-            System.out.println("4. Ver libros");
-            System.out.println("5. Borrar un libro");
-            System.out.println("6. Encontrar un libro directamente en el almacen");
-            System.out.println("7. Salir");
+            System.out.println("2. Ver libros");
+            System.out.println("3. Modificar datos libro");
+            System.out.println("4. Eliminar libro por nombre");
+            System.out.println("5. Eliminar todos los libros");
+            System.out.println("6. Salir");
             Scanner opcionIN = new Scanner(System.in);
             try {
                 opcion = opcionIN.nextInt();
@@ -35,25 +35,25 @@ public class Controller {
                     opcion = null;
                     break;
                 case 2:
-                    actualizarInfo();
-                    opcion = null;
-                    break;
-                case 3:
-                    this.libros=new ArrayList<>();
-                    escribeArchivo();
-                    break;
-                case 4:
                     for (Libro cada_libro : this.libros){
                         System.out.println(cada_libro);
                     }
                     opcion = null;
                     break;
-                case 5:
-                    eliminaLibro();
+                case 3:
+                    modificarDirectamente(pideString("Introuce la opcion a modificar"));
                     opcion=null;
                     break;
-                case 7:
-                    escribeArchivo();
+                case 4:
+                    eliminaLibroNombre();
+                    opcion=null;
+                    break;
+                case 5:
+                    eliminarContenido();
+                    opcion=null;
+                    break;
+                case 6:
+                    this.escribeArchivo();
                     System.exit(0);
                 default:
                     System.out.println("Opcion invalida");
@@ -68,8 +68,6 @@ public class Controller {
     public ArrayList<Libro> leeArchivo() {
         String rutaArchivo = "./almacen/almacen.txt";
         ArrayList<Libro> librosLeer = new ArrayList<>();
-        // asi el bufferedreader se cierra despues del try, sin tener que cerrarlo.
-
 
         try (BufferedReader bufferedReader= new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
@@ -91,10 +89,13 @@ public class Controller {
             this.crearArchivo();
 
         } catch (IOException err) {
-            err.printStackTrace();
+            System.out.println(err.getMessage());
         }
         return librosLeer;
     }
+    /**
+     * Método que crea un archivo vacio.
+     * */
     public void crearArchivo(){
         try(FileWriter fileWriter=new FileWriter("./almacen/almacen.txt")) {
             fileWriter.close();
@@ -114,7 +115,7 @@ public class Controller {
                 fileWriter.write(libro.getNombre() + "|" + libro.getAutor() + "|" + libro.getPaginas() + "|" + libro.getAño() + System.lineSeparator());
             }
         } catch (IOException err) {
-            err.printStackTrace();
+            System.out.println(err.getMessage());
         }
         System.out.println("Libros guardados en el archivo " + rutaArchivo);
     }
@@ -130,72 +131,42 @@ public class Controller {
                 pideInteger("Introduce el numero de páginas"),
                 pideInteger("Introduce el año de publicación")
         ));
+        this.escribeArchivo();
+
         System.out.println("Libro creado y añadido a la lista de libros correctamente");
     }
-
     /**
-     * Método que comprueba si hay libros, luego pide un libro para modificar y muestra las opciones a modificar por
-     * terminal para que el usuario modifique los valores del libro seleccionado.
-     */
-    public void actualizarInfo() {
-        if (this.libros.isEmpty()) {
-            System.out.println("No hay libros almacenados");
-            return;
-        }
-        Libro libroModificar = pideLibro();
-        Integer opcion = null;
-        while (opcion == null) {
-            opcion = pideInteger("Que quieres cambiar\n1.Nombre\n2.Autor\n3.Páginas\n4.Año");
-            switch (opcion) {
-                case 1:
-                    libroModificar.setNombre(pideString("Introduce un nuevo nombre"));
-                    break;
-                case 2:
-                    libroModificar.setAutor(pideString("Introduce un nuevo Autor"));
-                    break;
-                case 3:
-                    libroModificar.setPaginas(pideInteger("Introduce las páginas"));
-                    break;
-                case 4:
-                    libroModificar.setAño(pideInteger("Introduce el año"));
-                    break;
-                default:
-                    System.out.println("Opcion inválida");
-                    opcion = null;
-                    break;
-            }
-        }
+     * Método que pide el nombre de un libro para borrarlo. El funcionamiento de este metodo es:
+     * Se crean dos instancias de la clase file, una que contiene el archivo donde se guardan los libros y otro
+     * que sera donde se van a guardar solo los libros que no tengan como nombre el indicado.
+     * se crean filereader y bufferreader para leer el archivo de los libros original y filewriter y bufferedwriter para
+     * almacenar en el nuevo archivo los libros, una vez acabado, se borra el primer archivo y el archivo temporal donde se guardaban
+     * los libros pasa a ser el original.
+     * */
+    public void eliminaLibroNombre(){
+        String nombreArchivo=pideString("Introduce el nombre del libro a eliminar");
+        File archivoTemp = new File("./almacen/libros_temp.txt");
+        File archivo=new File("./almacen/almacen.txt");
+        try (FileReader fileReader = new FileReader("./almacen/almacen.txt");
+             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
+             FileWriter fileWriter = new FileWriter(archivoTemp, true);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
-    }
-
-    /**
-     *Método que busca un libro por el nombre, luego lo devuelve.
-     * @return Libro
-     */
-    public Libro pideLibro() {
-        String nombre = null;
-        Optional<Libro> libroEncontradoOptional = null;
-        while (nombre == null) {
-            nombre = pideString("Introduce el nombre de el libro");
-            try {
-                String finalNombre = nombre;
-                libroEncontradoOptional = this.libros.stream().filter(libro -> libro.getNombre().equals(finalNombre)).findAny();
-                if (libroEncontradoOptional.isEmpty()) {
-                    throw new Exception("Libro no encontrado");
+            String linea;
+            while ((linea = bufferedReader.readLine()) != null) {
+                if (!linea.contains(nombreArchivo)) {
+                    bufferedWriter.write(linea);
+                    bufferedWriter.newLine();
                 }
-            } catch (Exception err) {
-                System.out.println(err.getMessage());
-                nombre = null;
             }
 
+        }catch (IOException err){
+            System.out.println(err.getMessage());
         }
-        return libroEncontradoOptional.get();
-    }
-    public void eliminaLibro(){
-        Libro liroEliminar=pideLibro();
-        this.libros.remove(liroEliminar);
-        System.out.println("libro eliminado correctamente");
+        archivo.delete();
+        archivoTemp.renameTo(archivo);
+        this.leeArchivo();
     }
     /**
      * Método que recibe una string, la muestra por terminal, y devuelve
@@ -233,20 +204,77 @@ public class Controller {
         }
         return contenido;
     }
-    public void modificarDirectamente(){
+    /**
+     * Método que pide una propiedad para modificarla por un valor que se pide, se identificaran a los libros
+     * con su nombre.
+     * */
+    public void modificarDirectamente(String opcion){
         String nombreLibro=pideString("Introduce el nombre del libro");
-        try {
-            RandomAccessFile randomAccessFile=new RandomAccessFile("./almacen/almacen.txt","rw");
+        String[] datos = new String[4];
+        try (RandomAccessFile randomAccessFile=new RandomAccessFile("./almacen/almacen.txt","rw")){
             String linea;
+            long posicionInicial=0;
+            boolean encontrado=false;
             while ((linea= randomAccessFile.readLine())!=null){
-                String[] datos=linea.split("\\|");
+                datos=linea.split("\\|");
                 if(datos.length>0&&datos[0].equals(nombreLibro)){
                     System.out.println("Se encontro un libro con el nombre deseado.");
+                    encontrado=true;
+                    break;
                 }
+                posicionInicial=randomAccessFile.getFilePointer();
             }
 
+
+            if(encontrado){
+                switch (opcion.toLowerCase()){
+                    case "año":
+                        Integer añoLibro=pideInteger("Introduce el año del libro a modificar");
+                        randomAccessFile.seek(posicionInicial);
+                        String nuevoLibroAño= datos[0]+"|"+datos[1]+"|"+datos[2]+"|"+añoLibro;
+                        randomAccessFile.writeBytes(nuevoLibroAño);
+                        System.out.println("Año del libro: "+nombreLibro+" Modificado correctamente");
+                        break;
+                    case "paginas":
+                        Integer paginasLibro=pideInteger("Introduce el numero de paginas del libro a modificar");
+                        randomAccessFile.seek(posicionInicial);
+                        String nuevoLibroPaginas= datos[0]+"|"+datos[1]+"|"+paginasLibro+"|"+datos[3];
+                        randomAccessFile.writeBytes(nuevoLibroPaginas);
+                        System.out.println("Paginas del libro: "+nombreLibro+" Modificado correctamente");
+                        break;
+                    case "autor":
+                        String autorLibro=pideString("Introduce el nombre del autor del libro a modificar");
+                        randomAccessFile.seek(posicionInicial);
+                        String nuevoLibroAutor =datos[0]+"|"+autorLibro+"|"+datos[2]+"|"+datos[3];
+                        randomAccessFile.writeBytes(nuevoLibroAutor);
+                        System.out.println("Autor del libro: "+nombreLibro+" Modificado correctamente");
+                        break;
+                    case "nombre":
+                        String nombreLibroFinal=pideString("Introduce el nombre del libro a modificar");
+                        randomAccessFile.seek(posicionInicial);
+                        String nuevoLibroNombre =nombreLibroFinal+"|"+datos[1]+"|"+datos[2]+"|"+datos[3];
+                        randomAccessFile.writeBytes(nuevoLibroNombre);
+                        System.out.println("Nombre del libro: "+nombreLibro+" Modificado correctamente a: "+nombreLibroFinal);
+                        break;
+                }
+            }
         }catch (IOException err){
-            err.printStackTrace();
+            System.out.println(err.getMessage());
         }
+    }
+
+
+    /**
+     * Método que elimina el contenido de un archivo txt.
+     * */
+    public void eliminarContenido(){
+        this.libros=new ArrayList<>();
+        try(FileWriter fileWriter = new FileWriter("./almacen/almacen.txt")) {
+
+        }catch (IOException err){
+            System.out.println(err.getMessage());
+        }
+        System.out.println("Archivo vacio");
+
     }
 }
