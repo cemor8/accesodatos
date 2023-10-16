@@ -10,10 +10,7 @@ public class Controller {
      * si la string es el patron exacto, lo indica.
      * */
     public void exactoPatron(){
-        String patronBuscar=pideString("Introduce el patron que quieres buscar");
-        String cadenaTexto=pideString("Introduce la cadena de texto donde quieres buscar");
-        Pattern patron= Pattern.compile(patronBuscar);
-        Matcher matcher=patron.matcher(cadenaTexto);
+        Matcher matcher=creaMatcher(pideString("Introduce la cadena de texto donde quieres buscar"),pideString("Introduce el patron que quieres buscar"));
         if(matcher.matches()){
             System.out.println("Patron encontrado");
         }else {
@@ -26,10 +23,8 @@ public class Controller {
      * a continuacion, si esta string contiene la subcadena de texto, lo indicara.
      * */
     public void patronSubstring(){
-        String substringBuscar=pideString("Introduce la subcadena de texto para buscar");
-        String cadenaTexto=pideString("Introduce la cadena de texto donde quieres buscar");
-        Pattern patron= Pattern.compile(substringBuscar);
-        Matcher matcher=patron.matcher(cadenaTexto);
+        Matcher matcher=creaMatcher(pideString("Introduce la cadena de texto donde quieres buscar"),pideString("Introduce la subcadena de texto para buscar"));
+
         if(matcher.find()){
             System.out.println("Substring encontrada");
         }else {
@@ -42,12 +37,7 @@ public class Controller {
      * lo indica, si no, dira que no comienza por el.
      * */
     public void empiezaPor(){
-        String patrongBuscar=pideString("Introduce el patron que quieres buscar");
-        String stringBuscar=pideString("Introduce la cadena de texto donde quieres buscar");
-
-        Pattern patron= Pattern.compile(patrongBuscar);
-        Matcher matcher=patron.matcher(stringBuscar);
-
+        Matcher matcher=creaMatcher(pideString("Introduce la cadena de texto donde quieres buscar"),pideString("Introduce el patron que quieres buscar"));
         if(matcher.find() && matcher.start()==0){
             System.out.println("La cadena comienza con el patron");
         }else {
@@ -61,12 +51,8 @@ public class Controller {
      * */
     public void cadenaConSoN(){
         String patronBuscar=pideString("Introduce el conjunto de caracteres que forman la string");
-        String stringBuscar=pideString("Introduce la cadena de texto donde quieres buscar");
-
         String patronFinal= "^["+patronBuscar+"]+$";
-        Pattern patron= Pattern.compile(patronFinal);
-        Matcher matcher=patron.matcher(stringBuscar);
-
+        Matcher matcher=creaMatcher(pideString("Introduce la cadena de texto donde quieres buscar"),patronFinal);
         if(matcher.matches()){
             System.out.println("La cadena esta formada solo por el patron");
         }else {
@@ -77,16 +63,12 @@ public class Controller {
      * Método que pide una string e indica si contiene el numero cero seguido del numero 1
      * */
     public void cadenaCon0noseguidode1(){
-        String patronBuscar="01";
-        String stringBuscar=pideString("Introduce la cadena de texto donde quieres buscar");
-
-        Pattern patron= Pattern.compile(patronBuscar);
-        Matcher matcher=patron.matcher(stringBuscar);
+        Matcher matcher=creaMatcher(pideString("Introduce la cadena de texto donde quieres buscar"),"01");
 
         if(matcher.find()){
-            System.out.println("La cadena contiene el numero 1 seguido de un 0");
+            System.out.println("La cadena contiene el numero 0 seguido de un 1");
         }else {
-            System.out.println("La cadena no contiene el numero 1 seguido de un 0");
+            System.out.println("La cadena no contiene el numero 0 seguido de un 1");
         }
 
     }
@@ -95,17 +77,23 @@ public class Controller {
      * Método que comprueba si un email es valido, si lo es, lo indica.
      * */
     public void esEmailValido(){
-        String stringBuscar=pideString("Introduce un email");
-        String patronBuscar="^[A-Za-z0-9+_.-]+@[A-Za-z.]$";
-        Pattern patron=Pattern.compile(patronBuscar);
-        Matcher matcher=patron.matcher(stringBuscar);
-
+        Matcher matcher=creaMatcher(pideString("Introduce un email"),"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
         if(matcher.matches()){
             System.out.println("Email valido");
         }else {
             System.out.println("Email invalido");
         }
     }
+    /**
+     * Método que crea un matcher y lo devuelve a partir de las strings recibidas, la primera la cadena de texto que se quiere
+     * validar y la segunda el patron que debe de cumplir la cadena de texto.
+     * @return Matcher
+     * */
+    public Matcher creaMatcher(String stringBuscar, String patronBuscar){
+        Pattern patron=Pattern.compile(patronBuscar);
+        return patron.matcher(stringBuscar);
+    }
+
     /**
      * Método que recibe una String para mostrarla por terminal, luego pide un texto String y lo devuelve.
      * */
