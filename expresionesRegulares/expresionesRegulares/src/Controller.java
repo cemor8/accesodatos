@@ -84,6 +84,7 @@ public class Controller {
             System.out.println("Email invalido");
         }
     }
+
     /**
      * Método que crea un matcher y lo devuelve a partir de las strings recibidas, la primera la cadena de texto que se quiere
      * validar y la segunda el patron que debe de cumplir la cadena de texto.
