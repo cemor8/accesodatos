@@ -46,7 +46,7 @@ public class Controller {
     public void validarDni(){
         ArrayList<String> letras=new ArrayList<>(List.of("T", "R", "W", "A", "G", "M", "Y", "F", "P", "D", "X", "B", "N", "J", "Z", "S", "Q", "V", "H", "L", "C", "K"));
         String dni=pideString("Introduce un DNI");
-        Matcher matcher= creaMatcher(dni, "^[0-9]{8,8}+[A-Z]{1,1}$");
+        Matcher matcher= creaMatcher(dni, "^[0-9]{8}+[A-Z]{1}$");
         if (!matcher.matches()){
             System.out.println("DNI incorrecto");
             return;
@@ -66,7 +66,8 @@ public class Controller {
      * Método que valida si una direccion ipv4 es valida
      * */
     public void validarIp(){
-        Matcher matcher= creaMatcher(pideString("Introduce la ipv4"), "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+        String string ="     ^$";
+        Matcher matcher= creaMatcher(pideString("Introduce la ipv4"), "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}$");
         if (matcher.matches()){
             System.out.println("Ip valida");
         }else {
@@ -112,19 +113,20 @@ public class Controller {
      * Método que indica si una fecha es valida.
      * */
     public void validaFecha(){
-        Matcher matcher=creaMatcher(pideString("Introduce una fecha"),"^(0[1-9]|[1-9])-()-()$");
+        // la parte final ((?:(?:0[48]00|[13579][26]00|[2468][048]00)|(?:\d\d)?(?:0[48]|[2468][048]|[13579][26]))) que es la que comprueba los años bisiestos, la busque en internet.
+        Matcher matcher=creaMatcher(pideString("Introduce una fecha"),"^(?:(?:0?[1-9]|1\\d|2[0-8])(\\/|-)(?:0?[1-9]|1[0-2]))(\\/|-)(?:[1-9]\\d\\d\\d)$|^(?:(?:31(\\/|-)(?:0?[13578]|1[02]))|(?:(?:29|30)(\\/|-)(?:0?[1,3-9]|1[0-2])))(\\/|-)(?:[1-9]\\d\\d\\d)$|^(29(\\/|-)0?2)(\\/|-)(?:(?:0[48]00|[13579][26]00|[2468][048]00)|(?:\\d\\d)?(?:0[48]|[2468][048]|[13579][26]))$");
         if (matcher.matches()){
-            System.out.println("El numero es real positivo");
+            System.out.println("Fecha válida");
         }else {
-            System.out.println("El numero no es real positivo");
+            System.out.println("Fecha invalida");
         }
     }
     /**
      * Método que valida un usuario de la red social X, debe de contener entre 1 y 15 caracteres, no puede tener ni
-     * espacios en blanco ni caracteres especiales
+     * espacios en blanco ni caracteres especiales.
      * */
     public void validarUsuario(){
-        Matcher matcher=creaMatcher(pideString("Introduce un usuario"),"^(?![\\s])(?![.*,])[A-Za-z0-9]{1,15}$");
+        Matcher matcher=creaMatcher(pideString("Introduce un usuario"),"^(?![\\s])(?![.*,#-])[A-Za-z0-9]{1,15}$");
         if(matcher.matches()){
             System.out.println("Usuario válid");
         }else {
@@ -133,15 +135,37 @@ public class Controller {
     }
     /**
      * Método que valida un ISB, identificador de un libro compuesto por 13 caracteres los cuales
-     * empiezan por 978 u 979.
+     * empiezan por 978 u 979, separados por guiones de una manera concreta, utiliza la validacion
+     * de isbn, comprueba si es real o no.
      * */
     public void validarIsbn(){
-        Matcher matcher=creaMatcher(pideString("Introduce un ISBN"),"^978[0-9]{10}|979[0-9]{10}$");
-        if(matcher.matches()){
-            System.out.println("Usuario válido");
-        }else {
-            System.out.println("Usuario inválido");
+        String isbn=pideString("Introduce un ISBN");
+        Matcher matcher=creaMatcher(isbn,"^(978|979)-[0-9]{2}-[0-9]{5}-[0-9]{2}-[0-9]{1}$");
+        if(!matcher.matches()){
+            System.out.println("ISBN inválido");
+            return;
         }
+        int resultado=0;
+        int i2=0;
+        for(char i = 0 ;i<isbn.length();i++){
+
+            if(String.valueOf(isbn.charAt(i)).equals("-")){
+                continue;
+            }
+            i2++;
+            if (i2%2!=0){
+                resultado+=Integer.parseInt(String.valueOf(isbn.charAt(i)));
+            }else {
+                resultado+=3*Integer.parseInt(String.valueOf(isbn.charAt(i)));
+            }
+
+        }
+        if (resultado%10==0){
+            System.out.println("ISBN válido");
+        }else {
+            System.out.println("ISBN inválido");
+        }
+
     }
 
     /**
@@ -150,7 +174,6 @@ public class Controller {
      * @return Matcher
      * */
     public Matcher creaMatcher(String stringBuscar, String patronBuscar){
-        System.out.println(patronBuscar);
         Pattern patron=Pattern.compile(patronBuscar);
         return patron.matcher(stringBuscar);
     }
