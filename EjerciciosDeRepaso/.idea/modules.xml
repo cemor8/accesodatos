@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/EjerciciosDeRepaso.iml" filepath="$PROJECT_DIR$/.idea/EjerciciosDeRepaso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ej1_b3/ej1_b3.iml" filepath="$PROJECT_DIR$/ej1_b3/ej1_b3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ej1_b4/ej1_b4.iml" filepath="$PROJECT_DIR$/ej1_b4/ej1_b4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ej2_b2/ej2_b2.iml" filepath="$PROJECT_DIR$/ej2_b2/ej2_b2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ej2_b4/ej2_b4.iml" filepath="$PROJECT_DIR$/ej2_b4/ej2_b4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ej3_b2/ej3_b2.iml" filepath="$PROJECT_DIR$/ej3_b2/ej3_b2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ej4_b2/ej4_b2.iml" filepath="$PROJECT_DIR$/ej4_b2/ej4_b2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ejercicio1_b2/ejercicio1_b2.iml" filepath="$PROJECT_DIR$/ejercicio1_b2/ejercicio1_b2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/repaso/repaso.iml" filepath="$PROJECT_DIR$/repaso/repaso.iml" />
+    </modules>
+  </component>
+</project>
