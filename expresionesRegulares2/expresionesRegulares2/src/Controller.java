@@ -66,7 +66,6 @@ public class Controller {
      * Método que valida si una direccion ipv4 es valida
      * */
     public void validarIp(){
-        String string ="     ^$";
         Matcher matcher= creaMatcher(pideString("Introduce la ipv4"), "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}$");
         if (matcher.matches()){
             System.out.println("Ip valida");
