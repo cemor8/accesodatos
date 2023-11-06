@@ -1,9 +1,5 @@
-package org.example;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
 
 public class Conexion {
     private static Connection conexionStatica = null;
@@ -12,9 +8,11 @@ public class Conexion {
         if (conexionStatica == null) {
             String jdbcUrl;
             if(nombreBase==null){
-                 jdbcUrl = "jdbc:mysql://localhost:"+puerto+"/";
+                 //jdbcUrl = "jdbc:mysql://localhost:"+puerto+"/";
+                    jdbcUrl= "jdbc:mysql://localhost";
             }else {
-                 jdbcUrl = "jdbc:mysql://localhost:"+puerto+"/"+nombreBase;
+                 //jdbcUrl = "jdbc:mysql://localhost:"+puerto+"/"+nombreBase;
+                jdbcUrl= "jdbc:mysql://localhost";
             }
             try {
                 Connection connection = DriverManager.getConnection(jdbcUrl, usuario, passw);
@@ -27,11 +25,11 @@ public class Conexion {
     }
 
     public static void crearBaseDatos(){
-        String puerto=Controller.pideString("introduce un puerto para conectarte");
+        //String puerto=Controller.pideString("introduce un puerto para conectarte");
         String usuario=Controller.pideString("Introduce un usuario");
         String passw=Controller.pideString("Introduce contraseña del usuario");
         try{
-            Conexion.getConnection(null,puerto,usuario,passw);
+            Conexion.getConnection(null,null,usuario,passw);
             Statement statement = conexionStatica.createStatement();
             String nombreBase=Controller.pideString("introduce el nombre para la base de datos");
             String crearBaseDeDatosSQL = "CREATE DATABASE IF NOT EXISTS "+nombreBase;
@@ -126,7 +124,7 @@ public class Conexion {
                 String tipoDato = columnas.getString("TYPE_NAME");
                 String datoIntroducir=Controller.pideString("Introduce dato para " + nombreColumna+" escribe null para no introducir nada");
                 if (datoIntroducir.equalsIgnoreCase("null") && tipoDato.equalsIgnoreCase("int")){
-                    insertSQL.append(java.sql.Types.INTEGER);
+                    insertSQL.append(Types.INTEGER);
                 } else if (datoIntroducir.equalsIgnoreCase("null")) {
                     insertSQL.append("");
                 }
@@ -164,7 +162,7 @@ public class Conexion {
                 for (int i = 0; i < numeroColumnas; i++) {
                     fila[i] = resultSet.getObject(i);
                 }
-                    resultados.add(fila);
+                resultados.add(fila);
             }
             for (Object[] fila : resultados) {
                 for (Object valor : fila) {
