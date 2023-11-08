@@ -1,6 +1,12 @@
 import java.util.Scanner;
 
 public class ControllerAdmin {
+    Administrador administrador;
+
+    public ControllerAdmin(Administrador administradorEntrada) {
+        this.administrador=administradorEntrada;
+    }
+
     public void mostrarMenu(){
         Integer opcion;
         while (true){
@@ -100,4 +106,5 @@ public class ControllerAdmin {
         }
         return integerDevolver;
     }
+
 }
