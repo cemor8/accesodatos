@@ -55,14 +55,13 @@ public class ControllerLogin {
         Conexion conexion=new Conexion();
         Connection connection= conexion.hacerConexion("usuarioValidarCredencial","validarCredencial");
         try {
-            String consulta="SELECT clave_administrador from ? where nombre_administrador like ?";
+            String consulta="SELECT clave from "+nombreTablaBuscar+" where nombre_usuario like ?";
             PreparedStatement statement = connection.prepareStatement(consulta);
-            statement.setString(1,nombreTablaBuscar);
-            statement.setString(2, nombreUsuario);
+            statement.setString(1, "%" + nombreUsuario + "%");
             ResultSet resultados = statement.executeQuery();
             if (resultados.next()) {
-                String claveAdministrador = resultados.getString("clave_administrador");
-                if(!claveAdministrador.equals(passwordUsuario)){
+                String clave = resultados.getString("clave");
+                if(!clave.equals(passwordUsuario)){
                     System.out.println("Credenciales incorrectas");
                     return false;
                 }
@@ -100,6 +99,7 @@ public class ControllerLogin {
     public String devolverString(String texto){
         String stringDevolver=null;
         while (stringDevolver==null){
+            System.out.println(texto);
             Scanner stringDevolverIn=new Scanner(System.in);
             try {
                 stringDevolver= stringDevolverIn.nextLine();

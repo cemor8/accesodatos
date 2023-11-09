@@ -22,7 +22,7 @@ create table contacto(
     apellidos varchar(30),
     direccion varchar(25),
     correo varchar(30),
-    telefono varchar(12),
+    telefono varchar(12) not null,
     id_agenda int not null,
     primary key (telefono),
     foreign key (id_agenda) references agenda(id_agenda)
