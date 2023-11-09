@@ -1,3 +1,5 @@
+import java.sql.*;
+
 public class Usuario {
     private String nombre_usuario;
     private String clave_usuario;
@@ -18,5 +20,9 @@ public class Usuario {
 
     public void setAgendaSeleccionada(Agenda agendaSeleccionada) {
         this.agendaSeleccionada = agendaSeleccionada;
+    }
+
+    public Agenda getAgendaSeleccionada() {
+        return agendaSeleccionada;
     }
 }
