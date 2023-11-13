@@ -1,14 +1,21 @@
+import java.lang.invoke.ConstantCallSite;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ControllerUsuario {
     Usuario usuario;
+    Map<String, String> columnasExpresiones = new HashMap<String,String>(){
+        {
+            put("nombre", "^[A-Z][a-z]{2,19}$");
+            put("apellidos", "^[A-Z][a-z]+(\\s[A-Z][a-z]+)?$");
+            put("direccion", "^(c/|av.|p.|pza.)\\s[A-Z][a-z]{3,15},\\s\\d{1,3}$");
+            put("correo", "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+            put("telefono", "^\\d{3}-\\d{2}-\\d{2}-\\d{2}$");
+        }
 
+    };
     public ControllerUsuario(Usuario usuarioEntrada) {
         this.usuario = usuarioEntrada;
     }
@@ -56,10 +63,13 @@ public class ControllerUsuario {
                     this.introducirUsuarioEnAgenda();
                     break;
                 case 2:
+                    this.listarContactos();
                     break;
                 case 3:
+                    this.modificarContacto();
                     break;
                 case 4:
+                    this.eliminarContacto();
                     break;
                 case 5:
                     break;
@@ -120,7 +130,7 @@ public class ControllerUsuario {
                 int count = resultSet.getInt(1);
                 if (count > 0) {
                     System.out.println("La agenda con ID " + agendaElegida + " seleccionada.");
-                    this.usuario.setAgendaSeleccionada(new Agenda(agendaElegida));
+                    this.usuario.setAgendaSeleccionada(new Agenda(agendaElegida,this.recibirUsuarios(agendaElegida)));
                 } else {
                     System.out.println("La agenda con ID " + agendaElegida + " no existe, selecciona una existente.");
                     agendaElegida = null;
@@ -142,12 +152,8 @@ public class ControllerUsuario {
             System.out.println("Selecciona una agenda");
             return;
         }
-        Map<String, String> columnasExpresiones = new HashMap<>();
-        columnasExpresiones.put("nombre", "^[A-Z][a-z]{2,19}$");
-        columnasExpresiones.put("apellidos", "^[A-Z][a-z]+(\\s[A-Z][a-z]+)?$");
-        columnasExpresiones.put("direccion", "^(c/|av.|p.|pza.)\\s[A-Z][a-z]{3,15},\\s\\d{1,3}$");
-        columnasExpresiones.put("correo", "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-        columnasExpresiones.put("telefono", "^\\d{3}-\\d{2}-\\d{2}-\\d{2}$");
+        ArrayList<String> datos= new ArrayList<>();
+
         try {
             Conexion conexion = new Conexion();
             Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
@@ -158,7 +164,7 @@ public class ControllerUsuario {
             int i = 1;
             while (columnasContacto.next()) {
                 String nombre_columna = columnasContacto.getString("COLUMN_NAME");
-                String expresionRegular = columnasExpresiones.get(nombre_columna);
+                String expresionRegular = this.columnasExpresiones.get(nombre_columna);
                 String dato = null;
                 if (nombre_columna.equalsIgnoreCase("telefono")) {
                     dato = this.devolverString("Introduce el dato para campo " + nombre_columna + " formato xxx-xx-xx-xx", expresionRegular, true);
@@ -167,13 +173,17 @@ public class ControllerUsuario {
                 }
                 if (dato != null && dato.equalsIgnoreCase("null")) {
                     preparedStatement.setString(i, "");
+                    datos.add("");
                 } else {
                     preparedStatement.setString(i, dato);
+                    datos.add(dato);
                 }
                 i++;
             }
             preparedStatement.setInt(6, this.usuario.getAgendaSeleccionada().getId_agenda());
             preparedStatement.executeUpdate();
+            this.usuario.getAgendaSeleccionada().getListaContactos().add(new Contacto(datos.get(0), datos.get(1),datos.get(2),datos.get(3),datos.get(4)));
+            this.usuario.getAgendaSeleccionada().ordenarContactos();
             System.out.println("Contacto añadido correctamente");
             preparedStatement.close();
             conexion.cerrarConexion();
@@ -183,25 +193,124 @@ public class ControllerUsuario {
 
     }
 
-    public void listarUsuarios() {
-        if (this.usuario.getAgendaSeleccionada() == null) {
-            System.out.println("Selecciona una agenda");
-            return;
-        }
+    public ArrayList<Contacto> recibirUsuarios(int idAgenda) {
+        ArrayList<Contacto> listaDeAgenda= new ArrayList<>();
         try {
             Conexion conexion = new Conexion();
             Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
-            String insertSQL = "select * from contacto inner join agenda on contacto.id_agenda = agenda.id_agenda where agenda.id = ? order by contacto.nombre asc, contacto.apellidos asc";
+            String insertSQL = "select * from contacto inner join agenda on contacto.id_agenda = agenda.id_agenda where agenda.id_agenda = ? order by contacto.nombre asc, contacto.apellidos asc";
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
-            preparedStatement.setInt(1, this.usuario.getAgendaSeleccionada().getId_agenda());
+            preparedStatement.setInt(1, idAgenda);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-
+                String nombre = resultSet.getString("nombre");
+                String apellidos = resultSet.getString("apellidos");
+                String direccion= resultSet.getString("direccion");
+                String correo= resultSet.getString("correo");
+                String telefono= resultSet.getString("telefono");
+                listaDeAgenda.add(new Contacto(nombre,apellidos,direccion,correo,telefono));
 
             }
-            preparedStatement.setInt(6, this.usuario.getAgendaSeleccionada().getId_agenda());
-            preparedStatement.executeUpdate(insertSQL);
+            preparedStatement.close();
+            conexion.cerrarConexion();
+            return listaDeAgenda;
+        } catch (SQLException err) {
+            System.out.println(err.getMessage());
+        }
+        return listaDeAgenda;
+    }
+    /**
+     * Método que ordena por nombre y apellidos una lista de contactos
+     * */
+    public void listarContactos(){
+        this.usuario.getAgendaSeleccionada().ordenarContactos();
+        for(Contacto contacto : this.usuario.getAgendaSeleccionada().getListaContactos()){
+            System.out.println(contacto);
+        }
+    }
+    /**
+     * Método que muestra los contactos para pedir el numero de telefono del contacto
+     * que se desea eliminar de la agenda.
+     * */
+    public void eliminarContacto() {
+        this.listarContactos();
+        String numeroContacto=this.devolverString("Introduce el numero del contacto a eliminar",this.columnasExpresiones.get("numero"),true);
+        Optional<Contacto> contactoEncontrado = this.usuario.getAgendaSeleccionada().getListaContactos().stream().filter(contacto -> contacto.getTelefono().equalsIgnoreCase(numeroContacto)).findFirst();
+        if(contactoEncontrado.isEmpty()){
+            System.out.println("Error contacto no encontrado");
+            return;
+        }
+        Contacto contactoRecibido = contactoEncontrado.get();
+        try {
+            Conexion conexion = new Conexion();
+            Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            String insertSQL = "delete from contacto where contacto.telefono = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setString(1, numeroContacto);
+            int afectadas = preparedStatement.executeUpdate();
+            if(afectadas>0){
+                System.out.println("Contacto eliminado con exito");
+            }else{
+                throw new SQLException();
+            }
+            this.usuario.getAgendaSeleccionada().getListaContactos().remove(contactoRecibido);
+            preparedStatement.close();
+            conexion.cerrarConexion();
+        } catch (SQLException err) {
+            System.out.println(err.getMessage());
+        }
+
+    }
+    /**
+     * Método que permite modificar un contacto de la agenda, vuelve a pedir todos los
+     * datos para el nuevo contacto, lo modifica en la base de datos y en la lista de
+     * contactos a la vez.
+     * */
+    public void modificarContacto(){
+        this.listarContactos();
+        String numeroContacto=this.devolverString("Introduce el numero del contacto a modificar",this.columnasExpresiones.get("numero"),true);
+        Optional<Contacto> contactoModificar= this.usuario.getAgendaSeleccionada().getListaContactos().stream().filter(contacto -> contacto.getTelefono().equalsIgnoreCase(numeroContacto)).findFirst();
+        if(contactoModificar.isEmpty()){
+            System.out.println("Error contacto no encontrado");
+            return;
+        }
+        Contacto contactoRecibido = contactoModificar.get();
+        try {
+            Conexion conexion = new Conexion();
+            Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            DatabaseMetaData infoDatabase = connection.getMetaData();
+            ResultSet columnasContacto = infoDatabase.getColumns(null, null, "contacto", null);
+            String insertSQL = "UPDATE contacto SET nombre = ?, apellidos = ?, direccion = ?, correo = ?, telefono = ?, id_agenda = ? WHERE telefono = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            int i = 1;
+            ArrayList<String> datos = new ArrayList<>();
+            while (columnasContacto.next()) {
+                String nombre_columna = columnasContacto.getString("COLUMN_NAME");
+                String expresionRegular = this.columnasExpresiones.get(nombre_columna);
+                String dato = null;
+                if (nombre_columna.equalsIgnoreCase("telefono")) {
+                    dato = this.devolverString("Introduce el dato para campo " + nombre_columna + " formato xxx-xx-xx-xx", expresionRegular, true);
+                } else if (expresionRegular != null) {
+                    dato = this.devolverString("Introduce el dato para campo " + nombre_columna + ", introduce null para dejar en blanco", expresionRegular, false);
+                }
+                if (dato != null && dato.equalsIgnoreCase("null")) {
+                    preparedStatement.setString(i, "");
+                    datos.add("");
+                } else {
+                    preparedStatement.setString(i, dato);
+                    datos.add(dato);
+                }
+                i++;
+            }
+            preparedStatement.setInt(6,this.usuario.getAgendaSeleccionada().getId_agenda());
+            preparedStatement.setString(7,numeroContacto);
+            contactoRecibido.setNombre(datos.get(0));
+            contactoRecibido.setApellidos(datos.get(1));
+            contactoRecibido.setDireccion(datos.get(2));
+            contactoRecibido.setCorreo(datos.get(3));
+            contactoRecibido.setTelefono(datos.get(4));
+            preparedStatement.executeUpdate();
+            this.usuario.getAgendaSeleccionada().ordenarContactos();
             System.out.println("Contacto añadido correctamente");
             preparedStatement.close();
             conexion.cerrarConexion();

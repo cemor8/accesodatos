@@ -25,4 +25,20 @@ public class Usuario {
     public Agenda getAgendaSeleccionada() {
         return agendaSeleccionada;
     }
+
+    public void setNombre_usuario(String nombre_usuario) {
+        this.nombre_usuario = nombre_usuario;
+    }
+
+    public void setClave_usuario(String clave_usuario) {
+        this.clave_usuario = clave_usuario;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "nombre_usuario='" + nombre_usuario + '\'' +
+                ", clave_usuario='" + clave_usuario + '\'' +
+                '}';
+    }
 }
