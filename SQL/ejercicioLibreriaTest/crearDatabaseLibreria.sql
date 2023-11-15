@@ -42,6 +42,7 @@ grant select on gestionAgenda.agenda to "cmorbla"@"localhost";
 grant all privileges on gestionAgenda to "admin"@"localhost";
 grant select on gestionAgenda.agenda to "userListarAgendas"@"localhost";
 grant select on gestionAgenda.usuario to "userListarAgendas"@"localhost";
+grant all privileges on gestionagenda to "admin"@"localhost";
 
 flush privileges;
 
