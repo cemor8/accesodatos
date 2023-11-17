@@ -19,7 +19,10 @@ public class ControllerUsuario {
     public ControllerUsuario(Usuario usuarioEntrada) {
         this.usuario = usuarioEntrada;
     }
-
+    /**
+     * Método que muestra un menú en el que se le da la opcion al usuario de volver al login,
+     * salir o elegir la agenda con la que quiere trabajar
+     * */
     public void mostrarMenu() {
         Integer opcionElegirAgenda = null;
         while (opcionElegirAgenda == null) {
@@ -79,7 +82,9 @@ public class ControllerUsuario {
             }
         }
     }
-
+    /**
+     * Método que indica la agenda con la que quiere trabajar el usuario
+     * */
     public void elegirAgenda() {
         Conexion conexion = new Conexion();
         StringBuilder mostrarAgendas = new StringBuilder();
@@ -130,7 +135,7 @@ public class ControllerUsuario {
                 int count = resultSet.getInt(1);
                 if (count > 0) {
                     System.out.println("La agenda con ID " + agendaElegida + " seleccionada.");
-                    this.usuario.setAgendaSeleccionada(new Agenda(agendaElegida,this.recibirUsuarios(agendaElegida)));
+                    this.usuario.setAgendaSeleccionada(new Agenda(agendaElegida,this.recibirContactos(agendaElegida)));
                 } else {
                     System.out.println("La agenda con ID " + agendaElegida + " no existe, selecciona una existente.");
                     agendaElegida = null;
@@ -192,8 +197,12 @@ public class ControllerUsuario {
         }
 
     }
-
-    public ArrayList<Contacto> recibirUsuarios(int idAgenda) {
+    /**
+     * Método que se encarga de recibir los contactos de la agenda que ha seleccionado
+     * el usuario para trabajar con ellos.
+     * @param idAgenda id de la agenda de los contactos
+     * */
+    public ArrayList<Contacto> recibirContactos(int idAgenda) {
         ArrayList<Contacto> listaDeAgenda= new ArrayList<>();
         try {
             Conexion conexion = new Conexion();
@@ -319,13 +328,25 @@ public class ControllerUsuario {
         }
     }
 
-
+    /**
+     * Método que se encarga de validar una expresion regular en un texto enviado
+     * @param patronCumplir expresion regular a cumplor
+     * @param textoBuscar string en la que se busca la expresion regular
+     * */
     public boolean validarDatos(String patronCumplir, String textoBuscar) {
         Pattern patron = Pattern.compile(patronCumplir);
         Matcher matcher = patron.matcher(textoBuscar);
         return matcher.matches();
     }
-
+    /**
+     * Método que se encarga de pedir una string por terminal, mostrará el texto
+     * que se le pase, comprobará que se cumpla la expresion regular en la string introducida y si no se cumple,
+     * solo podrá ser por que la string es "null", si requerido es true, tampoco valdra con la string "null", ya
+     * que el parametro es obligatorio en la base de datos.
+     * @param texto texto a mostrar por pantalla
+     * @param patron expresion regular a cumplir
+     * @param requerido si es obligatorio en la base de datos o no.
+     * */
     public String devolverString(String texto, String patron, boolean requerido) {
         String stringDevolver = null;
         while (stringDevolver == null) {
@@ -346,7 +367,10 @@ public class ControllerUsuario {
         }
         return stringDevolver;
     }
-
+    /**
+     * Método que se encarga de pedir un integer por terminal y devolverlo.
+     * @param texto texto a mostrar por pantalla
+     * */
     public Integer devolverInteger(String texto) {
         Integer integerDevolver = null;
         while (integerDevolver == null) {

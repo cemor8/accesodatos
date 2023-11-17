@@ -43,7 +43,8 @@ grant select on gestionAgenda.agenda to "cmorbla"@"localhost";
 grant select on gestionAgenda.agenda to "userListarAgendas"@"localhost";
 grant select on gestionAgenda.usuario to "userListarAgendas"@"localhost";
 
-
+create user 'usuarioComprobarExistencia'@'localhost' identified with mysql_native_password by 'comprobarExistencia';
+grant all privileges on gestionagenda.* to "usuarioComprobarExistencia"@"localhost";
 
 
 flush privileges;

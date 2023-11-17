@@ -5,7 +5,11 @@ import java.sql.SQLException;
 
 public class Conexion {
     private Connection conexionDevolver=null;
-
+    /**
+     * Método que se encarga de hacer una conexion a la base de datos con el usuario que se le pasa al método y devolverla.
+     * @param usuario nombre de usuario
+     * @param password contraseña del usuario
+     * */
     public Connection hacerConexion(String usuario, String password){
         String jdbcUrl = "jdbc:mysql://localhost:3306/gestionAgenda";
         try {
@@ -16,7 +20,9 @@ public class Conexion {
         }
         return conexionDevolver;
     }
-
+    /**
+     * Método que se encarga de cerrar una conexion a la base de datos.
+     * */
     public void cerrarConexion(){
         if(conexionDevolver!=null){
             try {
