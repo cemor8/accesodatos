@@ -115,11 +115,14 @@ public class ControllerAdmin {
      * Método que se encarga de recibir los usuarios y meterlos en una lista para modificarlos u operar con ellos
      */
     public void recibirUsuarios() {
+        Conexion conexion = null;
+        PreparedStatement preparedStatement = null;
+        Connection connection = null;
         try {
-            Conexion conexion = new Conexion();
-            Connection connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             String insertSQL = "select * from gestionagenda.usuario";
-            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement = connection.prepareStatement(insertSQL);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String usuario = resultSet.getString("nombre_usuario");
@@ -131,6 +134,21 @@ public class ControllerAdmin {
             conexion.cerrarConexion();
         } catch (SQLException err) {
             System.out.println(err.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
+            }
+
+            if (conexion != null) {
+                conexion.cerrarConexion();
+            }
         }
     }
 
@@ -207,11 +225,14 @@ public class ControllerAdmin {
             return;
         }
         Usuario usuarioRecibido = usuarioEncontrado.get();
+        Conexion conexion = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-            Conexion conexion = new Conexion();
-            Connection connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             String insertSQL = "delete from usuario where usuario.nombre_usuario = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1, nombreUsuarioEliminar);
             int afectadas = preparedStatement.executeUpdate();
             if (afectadas > 0) {
@@ -224,6 +245,21 @@ public class ControllerAdmin {
             this.listaUsuarios.remove(usuarioRecibido);
         } catch (SQLException err) {
             System.out.println(err.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
+            }
+
+            if (conexion != null) {
+                conexion.cerrarConexion();
+            }
         }
     }
 
@@ -303,12 +339,13 @@ public class ControllerAdmin {
     public void ejecutarConsultaUsuario(String consultaSQL, List<String> datos, String mensajeExito, String nombreUsuario) {
         Conexion conexion = null;
         Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             DatabaseMetaData infoDatabase = connection.getMetaData();
             ResultSet columnasContacto = infoDatabase.getColumns(null, null, "usuario", null);
-            PreparedStatement preparedStatement = connection.prepareStatement(consultaSQL);
+            preparedStatement = connection.prepareStatement(consultaSQL);
 
             int i = 1;
             while (columnasContacto.next()) {
@@ -338,13 +375,17 @@ public class ControllerAdmin {
             System.out.println("Error haciendo consulta");
             System.out.println(err.getMessage());
         } finally {
-            if (connection != null) {
-                try {
+            try {
+                if (connection != null) {
                     connection.close();
-                } catch (SQLException err) {
-                    System.out.println(err.getMessage());
                 }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
             }
+
             if (conexion != null) {
                 conexion.cerrarConexion();
             }
@@ -359,11 +400,12 @@ public class ControllerAdmin {
     public void recibirAgendas() {
         Conexion conexion = null;
         Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             String insertSQL = "select * from agenda";
-            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement = connection.prepareStatement(insertSQL);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int id_agenda = resultSet.getInt("id_agenda");
@@ -378,6 +420,20 @@ public class ControllerAdmin {
             conexion.cerrarConexion();
         } catch (SQLException err) {
             System.out.println(err.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (conexion != null) {
+                    conexion.cerrarConexion();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
+            }
         }
     }
 
@@ -421,11 +477,14 @@ public class ControllerAdmin {
             return;
         }
         Agenda agendaRecibida = agendaEncontrada.get();
+        Conexion conexion = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-            Conexion conexion = new Conexion();
-            Connection connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             String insertSQL = "delete from agenda where agenda.id_agenda = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setInt(1, idAgendaEliminar);
             int afectadas = preparedStatement.executeUpdate();
             if (afectadas > 0) {
@@ -439,6 +498,20 @@ public class ControllerAdmin {
             this.listaAgendas.remove(agendaRecibida);
         } catch (SQLException err) {
             System.out.println(err.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (conexion != null) {
+                    conexion.cerrarConexion();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
+            }
         }
     }
 
@@ -480,12 +553,13 @@ public class ControllerAdmin {
     public void ejecutarConsultaAgenda(String consultaSQL, List<String> datos, String mensajeExito, Integer idAgenda) {
         Conexion conexion = null;
         Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             DatabaseMetaData infoDatabase = connection.getMetaData();
             ResultSet columnasContacto = infoDatabase.getColumns(null, null, "agenda", null);
-            PreparedStatement preparedStatement = connection.prepareStatement(consultaSQL);
+            preparedStatement = connection.prepareStatement(consultaSQL);
             int i = 1;
             while (columnasContacto.next()) {
                 String nombre_columna = columnasContacto.getString("COLUMN_NAME");
@@ -517,16 +591,21 @@ public class ControllerAdmin {
             System.out.println("Error haciendo consulta");
             System.out.println(err.getMessage());
         } finally {
-            if (connection != null) {
-                try {
+            try {
+                if (connection != null) {
                     connection.close();
-                } catch (SQLException err) {
-                    System.out.println(err.getMessage());
                 }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
             }
+
             if (conexion != null) {
                 conexion.cerrarConexion();
             }
+
         }
     }
 
@@ -540,12 +619,11 @@ public class ControllerAdmin {
     public void ejecutarConsultaContacto(boolean eliminar, int id_agenda, Integer nuevaAgenda) {
         Conexion conexion = null;
         Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             String consulta = null;
-            PreparedStatement preparedStatement = null;
-
             if (eliminar) {
                 consulta = "Delete from gestionagenda.contacto where contacto.id_agenda = ?";
                 preparedStatement = connection.prepareStatement(consulta);
@@ -562,13 +640,15 @@ public class ControllerAdmin {
         } catch (SQLException err) {
             System.out.println(err.getMessage());
         } finally {
-            // Cerrar PreparedStatement y la conexión
             try {
                 if (conexion != null) {
                     conexion.cerrarConexion();
                 }
                 if (connection != null) {
                     connection.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
                 }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
