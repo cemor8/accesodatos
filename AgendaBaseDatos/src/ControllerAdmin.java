@@ -214,7 +214,8 @@ public class ControllerAdmin {
 
     /**
      * Método que se encarga de eliminar un usuario de la base de datos, el registro de
-     * la tabla usuario y la cuenta de la base de datos.
+     * la tabla usuario y la cuenta de la base de datos, tambien elimina sus agendas junto a los
+     * contactos de estas.
      */
     public void eliminarUsuario() {
         this.listarUsuarios();
@@ -228,6 +229,7 @@ public class ControllerAdmin {
         Conexion conexion = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ArrayList<Integer> idsAgendas = new ArrayList<>();
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
@@ -236,13 +238,32 @@ public class ControllerAdmin {
             preparedStatement.setString(1, nombreUsuarioEliminar);
             int afectadas = preparedStatement.executeUpdate();
             if (afectadas > 0) {
-                System.out.println("Contacto eliminado con exito");
+                System.out.println("Usuario eliminado con exito");
             } else {
                 throw new SQLException();
+            }
+            insertSQL = "select id_agenda from agenda where nombre_usuario = ?";
+            preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setString(1,nombreUsuarioEliminar);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int idAgenda = resultSet.getInt("id_agenda");
+                idsAgendas.add(idAgenda);
+            }
+            for(int cada_id : idsAgendas){
+                insertSQL = "delete from contacto where id_agenda = ?";
+                preparedStatement = connection.prepareStatement(insertSQL);
+                preparedStatement.setInt(1,cada_id);
+                preparedStatement.executeUpdate();
+                insertSQL = "delete from agenda where id_agenda = ?";
+                preparedStatement = connection.prepareStatement(insertSQL);
+                preparedStatement.setInt(1,cada_id);
+                preparedStatement.executeUpdate();
             }
             preparedStatement.close();
             conexion.cerrarConexion();
             this.listaUsuarios.remove(usuarioRecibido);
+            System.out.println("Usuario eliminado con éxito");
         } catch (SQLException err) {
             System.out.println(err.getMessage());
         } finally {
@@ -288,28 +309,51 @@ public class ControllerAdmin {
         usuarioRecibido.setClave_usuario(datos.get(1));
         Conexion conexion = null;
         Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario());
             Statement statement = connection.createStatement();
             String crearUsuarioSQL = "CREATE USER \"" + datos.get(0) + "\"@\"localhost\" IDENTIFIED BY '" + datos.get(1) + "'";
             statement.executeUpdate(crearUsuarioSQL);
+            ArrayList<String> consultas = new ArrayList<>(List.of(
+                    "grant select on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
+                    "grant insert on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
+                    "grant update on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
+                    "grant delete on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
+                    "grant file on *.* to " + "?" + "@" + "\"localhost\"",
+                    "grant select on gestionagenda.agenda to " + "?" + "@" + "\"localhost\"",
+                    "grant insert on gestionagenda.contacto to " + "?" + "@" + "\"localhost\""
 
-            String sql2 = "grant select on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
+            ));
+
+            String sql2 = "grant select on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql2);
-            String sql3 = "grant insert on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
+            String sql3 = "grant insert on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql3);
-            String sql4 = "grant update on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
+            String sql4 = "grant update on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql4);
-            String sql5 = "grant delete on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
+            String sql5 = "grant delete on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql5);
 
             String sql6 = "GRANT FILE ON *.* TO \"" + datos.get(0) + "\"@\"localhost\"";
             statement.executeUpdate(sql6);
+            String sql7 = "GRANT select ON gestionagenda.agenda TO \"" + datos.get(0) + "\"@\"localhost\"";
+            statement.executeUpdate(sql7);
+            String sql8 = "GRANT insert ON gestionagenda.agenda TO \"" + datos.get(0) + "\"@\"localhost\"";
+            statement.executeUpdate(sql8);
 
             String eliminarUsuarioSQL = "DROP USER \"" + nombreUsuarioAntiguo + "\"@\"localhost\"";
+
+
             System.out.println(eliminarUsuarioSQL);
             statement.executeUpdate(eliminarUsuarioSQL);
+            String sql1 = "update agenda set nombre_usuario = ? where nombre_usuario = ?";
+            preparedStatement = connection.prepareStatement(sql1);
+            preparedStatement.setString(1,datos.get(0));
+            preparedStatement.setString(2,nombreUsuarioAntiguo);
+            preparedStatement.executeUpdate();
+            System.out.println("Datos del usuario modificados");
         } catch (SQLException err) {
             System.out.println("error al realizar la modificacion");
             System.out.println(err.getMessage());
