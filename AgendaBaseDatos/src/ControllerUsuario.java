@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.invoke.ConstantCallSite;
 import java.sql.*;
 import java.util.*;
@@ -77,6 +81,7 @@ public class ControllerUsuario {
                     this.eliminarContacto();
                     break;
                 case 5:
+                    this.backUp();
                     break;
                 case 6:
                     System.exit(0);
@@ -369,6 +374,99 @@ public class ControllerUsuario {
             }
         }
     }
+
+    /**
+     * Método que exporta los datos de una agenda para guardarlos en un fichero sql y así no perder los datos de la agenda,
+     * crea un archivo sql con consultas para crear en la base de datos la agenda y sus contactos.
+     */
+    public void backUp() {
+        // Comrpobar si ya hay un archivo con el nombre existente para modificarle el nombre.
+        int contador = 1;
+        String nombreArchivo = "archivos/backup.sql";
+        File archivo = new File(nombreArchivo);
+        while (archivo.exists()) {
+            nombreArchivo = "archivos/backup_" + contador + ".sql";
+            archivo = new File(nombreArchivo);
+            contador++;
+        }
+
+
+        Conexion conexion = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultados = null;
+        try {
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            String query = "SELECT * FROM gestionagenda.agenda where agenda.id_agenda = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, this.usuario.getAgendaSeleccionada().getId_agenda());
+            resultados = preparedStatement.executeQuery();
+            PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo), false);
+            while (resultados.next()) {
+                Integer id_agenda = resultados.getInt("id_agenda");
+                String nombre = resultados.getString("nombre");
+                String nombre_usuario = resultados.getString("nombre_usuario");
+                System.out.println(id_agenda);
+
+                writer.println("INSERT INTO tabla (id, columna1, columna2) VALUES ("
+                        + id_agenda + ", "
+                        + "'" + nombre + "', "
+                        + "'" + nombre_usuario + "') " +
+                        "ON DUPLICATE KEY UPDATE " +
+                        "columna1 = VALUES(columna1), " +
+                        "columna2 = VALUES(columna2);");
+            }
+            query = "SELECT * FROM gestionagenda.contacto where contacto.id_agenda = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, this.usuario.getAgendaSeleccionada().getId_agenda());
+            resultados = preparedStatement.executeQuery();
+            while (resultados.next()) {
+                String nombre = resultados.getString("nombre");
+                String apellidos = resultados.getString("apellidos");
+                String direccion = resultados.getString("direccion");
+                String correo = resultados.getString("correo");
+                String telefono = resultados.getString("telefono");
+                int id_agenda = resultados.getInt("id_agenda");
+
+
+                writer.println("INSERT INTO gestionagenda.contacto (nombre, apellidos, direccion, correo, telefono, id_agenda) VALUES ("
+                        + "'" + nombre + "', "
+                        + "'" + apellidos + "', "
+                        + "'" + direccion + "', "
+                        + "'" + correo + "', "
+                        + "'" + telefono + "', "
+                        + id_agenda + ") " +
+                        "ON DUPLICATE KEY UPDATE " +
+                        "nombre = VALUES(nombre), " +
+                        "apellidos = VALUES(apellidos), " +
+                        "direccion = VALUES(direccion), " +
+                        "correo = VALUES(correo), " +
+                        "telefono = VALUES(telefono);");
+            }
+            writer.close();
+            System.out.println("Datos exportados con éxito");
+        } catch (SQLException err) {
+            System.out.println(err.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conexion != null) {
+                conexion.cerrarConexion();
+            }
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
+            }
+        }
+    }
+
 
     /**
      * Método que se encarga de validar una expresion regular en un texto enviado

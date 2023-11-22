@@ -95,6 +95,7 @@ public class ControllerLogin {
                     "grant select on gestionAgenda.usuario to \"usuarioValidarCredencial\" @ \"localhost\"",
                     "grant select on gestionAgenda.contacto to \"cmorbla\" @ \"localhost\"",
                     "grant insert on gestionAgenda.contacto to \"cmorbla\" @ \"localhost\"",
+                    "grant insert on gestionAgenda.agenda to \"cmorbla\" @ \"localhost\"",
                     "grant update on gestionAgenda.contacto to\"cmorbla\" @ \"localhost\"",
                     "grant delete on gestionAgenda.contacto to \"cmorbla\" @ \"localhost\"",
                     "grant file on *.*to \"cmorbla\" @ \"localhost\"",
