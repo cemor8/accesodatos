@@ -69,7 +69,7 @@ public class ControllerUsuario {
             }
             switch (opcion) {
                 case 1:
-                    this.introducirUsuarioEnAgenda();
+                    this.introducirContactoEnAgenda();
                     break;
                 case 2:
                     this.listarContactos();
@@ -98,7 +98,7 @@ public class ControllerUsuario {
         StringBuilder mostrarAgendas = new StringBuilder();
         Connection connection = null;
         try {
-            connection = conexion.hacerConexion("userListarAgendas", "listarAgendas");
+            connection = conexion.hacerConexion("userListarAgendas", "listarAgendas",false);
             String sql = "Select agenda.* from agenda inner join usuario on agenda.nombre_usuario = usuario.nombre_usuario where usuario.nombre_usuario like ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, "%" + this.usuario.getNombre_usuario() + "%");
@@ -120,7 +120,6 @@ public class ControllerUsuario {
             return;
         }
         if (mostrarAgendas.isEmpty()) {
-            System.out.println("El usuario no tiene agendas asignadas, contacta con un administrador");
             try {
                 connection.close();
             } catch (SQLException err) {
@@ -160,7 +159,7 @@ public class ControllerUsuario {
      * del contacto y valida que esten en el formato adecuado, si hay algun problema al meter los datos,
      * el metodo no hace nada.
      **/
-    public void introducirUsuarioEnAgenda() {
+    public void introducirContactoEnAgenda() {
         if (this.usuario.getAgendaSeleccionada() == null) {
             System.out.println("Selecciona una agenda");
             return;
@@ -169,7 +168,7 @@ public class ControllerUsuario {
 
         try {
             Conexion conexion = new Conexion();
-            Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario(),false);
             DatabaseMetaData infoDatabase = connection.getMetaData();
             ResultSet columnasContacto = infoDatabase.getColumns(null, null, "contacto", null);
             String insertSQL = "INSERT INTO contacto (nombre, apellidos, direccion, correo, telefono, id_agenda) VALUES (?, ?, ?, ?, ?, ?)";
@@ -216,7 +215,7 @@ public class ControllerUsuario {
         ArrayList<Contacto> listaDeAgenda = new ArrayList<>();
         try {
             Conexion conexion = new Conexion();
-            Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            Connection connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario(),false);
             String insertSQL = "select * from contacto inner join agenda on contacto.id_agenda = agenda.id_agenda where agenda.id_agenda = ? order by contacto.nombre asc, contacto.apellidos asc";
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setInt(1, idAgenda);
@@ -243,6 +242,10 @@ public class ControllerUsuario {
      * Método que ordena por nombre y apellidos una lista de contactos
      */
     public void listarContactos() {
+        if(this.usuario.getAgendaSeleccionada().getListaContactos().isEmpty()){
+            System.out.println("La agenda seleccionada no tiene contactos");
+            return;
+        }
         this.usuario.getAgendaSeleccionada().ordenarContactos();
         for (Contacto contacto : this.usuario.getAgendaSeleccionada().getListaContactos()) {
             System.out.println(contacto);
@@ -267,7 +270,7 @@ public class ControllerUsuario {
         PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
-            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario(),false);
             String insertSQL = "delete from contacto where contacto.telefono = ?";
             preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1, numeroContacto);
@@ -319,7 +322,7 @@ public class ControllerUsuario {
         PreparedStatement preparedStatement = null;
         try {
             conexion = new Conexion();
-            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario(),false);
             DatabaseMetaData infoDatabase = connection.getMetaData();
             ResultSet columnasContacto = infoDatabase.getColumns(null, null, "contacto", null);
             String insertSQL = "UPDATE contacto SET nombre = ?, apellidos = ?, direccion = ?, correo = ?, telefono = ?, id_agenda = ? WHERE telefono = ?";
@@ -346,6 +349,7 @@ public class ControllerUsuario {
             }
             preparedStatement.setInt(6, this.usuario.getAgendaSeleccionada().getId_agenda());
             preparedStatement.setString(7, numeroContacto);
+            //modifico los datos del contacto
             contactoRecibido.setNombre(datos.get(0));
             contactoRecibido.setApellidos(datos.get(1));
             contactoRecibido.setDireccion(datos.get(2));
@@ -397,7 +401,7 @@ public class ControllerUsuario {
         ResultSet resultados = null;
         try {
             conexion = new Conexion();
-            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario());
+            connection = conexion.hacerConexion(this.usuario.getNombre_usuario(), this.usuario.getClave_usuario(),false);
             String query = "SELECT * FROM gestionagenda.agenda where agenda.id_agenda = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, this.usuario.getAgendaSeleccionada().getId_agenda());
@@ -407,15 +411,14 @@ public class ControllerUsuario {
                 Integer id_agenda = resultados.getInt("id_agenda");
                 String nombre = resultados.getString("nombre");
                 String nombre_usuario = resultados.getString("nombre_usuario");
-                System.out.println(id_agenda);
 
-                writer.println("INSERT INTO tabla (id, columna1, columna2) VALUES ("
+                writer.println("INSERT INTO tabla (id, nombre, nombre_usuario) VALUES ("
                         + id_agenda + ", "
                         + "'" + nombre + "', "
                         + "'" + nombre_usuario + "') " +
                         "ON DUPLICATE KEY UPDATE " +
-                        "columna1 = VALUES(columna1), " +
-                        "columna2 = VALUES(columna2);");
+                        "nombre = VALUES(nombre), " +
+                        "nombre_usuario = VALUES(nombre_usuario);");
             }
             query = "SELECT * FROM gestionagenda.contacto where contacto.id_agenda = ?";
             preparedStatement = connection.prepareStatement(query);
@@ -500,7 +503,6 @@ public class ControllerUsuario {
                 if (requerido && patron != null && !validarDatos(patron, stringDevolver)) {
                     throw new Exception("Contenido invalido");
                 } else if ((patron != null && !validarDatos(patron, stringDevolver)) && !stringDevolver.equalsIgnoreCase("null")) {
-                    System.out.println("hola");
                     throw new Exception("Contenido invalido");
                 }
             } catch (Exception err) {

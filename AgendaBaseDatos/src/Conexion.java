@@ -10,8 +10,12 @@ public class Conexion {
      * @param usuario nombre de usuario
      * @param password contraseña del usuario
      * */
-    public Connection hacerConexion(String usuario, String password){
+    public Connection hacerConexion(String usuario, String password, boolean crear){
+
         String jdbcUrl = "jdbc:mysql://localhost:3306/gestionAgenda";
+        if(crear){
+            jdbcUrl = "jdbc:mysql://localhost:3306";
+        }
         try {
             Connection crearConexion = DriverManager.getConnection(jdbcUrl,usuario,password);
             conexionDevolver=crearConexion;

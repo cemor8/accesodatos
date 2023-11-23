@@ -12,6 +12,7 @@ public class ControllerLogin {
             opcion = devolverInteger("\n1. Login Administradores \n2. Login Usuarios");
             String usuario;
             String password;
+            //dependiendo del login se buscan los datos en un tabla y luego se muestra el controller correspondiente
             switch (opcion) {
                 case 1:
                     usuario = this.devolverString("\nIntroduce nombre de usuario");
@@ -48,7 +49,7 @@ public class ControllerLogin {
      */
     public boolean verificarExistenciaBase() {
         Conexion conexion = new Conexion();
-        Connection connection = conexion.hacerConexion("usuarioComprobarExistencia", "comprobarExistencia");
+        Connection connection = conexion.hacerConexion("root", "",false);
         return connection != null;
     }
 
@@ -62,17 +63,17 @@ public class ControllerLogin {
 
         try {
             conexion = new Conexion();
-            connection = conexion.hacerConexion("usuarioComprobarExistencia", "comprobarExistencia");
+            connection = conexion.hacerConexion("root", "",true);
 
             statement = connection.createStatement();
 
-            String crearBaseDatos = "CREATE DATABASE IF NOT EXISTS gestionAgenda";
+            String crearBaseDatos = "CREATE DATABASE IF NOT EXISTS gestionagenda";
             statement.executeUpdate(crearBaseDatos);
 
 
-            String usarBaseDatos = "USE gestionAgenda";
+            String usarBaseDatos = "USE gestionagenda";
             statement.executeUpdate(usarBaseDatos);
-
+            //crear tablas
 
             String[] createQueries = {
                     "CREATE TABLE IF NOT EXISTS usuario (nombre_usuario VARCHAR(15) NOT NULL, clave VARCHAR(15) NOT NULL, PRIMARY KEY(nombre_usuario))",
@@ -84,33 +85,32 @@ public class ControllerLogin {
             for (String query : createQueries) {
                 statement.executeUpdate(query);
             }
-
+            //crear usuarios y asignar permisos
 
             String[] queries = {
                     "create user 'usuarioValidarCredencial'@'localhost' identified with mysql_native_password by 'validarCredencial'",
-                    "create user 'admin'@'localhost' identified with mysql_native_password by'admin'",
-                    "create user'cmorbla' @ 'localhost' identified with mysql_native_password by 'cmorbla'",
-                    "create user 'userListarAgendas' @ 'localhost' identified with mysql_native_password by 'listarAgendas'",
-                    "grant select on gestionAgenda.administrador to \"usuarioValidarCredencial\" @ \"localhost\"",
-                    "grant select on gestionAgenda.usuario to \"usuarioValidarCredencial\" @ \"localhost\"",
-                    "grant select on gestionAgenda.contacto to \"cmorbla\" @ \"localhost\"",
-                    "grant insert on gestionAgenda.contacto to \"cmorbla\" @ \"localhost\"",
-                    "grant insert on gestionAgenda.agenda to \"cmorbla\" @ \"localhost\"",
-                    "grant update on gestionAgenda.contacto to\"cmorbla\" @ \"localhost\"",
-                    "grant delete on gestionAgenda.contacto to \"cmorbla\" @ \"localhost\"",
-                    "grant file on *.*to \"cmorbla\" @ \"localhost\"",
-                    "grant select on gestionAgenda.agenda to \"cmorbla\" @ \"localhost\"",
-                    "grant all privileges on gestionAgenda to \"admin\" @ \"localhost\"",
-                    "grant select on gestionAgenda.agenda to \"userListarAgendas\" @ \"localhost\"",
-                    "grant select on gestionAgenda.usuario to \"userListarAgendas\" @ \"localhost\"",
-                    "create user 'usuarioComprobarExistencia' @ 'localhost' identified with mysql_native_password by 'comprobarExistencia'",
-                    "grant all privileges on gestionagenda. * to \"usuarioComprobarExistencia\" @ \"localhost\"",
+                    "create user 'admin'@'localhost' identified with mysql_native_password by 'admin'",
+                    "create user 'userListarAgendas'@'localhost' identified with mysql_native_password by 'listarAgendas'",
+                    "grant select on gestionagenda.administrador to 'usuarioValidarCredencial'@'localhost'",
+                    "grant select on gestionagenda.usuario to 'usuarioValidarCredencial'@'localhost'",
+                    "grant all privileges on gestionagenda.* to 'admin'@'localhost'",
+                    "grant select on gestionagenda.agenda to 'userListarAgendas'@'localhost'",
+                    "grant select on gestionagenda.usuario to 'userListarAgendas'@'localhost'",
+                    "insert into gestionagenda.administrador values ('admin', 'admin')",
+                    "GRANT CREATE USER ON *.* TO 'admin'@'localhost'",
+                    "GRANT GRANT OPTION ON *.* TO 'admin'@'localhost'",
+                    "GRANT UPDATE ON gestionagenda.* TO 'admin'@'localhost'",
+                    "GRANT DROP ON gestionagenda.* TO 'admin'@'localhost'",
+                    "GRANT DROP USER ON *.* TO 'admin'@'localhost'",
+                    "FLUSH PRIVILEGES"
             };
 
             for (String query : queries) {
                 statement.executeUpdate(query);
             }
-            System.out.println("Base de datos creada con éxito");
+            System.out.println("Base de datos creada con éxito, administrador : ");
+            System.out.println("Nombre usuario admin");
+            System.out.println("Contraseña admin");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -142,8 +142,9 @@ public class ControllerLogin {
         Conexion conexion = null;
         Connection connection = null;
         try {
+            //obtener los usuarios de la tabla admin si se va a iniciar sesion con un admin o de la tabla usuarios si se va a usar un usuario
             conexion = new Conexion();
-            connection = conexion.hacerConexion("usuarioValidarCredencial", "validarCredencial");
+            connection = conexion.hacerConexion("usuarioValidarCredencial", "validarCredencial",false);
             String consulta = "SELECT clave from " + nombreTablaBuscar + " where nombre_usuario like ?";
             PreparedStatement statement = connection.prepareStatement(consulta);
             statement.setString(1, "%" + nombreUsuario + "%");
@@ -151,7 +152,6 @@ public class ControllerLogin {
             if (resultados.next()) {
                 String clave = resultados.getString("clave");
                 if (!clave.equals(passwordUsuario)) {
-                    System.out.println("Credenciales incorrectas");
                     return false;
                 }
                 conexion.cerrarConexion();
