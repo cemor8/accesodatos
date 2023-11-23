@@ -357,7 +357,7 @@ public class ControllerUsuario {
             contactoRecibido.setTelefono(datos.get(4));
             preparedStatement.executeUpdate();
             this.usuario.getAgendaSeleccionada().ordenarContactos();
-            System.out.println("Contacto añadido correctamente");
+            System.out.println("Contacto modificado correctamente");
             preparedStatement.close();
             conexion.cerrarConexion();
         } catch (SQLException err) {
@@ -412,7 +412,7 @@ public class ControllerUsuario {
                 String nombre = resultados.getString("nombre");
                 String nombre_usuario = resultados.getString("nombre_usuario");
 
-                writer.println("INSERT INTO tabla (id, nombre, nombre_usuario) VALUES ("
+                writer.println("INSERT INTO gestionagenda.agenda (id_agenda, nombre, nombre_usuario) VALUES ("
                         + id_agenda + ", "
                         + "'" + nombre + "', "
                         + "'" + nombre_usuario + "') " +

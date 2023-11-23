@@ -1,2 +1,0 @@
-INSERT INTO tabla (id, columna1, columna2) VALUES (1, 'agenda javi', 'javier') ON DUPLICATE KEY UPDATE columna1 = VALUES(columna1), columna2 = VALUES(columna2);
-INSERT INTO gestionagenda.contacto (nombre, apellidos, direccion, correo, telefono, id_agenda) VALUES ('Pepe', '', '', '', '615-78-83-30', 1) ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), apellidos = VALUES(apellidos), direccion = VALUES(direccion), correo = VALUES(correo), telefono = VALUES(telefono);
