@@ -95,7 +95,7 @@ public class ControllerAdmin {
                     this.listarAgendas();
                     break;
                 case 2:
-                    this.crearAgenda();
+                    this.crearAgenda(null);
                     break;
                 case 3:
                     this.eliminarAgenda();
@@ -158,12 +158,12 @@ public class ControllerAdmin {
      * tambien crea una cuenta de usuario en la base de datos.
      */
     public void crearUsuario() {
+
         String insertSQL = "INSERT INTO usuario (nombre_usuario, clave) VALUES (?, ?)";
         List<String> datos = new ArrayList<>();
         String mensajeExito = "Usuario añadido correctamente";
-        this.ejecutarConsultaUsuario(insertSQL, datos, mensajeExito, null);
-        // si no se han introducido todos los campos, es que hay algun error.
-        if (datos.size() != 2) {
+        boolean creado = this.ejecutarConsultaUsuario(insertSQL, datos, mensajeExito, null);
+        if(!creado){
             return;
         }
         this.listaUsuarios.add(new Usuario(datos.get(0), datos.get(1)));
@@ -174,17 +174,19 @@ public class ControllerAdmin {
             conexion = new Conexion();
             connection = conexion.hacerConexion(this.administrador.getNombre_usuario(), this.administrador.getClave_usuario(),false);
             Statement statement = connection.createStatement();
-            String sql1 = "CREATE USER \"" + datos.get(0) + "\"@\"localhost\" IDENTIFIED BY '" + datos.get(1) + "'";
-            statement.executeUpdate(sql1);
-            String sql2 = "grant select on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql2);
-            String sql3 = "grant insert on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql3);
-            String sql4 = "grant update on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql4);
-            String sql5 = "grant delete on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql5);
-
+            ArrayList<String> consultas = new ArrayList<>(List.of(
+                    "CREATE USER \"" + datos.get(0) + "\"@\"localhost\" IDENTIFIED BY '" + datos.get(1) + "'",
+                    "grant select on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"",
+                    "grant insert on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"",
+                    "grant update on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"",
+                    "grant delete on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"",
+                    "grant insert on gestionagenda.agenda to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"",
+                    "grant select on gestionagenda.agenda to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\""
+            ));
+            for(String consulta : consultas){
+                statement.executeUpdate(consulta);
+            }
+            this.crearAgenda(datos.get(0));
 
         } catch (SQLException err) {
             System.out.println(err.getMessage());
@@ -200,6 +202,7 @@ public class ControllerAdmin {
                 conexion.cerrarConexion();
             }
         }
+
     }
 
     /**
@@ -275,6 +278,8 @@ public class ControllerAdmin {
             preparedStatement.close();
             conexion.cerrarConexion();
             this.listaUsuarios.remove(usuarioRecibido);
+            this.listaAgendas = new ArrayList<>();
+            this.recibirAgendas();
             System.out.println("Usuario eliminado con éxito");
         } catch (SQLException err) {
             System.out.println(err.getMessage());
@@ -316,8 +321,8 @@ public class ControllerAdmin {
         String updateSQL = "UPDATE usuario SET nombre_usuario = ?, clave = ? WHERE nombre_usuario = ?";
         String mensajeExito = "Usuario modificado correctamente";
         //consulta para modificar el usuario
-        this.ejecutarConsultaUsuario(updateSQL, datos, mensajeExito, usuarioRecibido.getNombre_usuario());
-        if (datos.size() != 2) {
+        boolean creado = this.ejecutarConsultaUsuario(updateSQL, datos, mensajeExito, usuarioRecibido.getNombre_usuario());
+        if(!creado){
             return;
         }
         //actualizo el usuario
@@ -337,7 +342,8 @@ public class ControllerAdmin {
                     "grant insert on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
                     "grant update on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
                     "grant delete on gestionagenda.contacto to " + "?" + "@" + "\"localhost\"",
-                    "grant select on gestionagenda.agenda to " + "?" + "@" + "\"localhost\""
+                    "grant select on gestionagenda.agenda to " + "?" + "@" + "\"localhost\"",
+                    "grant insert on gestionagenda.agenda to " + "?" + "@" + "\"localhost\""
 
             ));
             for(String consulta : consultas){
@@ -345,24 +351,6 @@ public class ControllerAdmin {
                 preparedStatement.setString(1,datos.get(0));
                 preparedStatement.executeUpdate();
             }
-            /*
-            String sql2 = "grant select on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql2);
-            String sql3 = "grant insert on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql3);
-            String sql4 = "grant update on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql4);
-            String sql5 = "grant delete on gestionagenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
-            statement.executeUpdate(sql5);
-
-            String sql6 = "GRANT FILE ON *.* TO \"" + datos.get(0) + "\"@\"localhost\"";
-            statement.executeUpdate(sql6);
-            String sql7 = "GRANT select ON gestionagenda.agenda TO \"" + datos.get(0) + "\"@\"localhost\"";
-            statement.executeUpdate(sql7);
-            String sql8 = "GRANT insert ON gestionagenda.agenda TO \"" + datos.get(0) + "\"@\"localhost\"";
-            statement.executeUpdate(sql8);
-
-             */
             //eliminar usuario anterior
             String eliminarUsuarioSQL = "DROP USER \"" + nombreUsuarioAntiguo + "\"@\"localhost\"";
 
@@ -402,7 +390,7 @@ public class ControllerAdmin {
      * @param mensajeExito  mensaje que se enviara para verificar el exito de la creacion del usuario
      * @param nombreUsuario parametro que se introducira en la consulta si no es nulo
      */
-    public void ejecutarConsultaUsuario(String consultaSQL, List<String> datos, String mensajeExito, String nombreUsuario) {
+    public boolean ejecutarConsultaUsuario(String consultaSQL, List<String> datos, String mensajeExito, String nombreUsuario) {
         Conexion conexion = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -437,8 +425,10 @@ public class ControllerAdmin {
             System.out.println(mensajeExito);
             preparedStatement.close();
             conexion.cerrarConexion();
+            return true;
         } catch (SQLException err) {
             System.out.println(err.getMessage());
+            return false;
         } finally {
             try {
                 if (connection != null) {
@@ -507,13 +497,28 @@ public class ControllerAdmin {
     /**
      * Método que se encarga de crear una nueva agenda para que los usuarios la puedan usar.
      */
-    public void crearAgenda() {
+    public void crearAgenda(String nombreUsuario) {
+        if(nombreUsuario!=null){
+            String insertSQL = "INSERT INTO agenda (id_agenda, nombre, nombre_usuario) VALUES (?, ?, "+"'"+nombreUsuario+"'"+")";
+            List<String> datos = new ArrayList<>();
+            String mensajeExito = "Agenda creada correctamente";
+
+            boolean creado= this.ejecutarConsultaAgenda(insertSQL, datos, mensajeExito, null,true);
+            if(!creado){
+                return;
+            }
+            Agenda agenda = new Agenda(Integer.parseInt(datos.get(0)), null);
+            agenda.setNombre(datos.get(1));
+            agenda.setNombre_usuario(nombreUsuario);
+            this.listaAgendas.add(agenda);
+            return;
+        }
         String insertSQL = "INSERT INTO agenda (id_agenda, nombre, nombre_usuario) VALUES (?, ?, ?)";
         List<String> datos = new ArrayList<>();
         String mensajeExito = "Agenda creada correctamente";
 
-        this.ejecutarConsultaAgenda(insertSQL, datos, mensajeExito, null);
-        if (datos.size() != 3) {
+        boolean creado = this.ejecutarConsultaAgenda(insertSQL, datos, mensajeExito, null,false);
+        if(!creado){
             return;
         }
         Agenda agenda = new Agenda(Integer.parseInt(datos.get(0)), null);
@@ -610,11 +615,11 @@ public class ControllerAdmin {
         Agenda agendaRecibida = agendaEncontrada.get();
         String updateSQL = "UPDATE agenda SET id_agenda = ?, nombre = ?, nombre_usuario = ? WHERE id_agenda = ?";
         String mensajeExito = "Agenda modificada correctamente";
-        this.ejecutarConsultaAgenda(updateSQL, datos, mensajeExito, agendaRecibida.getId_agenda());
-
-        if (datos.size() != 3) {
+        boolean creado = this.ejecutarConsultaAgenda(updateSQL, datos, mensajeExito, agendaRecibida.getId_agenda(),false);
+        if(!creado){
             return;
         }
+
         //modificar el id de la agenda de los contactos
         this.ejecutarConsultaContacto(false, agendaRecibida.getId_agenda(), Integer.parseInt(datos.get(0)));
         agendaRecibida.setId_agenda(Integer.parseInt(datos.get(0)));
@@ -631,7 +636,7 @@ public class ControllerAdmin {
      * @param idAgenda     id de la agenda a manipular
      */
 
-    public void ejecutarConsultaAgenda(String consultaSQL, List<String> datos, String mensajeExito, Integer idAgenda) {
+    public boolean ejecutarConsultaAgenda(String consultaSQL, List<String> datos, String mensajeExito, Integer idAgenda, boolean aUsuario) {
         Conexion conexion = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -646,13 +651,17 @@ public class ControllerAdmin {
                 String nombre_columna = columnasContacto.getString("COLUMN_NAME");
                 String expresionRegular = this.columnasExpresiones.get(nombre_columna);
                 String dato = null;
-                if (nombre_columna.equalsIgnoreCase("nombre_usuario") || nombre_columna.equalsIgnoreCase("nombre")) {
+                if ((nombre_columna.equalsIgnoreCase("nombre_usuario") && !aUsuario) || nombre_columna.equalsIgnoreCase("nombre")) {
                     dato = this.devolverString("Introduce el dato para campo " + nombre_columna, expresionRegular, true);
                 } else if (nombre_columna.equalsIgnoreCase("id_agenda")) {
                     Integer numero = this.devolverInteger("Introduce dato para " + nombre_columna);
                     preparedStatement.setInt(1, numero);
                     i++;
                     datos.add(String.valueOf(numero));
+                    continue;
+                }
+                if(dato == null){
+                    i++;
                     continue;
                 }
                 preparedStatement.setString(i, dato);
@@ -663,14 +672,15 @@ public class ControllerAdmin {
             if (idAgenda != null) {
                 preparedStatement.setInt(4, idAgenda);
             }
-
+            System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
             System.out.println(mensajeExito);
             preparedStatement.close();
             conexion.cerrarConexion();
+            return true;
         } catch (SQLException err) {
-            System.out.println("Error haciendo consulta");
             System.out.println(err.getMessage());
+            return false;
         } finally {
             try {
                 if (connection != null) {
