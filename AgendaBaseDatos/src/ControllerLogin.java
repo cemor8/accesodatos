@@ -97,11 +97,11 @@ public class ControllerLogin {
                     "grant select on gestionagenda.agenda to 'userListarAgendas'@'localhost'",
                     "grant select on gestionagenda.usuario to 'userListarAgendas'@'localhost'",
                     "insert into gestionagenda.administrador values ('admin', 'admin')",
-                    "GRANT CREATE USER ON *.* TO 'admin'@'localhost'",
                     "GRANT GRANT OPTION ON *.* TO 'admin'@'localhost'",
+                    "GRANT CREATE USER ON *.* TO 'admin'@'localhost' WITH GRANT OPTION",
                     "GRANT UPDATE ON gestionagenda.* TO 'admin'@'localhost'",
                     "GRANT DROP ON gestionagenda.* TO 'admin'@'localhost'",
-                    "GRANT DROP USER ON *.* TO 'admin'@'localhost'",
+                    "GRANT DROP ON *.* TO 'admin'@'localhost'",
                     "FLUSH PRIVILEGES"
             };
 

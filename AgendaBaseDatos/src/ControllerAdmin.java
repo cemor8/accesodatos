@@ -180,18 +180,10 @@ public class ControllerAdmin {
             statement.executeUpdate(sql2);
             String sql3 = "grant insert on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql3);
-            System.out.println("llegue aqui");
             String sql4 = "grant update on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql4);
             String sql5 = "grant delete on gestionAgenda.contacto to " + "\"" + datos.get(0) + "\"" + "@" + "\"localhost\"";
             statement.executeUpdate(sql5);
-            System.out.println("aqui");
-            /*
-            String sql6 = "GRANT FILE ON *.* TO \"" + datos.get(0) + "\"@\"localhost\"";
-            statement.executeUpdate(sql6);
-
-             */
-            System.out.println("ultimo");
 
 
         } catch (SQLException err) {
@@ -213,12 +205,17 @@ public class ControllerAdmin {
     /**
      * Método que muestra la lista de usuarios que hay en la base de datos
      */
-    public void listarUsuarios() {
+    public boolean listarUsuarios() {
         //listar usuarios ordenados alfabeticamente
+        if(this.listaUsuarios.isEmpty()){
+            System.out.println("No hay usuarios");
+            return false;
+        }
         this.listaUsuarios.sort(Comparator.comparing(Usuario::getNombre_usuario));
         for (Usuario usuario : this.listaUsuarios) {
             System.out.println(usuario);
         }
+        return true;
     }
 
     /**
@@ -228,7 +225,9 @@ public class ControllerAdmin {
      */
     public void eliminarUsuario() {
         //muestro usuarios y pido el nombre del usuario a eliminar
-        this.listarUsuarios();
+        if (!this.listarUsuarios()){
+            return;
+        }
         String nombreUsuarioEliminar = this.devolverString("Introduce el nombre de usuario del usuario a eliminar", this.columnasExpresiones.get("nombre_usuario"), true);
         Optional<Usuario> usuarioEncontrado = this.listaUsuarios.stream().filter(usuario -> usuario.getNombre_usuario().equalsIgnoreCase(nombreUsuarioEliminar)).findFirst();
         if (usuarioEncontrado.isEmpty()) {
@@ -301,7 +300,9 @@ public class ControllerAdmin {
      * Método que se encarga de modificar un usuario de la base de datos.
      */
     public void modificarUsuario() {
-        this.listarUsuarios();
+        if (!this.listarUsuarios()){
+            return;
+        }
         String nombreUsuario = this.devolverString("Introduce el nombre de usuario del usuario a modificar", this.columnasExpresiones.get("nombre_usuario"), true);
         Optional<Usuario> usuarioAmodificar = this.listaUsuarios.stream().filter(usuario -> usuario.getNombre_usuario().equalsIgnoreCase(nombreUsuario)).findFirst();
         if (usuarioAmodificar.isEmpty()) {
@@ -321,7 +322,6 @@ public class ControllerAdmin {
         }
         //actualizo el usuario
         usuarioRecibido.setNombre_usuario(datos.get(0));
-        System.out.println(datos.get(0));
         usuarioRecibido.setClave_usuario(datos.get(1));
         Conexion conexion = null;
         Connection connection = null;
@@ -364,7 +364,6 @@ public class ControllerAdmin {
 
              */
             //eliminar usuario anterior
-            System.out.println("eliminando usuario anterior");
             String eliminarUsuarioSQL = "DROP USER \"" + nombreUsuarioAntiguo + "\"@\"localhost\"";
 
             //modificar nombre de usuario de la agenda
@@ -526,22 +525,25 @@ public class ControllerAdmin {
     /**
      * Método que muestra la lista de usuarios que hay en la base de datos
      */
-    public void listarAgendas() {
+    public boolean listarAgendas() {
         if(this.listaAgendas.isEmpty()){
             System.out.println("No hay agendas");
-            return;
+            return false;
         }
         this.listaAgendas.sort(Comparator.comparing(Agenda::getId_agenda));
         for (Agenda agenda : this.listaAgendas) {
             System.out.println(agenda);
         }
+        return true;
     }
 
     /**
      * Método que se encarga de eliminar una agenda de la base de datos.
      */
     public void eliminarAgenda() {
-        this.listarAgendas();
+        if(!this.listarAgendas()){
+            return;
+        }
         int idAgendaEliminar = this.devolverInteger("Introduce el id de la agenda a eliminar");
         Optional<Agenda> agendaEncontrada = this.listaAgendas.stream().filter(agenda -> agenda.getId_agenda() == idAgendaEliminar).findFirst();
         if (agendaEncontrada.isEmpty()) {
@@ -595,7 +597,9 @@ public class ControllerAdmin {
      * Método que se encarga de modificar los datos de una agenda.
      */
     public void modificarAgenda() {
-        this.listarAgendas();
+        if(!this.listarAgendas()){
+            return;
+        }
         int idAgendaEliminar = this.devolverInteger("Introduce el id de la agenda a modificar");
         Optional<Agenda> agendaEncontrada = this.listaAgendas.stream().filter(agenda -> agenda.getId_agenda() == idAgendaEliminar).findFirst();
         if (agendaEncontrada.isEmpty()) {
