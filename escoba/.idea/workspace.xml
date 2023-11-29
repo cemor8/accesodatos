@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ca2b5fbd-2de7-4d8f-8bf8-94a4e8a77250" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Baraja.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Carta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/IA.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Jugador.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Mesa.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EjerciciosDeRepaso/ej1_b4/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../EjerciciosDeRepaso/ej1_b4/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EjerciciosDeRepaso/ej1_b4/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../EjerciciosDeRepaso/ej1_b4/.idea/vcs.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2Yr3KzjP8imc3cBSznCGRFtCxeV" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/cmorbla/Desktop/interfaces/delivery",
+    "onboarding.tips.debug.path": "C:/Users/cmorbla/Desktop/accesodatos/escoba/src/Main.java"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ca2b5fbd-2de7-4d8f-8bf8-94a4e8a77250" name="Changes" comment="" />
+      <created>1701269811952</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1701269811952</updated>
+    </task>
+    <servers />
+  </component>
+</project>
