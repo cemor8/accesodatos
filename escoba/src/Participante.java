@@ -75,9 +75,12 @@ public class Participante {
     }
     public void buscarPosiblesEscobas(){
 
+
     }
     public void jugar(){
 
     }
+
+
 
 }

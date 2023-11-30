@@ -1,4 +1,13 @@
+import java.nio.file.attribute.UserPrincipal;
+
 public class Jugador extends Participante{
-    public Jugador() {
+    Usuario perfilUsuario;
+
+    public Jugador(Usuario perfilUsuario) {
+        this.perfilUsuario = perfilUsuario;
+    }
+    @Override
+    public void jugar(){
+
     }
 }

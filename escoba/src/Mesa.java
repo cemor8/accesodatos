@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import java.util.ArrayList;
 
 public class Mesa {
@@ -13,21 +14,45 @@ public class Mesa {
         this.baraja = baraja;
         this.puntosAJugar = puntosAJugar;
     }
+    /**
+     * Método que inicia una partida en el juego de la escoba, primero se comprueba quien empieza y quien reparte
+     * al inicio, luego se comprueba si hay baraja de mano para volver a colocar las cartas, por ultimo se empieza la partida
+     * */
     public void iniciarPartida(){
         this.decidirOrden();
         this.baraja.barajar();
 
-        this.participante2.repartir();
+        this.repartirCartas(this.participante1.getMano());
+        this.repartirCartas(this.participante2.getMano());
+
         this.baraja.ponerEnMesa(this.cartasEnMesa);
-        while (participante1.getPuntosTotales()<puntosAJugar && participante2.getPuntosTotales()<puntosAJugar){
+
+        //compruebo si hay baraja de mano
+        while (this.barajaMano()){
+            this.participante2.getCartasGanadas().addAll(this.cartasEnMesa);
+            this.cartasEnMesa = new ArrayList<>();
+            this.baraja.ponerEnMesa(this.cartasEnMesa);
+        }
+        if(this.baraja.getCartas().isEmpty()){
+            // aqui gana jugador 2
+        }
+
+        while (this.participante1.getPuntosTotales()<this.puntosAJugar && this.participante2.getPuntosTotales()<this.puntosAJugar){
             this.jugarRonda();
         }
 
 
     }
-
+    /**
+     * Método que se encarga de jugar una roda de la partida, el participante 1 que es al que le toca el turno,
+     * ejecuta su método de jugar, luego se intercambian los participantes para que en la siguiente ronda juegue el
+     * participante 2.
+     * */
     public void jugarRonda(){
-
+        this.participante1.jugar();
+        Participante temp = this.participante1;
+        this.participante1 = this.participante2;
+        this.participante2 = temp;
     }
 
     /**
@@ -50,7 +75,24 @@ public class Mesa {
             this.participante1 = this.participante2;
             this.participante2 = temp;
         }
-
-
+    }
+    /**
+     * Método que se encarga de repartir las cartas a los jugadores
+     * */
+    public void repartirCartas(ArrayList<Carta> mano){
+        if(this.baraja.getCartas().isEmpty()){
+            return;
+        }
+        while (mano.size()<3){
+            mano.add(this.baraja.getCartas().get(0));
+            this.baraja.getCartas().remove(0);
+        }
+    }
+    public boolean barajaMano(){
+        int valorTotal = 0;
+        for (Carta carta : this.cartasEnMesa){
+            valorTotal += carta.getValorNumerico();
+        }
+        return valorTotal == 15;
     }
 }
