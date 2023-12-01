@@ -35,15 +35,26 @@ public class Baraja {
     public void barajar(){
         Collections.shuffle(this.cartas);
     }
+    /**
+     * Método que pone en la mesa 4 cartas y las saca de
+     * la baraja
+     * **/
     public void ponerEnMesa(ArrayList<Carta> cartasEnMesa){
         while (cartasEnMesa.size()<4){
             cartasEnMesa.add(this.cartas.get(0));
             this.cartas.remove(0);
         }
     }
+    /**
+     * Método que saca una carta de la baraja y la
+     * devuelve
+     * */
     public Carta sacarCarta(){
         return this.cartas.remove(0);
     }
+    /**
+     * Método que mete una carta en la baraja
+     * */
     public void meterCarta(Carta carta){
         this.cartas.add(carta);
     }

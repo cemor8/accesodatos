@@ -38,7 +38,7 @@ public class Mesa {
         }
 
         while (this.participante1.getPuntosTotales()<this.puntosAJugar && this.participante2.getPuntosTotales()<this.puntosAJugar){
-            this.jugarRonda();
+            this.jugarTurno();
         }
 
 
@@ -48,11 +48,27 @@ public class Mesa {
      * ejecuta su método de jugar, luego se intercambian los participantes para que en la siguiente ronda juegue el
      * participante 2.
      * */
-    public void jugarRonda(){
+    public void jugarTurno(){
+        this.participante1.setHaConseguidoCartasEnRonda(false);
         this.participante1.jugar();
         Participante temp = this.participante1;
         this.participante1 = this.participante2;
         this.participante2 = temp;
+        if(this.participante1.getMano().isEmpty() && this.participante2.getMano().isEmpty() && !this.baraja.getCartas().isEmpty()) {
+            this.repartirCartas(this.participante1.getMano());
+            this.repartirCartas((this.participante2.getMano()));
+        }else if (this.participante1.getMano().isEmpty() && this.participante2.getMano().isEmpty() && this.baraja.getCartas().isEmpty()){
+            if(!this.cartasEnMesa.isEmpty()){
+                if(this.participante1.isHaConseguidoCartasEnRonda()){
+                    this.participante1.getCartasGanadas().addAll(this.cartasEnMesa);
+                }else {
+                    this.participante2.getCartasGanadas().addAll(this.cartasEnMesa);
+
+                }
+                this.cartasEnMesa = new ArrayList<>();
+            }
+            this.resumenRonda();
+        }
     }
 
     /**
@@ -88,11 +104,38 @@ public class Mesa {
             this.baraja.getCartas().remove(0);
         }
     }
+    /**
+     * Método que se encarga de comprobar si hay una
+     * baraja de mano.
+     * */
     public boolean barajaMano(){
         int valorTotal = 0;
         for (Carta carta : this.cartasEnMesa){
             valorTotal += carta.getValorNumerico();
         }
         return valorTotal == 15;
+    }
+    public void resumenRonda(){
+        //comprobar fin de ronda, quien se lleva los puntos
+
+        //puntos por cartas
+
+        if(this.participante1.getMano().size() > this.participante2.getMano().size()){
+            this.participante1.setPuntosCartas(this.participante1.getPuntosCartas()+1);
+        }else if(this.participante2.getMano().size() > this.participante1.getMano().size()){
+            this.participante2.setPuntosCartas(this.participante1.getPuntosCartas()+1);
+        }
+        if(this.participante1.cantidadOros() > this.participante2.cantidadOros()){
+            this.participante1.setPuntosOros(this.participante1.getPuntosOros()+2);
+        }else if(this.participante1.cantidadOros() < this.participante2.cantidadOros()){
+            this.participante2.setPuntosOros(this.participante2.getPuntosOros()+2);
+        }
+        if(this.participante1.tiene7oros()){
+            this.participante1.setPuntosOros(this.participante1.getPuntosOros() + 1);
+        }else {
+            this.participante2.setPuntosOros(this.participante2.getPuntosOros() + 1);
+        }
+
+        
     }
 }

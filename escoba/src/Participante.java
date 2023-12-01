@@ -8,7 +8,8 @@ public class Participante {
     private int puntosSietes;
     private int puntosCartas;
     private int puntosOros;
-    private int puntosTotales;
+    private int puntosTotales = 0;
+    private boolean haConseguidoCartasEnRonda = false;
 
     public ArrayList<Carta> getMano() {
         return mano;
@@ -67,7 +68,7 @@ public class Participante {
     }
 
     public int getPuntosTotales() {
-        this.puntosTotales = this.puntosEscobas + this.puntosVelo + this.puntosCartas + this.puntosOros + this.puntosSietes;
+        this.puntosTotales += this.puntosEscobas + this.puntosVelo + this.puntosCartas + this.puntosOros + this.puntosSietes;
         return puntosTotales;
     }
     public void repartir(){
@@ -81,6 +82,29 @@ public class Participante {
 
     }
 
+    public boolean isHaConseguidoCartasEnRonda() {
+        return haConseguidoCartasEnRonda;
+    }
 
+    public void setHaConseguidoCartasEnRonda(boolean haConseguidoCartasEnRonda) {
+        this.haConseguidoCartasEnRonda = haConseguidoCartasEnRonda;
+    }
+    public Integer cantidadOros(){
+        int i = 0;
+        for (Carta cada_carta : this.cartasGanadas){
+            if(cada_carta.getPalo().equalsIgnoreCase("oros"));
+            i++;
+        }
+        return i;
+    }
+    public boolean tiene7oros(){
+        boolean tiene = false;
+        for (Carta cada_carta : this.cartasGanadas){
+            if(cada_carta.getPalo().equalsIgnoreCase("oros") && cada_carta.getValorNumerico() == 7){
+                tiene = true;
+            }
 
+        }
+        return tiene;
+    }
 }
