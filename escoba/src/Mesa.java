@@ -50,7 +50,7 @@ public class Mesa {
      * */
     public void jugarTurno(){
         this.participante1.setHaConseguidoCartasEnRonda(false);
-        this.participante1.jugar();
+        this.participante1.jugar(this.cartasEnMesa);
         Participante temp = this.participante1;
         this.participante1 = this.participante2;
         this.participante2 = temp;

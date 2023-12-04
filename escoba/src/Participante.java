@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Participante {
-    private ArrayList<Carta> mano = new ArrayList<>();
+    private ArrayList<Carta> mano;
     private ArrayList<Carta> cartasGanadas = new ArrayList<>();
     private int puntosEscobas;
     private int puntosVelo;
@@ -10,6 +10,10 @@ public class Participante {
     private int puntosOros;
     private int puntosTotales = 0;
     private boolean haConseguidoCartasEnRonda = false;
+
+    public Participante(ArrayList<Carta> mano) {
+        this.mano = mano;
+    }
 
     public ArrayList<Carta> getMano() {
         return mano;
@@ -74,11 +78,39 @@ public class Participante {
     public void repartir(){
 
     }
-    public void buscarPosiblesEscobas(){
-
-
+    public ArrayList<ArrayList<Carta>> buscarPosiblesEscobas(Carta carta,ArrayList<Carta> cartasEnMesa){
+        ArrayList<Carta> combinacionActual = new ArrayList<>();
+        comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, combinacionActual);
+        return comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, new ArrayList<>());
     }
-    public void jugar(){
+    public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual) {
+        ArrayList<ArrayList<Carta>> combinacionesValidas = new ArrayList<>();
+        if (suma == 0) {
+            // Se ha encontrado una combinación que suma 15
+            System.out.println("Combinación que suma 15: " + combinacionActual);
+
+            combinacionesValidas.add(new ArrayList<>(combinacionActual));
+        }
+
+        for (int i = indice; i < cartas.size(); i++) {
+            if (suma - cartas.get(i).getValorNumerico() >= 0) {
+                combinacionActual.add(cartas.get(i));
+                ArrayList<ArrayList<Carta>> combinaciones = comprobarCombinacion(cartas, suma - cartas.get(i).getValorNumerico(), i + 1, combinacionActual);
+                if (combinaciones != null) {
+                    combinacionesValidas.addAll(combinaciones);
+                }
+                combinacionActual.remove(combinacionActual.size() - 1);
+            }
+        }
+        if(combinacionesValidas.isEmpty()){
+            return null;
+        }else {
+            return combinacionesValidas;
+        }
+    }
+
+
+    public void jugar(ArrayList<Carta> cartasMesa){
 
     }
 
@@ -89,6 +121,8 @@ public class Participante {
     public void setHaConseguidoCartasEnRonda(boolean haConseguidoCartasEnRonda) {
         this.haConseguidoCartasEnRonda = haConseguidoCartasEnRonda;
     }
+
+
     public Integer cantidadOros(){
         int i = 0;
         for (Carta cada_carta : this.cartasGanadas){
@@ -106,5 +140,14 @@ public class Participante {
 
         }
         return tiene;
+    }
+    public Integer cantidadSietes(){
+        int i = 0;
+        for (Carta cada_carta : this.cartasGanadas){
+            if(cada_carta.getValorNumerico() == 7){
+                i++;
+            }
+        }
+        return i;
     }
 }
