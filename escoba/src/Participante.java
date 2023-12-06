@@ -79,8 +79,8 @@ public class Participante {
 
     }
     public ArrayList<ArrayList<Carta>> buscarPosiblesEscobas(Carta carta,ArrayList<Carta> cartasEnMesa){
-        ArrayList<Carta> combinacionActual = new ArrayList<>();
-        comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, combinacionActual);
+        //ArrayList<Carta> combinacionActual = new ArrayList<>();
+        //comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, combinacionActual);
         return comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, new ArrayList<>());
     }
     public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual) {

@@ -28,7 +28,7 @@ public class Jugador extends Participante {
         }
 
         Carta cartaSeleccionada = this.pedirCarta("Introduce carta para utilizar");
-        ArrayList<ArrayList<Carta>> posiblesEscobas = this.buscarPosiblesEscobas(cartaSeleccionada, cartasEnMesa);
+        ArrayList<ArrayList<Carta>> posiblesEscobas = buscarPosiblesEscobas(cartaSeleccionada, cartasEnMesa);
 
         if (posiblesEscobas == null) {
             System.out.println("No hay escobas disponibles con esa carta, se dejará en la mesa");
