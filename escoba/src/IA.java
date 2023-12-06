@@ -34,31 +34,47 @@ public class IA extends Participante{
         }
         ArrayList<Carta> escoba = this.buscarEscoba(todasEscobas,cartasMesa);
         if(escoba !=null){
-            // eliminar cartas de la baraja y mano y irse
+            this.meterGanadas(escoba,cartasMesa);
+            setPuntosEscobas(getPuntosEscobas() + 1);
             return;
         }
 
         ArrayList<Carta> combinacion7Oros = this.buscarCombinacion7Oros(todasEscobas);
         if(combinacion7Oros !=null){
-            // eliminar cartas de la baraja y mano y irse
+            this.meterGanadas(combinacion7Oros,cartasMesa);
+            setPuntosVelo(getPuntosVelo() + 1);
             return;
         }
 
         ArrayList<ArrayList<Carta>> combinacionesConSietes = new ArrayList<>();
         this.buscarSietes(todasEscobas,combinacionesConSietes);
         if(!combinacionesConSietes.isEmpty()){
-            //buscar prioridades de combinaciones y luego eliminar cartas
+            ArrayList<Carta> combinacionOros = this.preferenciasSietes(combinacionesConSietes);
+            if(combinacionOros == null){
+                this.meterGanadas(combinacionesConSietes.get(0),cartasMesa);
+                return;
+            }
+            this.meterGanadas(combinacionOros,cartasMesa);
             return;
         }
+
         ArrayList<ArrayList<Carta>> combinacionesOros = new ArrayList<>();
         this.buscarOros(todasEscobas,combinacionesOros);
         if(!combinacionesOros.isEmpty()){
-            //buscar prioridades de combinaciones y luego eliminar cartas
+            ArrayList<Carta> mayor = new ArrayList<>();
+            int cantidad = 0;
+            for(ArrayList<Carta> combConSiete : combinacionesOros){
+                int cartasOros = (int) combConSiete.stream().filter(carta -> carta.getPalo().equalsIgnoreCase("oros")).count();
+                if(cartasOros>cantidad){
+                    mayor = combConSiete;
+                }
+            }
+            this.meterGanadas(mayor,cartasMesa);
             return;
         }
-        ArrayList<Carta> combinacionFinal = this.devolverMasLarga(todasEscobas);
 
-        //eliminar las cartas y meterlas luego
+        ArrayList<Carta> combinacionFinal = this.devolverMasLarga(todasEscobas);
+        this.meterGanadas(combinacionFinal,cartasMesa);
     }
 
     /**
@@ -107,14 +123,14 @@ public class IA extends Participante{
     /**
      * Método que busca combinaciones con oros
      * */
-    public void buscarOros(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas, ArrayList<ArrayList<Carta>> listaCombinacionesCon7){
+    public void buscarOros(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas, ArrayList<ArrayList<Carta>> listaCombinacionesConOros){
         for(ArrayList<ArrayList<Carta>> combinacionPorCarta : todasEscobas){
             for(ArrayList<Carta> cadaCombinacion : combinacionPorCarta){
                 Optional<Carta> carta = cadaCombinacion.stream().filter(carta1 -> carta1.getPalo().equalsIgnoreCase("oros")).findAny();
                 if(carta.isEmpty()){
                     continue;
                 }
-                listaCombinacionesCon7.add(cadaCombinacion);
+                listaCombinacionesConOros.add(cadaCombinacion);
             }
         }
     }
@@ -132,6 +148,29 @@ public class IA extends Participante{
         }
         return mayor;
     }
+    public ArrayList<Carta> preferenciasSietes(ArrayList<ArrayList<Carta>> combinacionesConSietes){
+        ArrayList<ArrayList<Carta>> combsFinales = new ArrayList<>();
+        for(ArrayList<Carta> combinacion : combinacionesConSietes){
+            Optional<Carta> carta = combinacion.stream().filter(carta1 -> carta1.getPalo().equalsIgnoreCase("oros")).findAny();
+            if(carta.isEmpty()){
+                continue;
+            }
+            combsFinales.add(combinacion);
+        }
+        if(combsFinales.isEmpty()){
+            combinacionesConSietes.sort(Comparator.comparing(ArrayList::size));
+            return null;
+        }
+        ArrayList<Carta> mayor = new ArrayList<>();
+        int cantidad = 0;
+        for(ArrayList<Carta> combConSiete : combsFinales){
+            int cartasOros = (int) combConSiete.stream().filter(carta -> carta.getPalo().equalsIgnoreCase("oros")).count();
+            if(cartasOros>cantidad){
+                mayor = combConSiete;
+            }
+        }
+        return mayor;
+    }
 
     /**
      * Método que deja una carta en la mesa
@@ -145,5 +184,16 @@ public class IA extends Participante{
             return this.getMano().remove(1);
         }
         return this.getMano().remove(0);
+    }
+    public void meterGanadas(ArrayList<Carta> cartas, ArrayList<Carta> cartasEnMesa){
+        int i = 0;
+        while (i < cartas.size()) {
+            getCartasGanadas().add(cartas.get(i));
+            if (getMano().contains(cartas.get(i))) {
+                getMano().remove(cartas.get(i));
+            } else {
+                cartasEnMesa.remove(cartas.get(i));
+            }
+        }
     }
 }

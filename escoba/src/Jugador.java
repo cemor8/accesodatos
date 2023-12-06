@@ -23,7 +23,7 @@ public class Jugador extends Participante {
         if(cartasEnMesa.isEmpty()){
             Carta cartaSeleccionada = this.pedirCarta("Introduce carta para dejar");
             cartasEnMesa.add(cartaSeleccionada);
-            this.getMano().remove(cartaSeleccionada);
+            getMano().remove(cartaSeleccionada);
             return;
         }
 
@@ -33,22 +33,22 @@ public class Jugador extends Participante {
         if (posiblesEscobas == null) {
             System.out.println("No hay escobas disponibles con esa carta, se dejará en la mesa");
             cartasEnMesa.add(cartaSeleccionada);
-            this.getMano().remove(cartaSeleccionada);
+            getMano().remove(cartaSeleccionada);
             return;
         }
 
         ArrayList<Carta> combinacion = this.pedirCombinacion(posiblesEscobas, "Introduce la combinacion a elegir");
         int l = 0;
         while (l < combinacion.size()) {
-            this.getCartasGanadas().add(combinacion.get(l));
-            if (this.getMano().contains(combinacion.get(l))) {
-                this.getMano().remove(combinacion.get(l));
+            getCartasGanadas().add(combinacion.get(l));
+            if (getMano().contains(combinacion.get(l))) {
+                getMano().remove(combinacion.get(l));
             } else {
                 cartasEnMesa.remove(combinacion.get(l));
             }
         }
         if (cartasEnMesa.isEmpty()) {
-            this.setPuntosEscobas(this.getPuntosEscobas() + 1);
+            setPuntosEscobas(getPuntosEscobas() + 1);
         }
 
 
@@ -63,13 +63,13 @@ public class Jugador extends Participante {
             System.out.println(texto);
             int i = 0;
             System.out.println("\n");
-            for (Carta carta : this.getMano()) {
+            for (Carta carta : getMano()) {
                 System.out.println(i + " " + carta + "\n");
             }
             Scanner opcionIn = new Scanner(System.in);
             try {
                 opcion = opcionIn.nextInt();
-                if (this.getMano().get(opcion) == null) {
+                if (getMano().get(opcion) == null) {
                     throw new Exception("Opcion Inválida");
                 }
             } catch (Exception err) {
@@ -77,7 +77,7 @@ public class Jugador extends Participante {
                 opcion = null;
             }
         }
-        return this.getMano().get(opcion);
+        return getMano().get(opcion);
 
     }
     /**
