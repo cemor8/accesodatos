@@ -46,6 +46,7 @@ public class Jugador extends Participante {
             } else {
                 cartasEnMesa.remove(combinacion.get(l));
             }
+            combinacion.remove(l);
         }
         if (cartasEnMesa.isEmpty()) {
             setPuntosEscobas(getPuntosEscobas() + 1);
@@ -65,6 +66,7 @@ public class Jugador extends Participante {
             System.out.println("\n");
             for (Carta carta : getMano()) {
                 System.out.println(i + " " + carta + "\n");
+                i++;
             }
             Scanner opcionIn = new Scanner(System.in);
             try {
@@ -110,5 +112,10 @@ public class Jugador extends Participante {
             }
         }
         return combinaciones.get(opcion);
+    }
+
+
+    public Usuario getPerfilUsuario() {
+        return perfilUsuario;
     }
 }

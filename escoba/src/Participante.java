@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Participante {
     private ArrayList<Carta> mano;
@@ -81,15 +82,17 @@ public class Participante {
     public ArrayList<ArrayList<Carta>> buscarPosiblesEscobas(Carta carta,ArrayList<Carta> cartasEnMesa){
         //ArrayList<Carta> combinacionActual = new ArrayList<>();
         //comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, combinacionActual);
-        return comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, new ArrayList<>());
+        return comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, new ArrayList<>(List.of(carta)));
     }
     public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual) {
         ArrayList<ArrayList<Carta>> combinacionesValidas = new ArrayList<>();
         if (suma == 0) {
+
             // Se ha encontrado una combinación que suma 15
             System.out.println("Combinación que suma 15: " + combinacionActual);
-
-            combinacionesValidas.add(new ArrayList<>(combinacionActual));
+            System.out.println("\n");
+            ArrayList<Carta> nuevaCombinacion = new ArrayList<>(combinacionActual);
+            combinacionesValidas.add(new ArrayList<>(nuevaCombinacion));
         }
 
         for (int i = indice; i < cartas.size(); i++) {
@@ -149,5 +152,12 @@ public class Participante {
             }
         }
         return i;
+    }
+    public void resetearPuntos(){
+        this.puntosCartas = 0;
+        this.puntosEscobas = 0;
+        this.puntosOros = 0;
+        this.puntosVelo = 0;
+        this.puntosSietes = 0;
     }
 }

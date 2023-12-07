@@ -10,6 +10,8 @@ public class IA extends Participante{
 
     @Override
     public void jugar(ArrayList<Carta> cartasMesa){
+        System.out.println("cartas ia ");
+        System.out.println();
         if(cartasMesa.isEmpty()){
             Carta cartaSeleccionada = this.dejarCarta();
             cartasMesa.add(cartaSeleccionada);
@@ -19,9 +21,9 @@ public class IA extends Participante{
 
         ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas = new ArrayList<>();
 
-        for(Carta cadaCartaMano : cartasMesa){
+        for(Carta cadaCartaMano : getMano()){
             ArrayList<ArrayList<Carta>> posibles_escobas = this.buscarPosiblesEscobas(cadaCartaMano, cartasMesa);
-            if(!posibles_escobas.isEmpty()){
+            if(posibles_escobas!= null){
                 todasEscobas.add(posibles_escobas);
             }
         }
@@ -31,9 +33,12 @@ public class IA extends Participante{
             this.getMano().remove(cartaSeleccionada);
             System.out.println("La IA deja la carta: \n");
             System.out.println(cartaSeleccionada);
+            return;
         }
         ArrayList<Carta> escoba = this.buscarEscoba(todasEscobas,cartasMesa);
         if(escoba !=null){
+            System.out.println("La ia hace escoba con: ");
+            System.out.println(escoba);
             this.meterGanadas(escoba,cartasMesa);
             setPuntosEscobas(getPuntosEscobas() + 1);
             return;
@@ -41,8 +46,9 @@ public class IA extends Participante{
 
         ArrayList<Carta> combinacion7Oros = this.buscarCombinacion7Oros(todasEscobas);
         if(combinacion7Oros !=null){
+            System.out.println("La ia se lleva el 7 de oros con: ");
+            System.out.println(combinacion7Oros);
             this.meterGanadas(combinacion7Oros,cartasMesa);
-            setPuntosVelo(getPuntosVelo() + 1);
             return;
         }
 
@@ -51,9 +57,13 @@ public class IA extends Participante{
         if(!combinacionesConSietes.isEmpty()){
             ArrayList<Carta> combinacionOros = this.preferenciasSietes(combinacionesConSietes);
             if(combinacionOros == null){
-                this.meterGanadas(combinacionesConSietes.get(0),cartasMesa);
+                System.out.println("La Ia hace la siguiente combinacion : ");
+                System.out.println(combinacionesConSietes.get(combinacionesConSietes.size()-1));
+                this.meterGanadas(combinacionesConSietes.get(combinacionesConSietes.size()-1),cartasMesa);
                 return;
             }
+            System.out.println("La Ia hace la siguiente combinacion : ");
+            System.out.println(combinacionOros);
             this.meterGanadas(combinacionOros,cartasMesa);
             return;
         }
@@ -69,11 +79,15 @@ public class IA extends Participante{
                     mayor = combConSiete;
                 }
             }
+            System.out.println("La Ia hace la siguiente combinacion : ");
+            System.out.println(mayor);
             this.meterGanadas(mayor,cartasMesa);
             return;
         }
 
         ArrayList<Carta> combinacionFinal = this.devolverMasLarga(todasEscobas);
+        System.out.println("La Ia hace la siguiente combinacion : ");
+        System.out.println(combinacionFinal);
         this.meterGanadas(combinacionFinal,cartasMesa);
     }
 
@@ -194,6 +208,7 @@ public class IA extends Participante{
             } else {
                 cartasEnMesa.remove(cartas.get(i));
             }
+            cartas.remove(i);
         }
     }
 }
