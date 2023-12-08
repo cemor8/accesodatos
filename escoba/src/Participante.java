@@ -80,13 +80,13 @@ public class Participante {
 
     }
     public ArrayList<ArrayList<Carta>> buscarPosiblesEscobas(Carta carta,ArrayList<Carta> cartasEnMesa){
-        //ArrayList<Carta> combinacionActual = new ArrayList<>();
-        //comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, combinacionActual);
-        return comprobarCombinacion(cartasEnMesa, 15 - carta.getValorNumerico(), 0, new ArrayList<>(List.of(carta)));
+        ArrayList<Carta> cartasEnviar = (ArrayList<Carta>) cartasEnMesa.clone();
+        cartasEnviar.add(carta);
+        return comprobarCombinacion(cartasEnviar, 15, 0, new ArrayList<>(), carta);
     }
-    public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual) {
+    public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual,Carta carta) {
         ArrayList<ArrayList<Carta>> combinacionesValidas = new ArrayList<>();
-        if (suma == 0) {
+        if (suma == 0 && combinacionActual.contains(carta)) {
 
             // Se ha encontrado una combinación que suma 15
             System.out.println("Combinación que suma 15: " + combinacionActual);
@@ -98,7 +98,7 @@ public class Participante {
         for (int i = indice; i < cartas.size(); i++) {
             if (suma - cartas.get(i).getValorNumerico() >= 0) {
                 combinacionActual.add(cartas.get(i));
-                ArrayList<ArrayList<Carta>> combinaciones = comprobarCombinacion(cartas, suma - cartas.get(i).getValorNumerico(), i + 1, combinacionActual);
+                ArrayList<ArrayList<Carta>> combinaciones = comprobarCombinacion(cartas, suma - cartas.get(i).getValorNumerico(), i + 1, combinacionActual,carta);
                 if (combinaciones != null) {
                     combinacionesValidas.addAll(combinaciones);
                 }
@@ -114,7 +114,6 @@ public class Participante {
 
 
     public void jugar(ArrayList<Carta> cartasMesa){
-
     }
 
     public boolean isHaConseguidoCartasEnRonda() {
