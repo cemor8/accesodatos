@@ -89,10 +89,12 @@ public class Participante {
         if (suma == 0 && combinacionActual.contains(carta)) {
 
             // Se ha encontrado una combinación que suma 15
-            System.out.println("Combinación que suma 15: " + combinacionActual);
-            System.out.println("\n");
-            ArrayList<Carta> nuevaCombinacion = new ArrayList<>(combinacionActual);
-            combinacionesValidas.add(new ArrayList<>(nuevaCombinacion));
+            if (!combinacionYaExiste(combinacionesValidas, combinacionActual)) {
+                System.out.println("Combinación que suma 15: " + combinacionActual);
+                System.out.println("\n");
+                combinacionesValidas.add(new ArrayList<>(combinacionActual));
+            }
+
         }
 
         for (int i = indice; i < cartas.size(); i++) {
@@ -110,6 +112,14 @@ public class Participante {
         }else {
             return combinacionesValidas;
         }
+    }
+    private boolean combinacionYaExiste(ArrayList<ArrayList<Carta>> combinacionesValidas, ArrayList<Carta> combinacionActual) {
+        for (ArrayList<Carta> combinacion : combinacionesValidas) {
+            if (combinacion.size() == combinacionActual.size() && combinacion.containsAll(combinacionActual)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
