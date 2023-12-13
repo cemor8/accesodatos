@@ -66,6 +66,9 @@ public class Mesa {
      * participante 2.
      * */
     public boolean jugarTurno(){
+        //cambiar lo de las cartas en la ronda
+
+
         this.participante1.setHaConseguidoCartasEnRonda(false);
         this.participante1.jugar(this.cartasEnMesa);
         Participante temp = this.participante1;

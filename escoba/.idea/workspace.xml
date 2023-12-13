@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca2b5fbd-2de7-4d8f-8bf8-94a4e8a77250" name="Changes" comment="" />
+    <list default="true" id="ca2b5fbd-2de7-4d8f-8bf8-94a4e8a77250" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,7 +38,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/carlos/Desktop/progmovil/Sudoku",
+    "last_opened_file_path": "C:/Users/cmorbla/Desktop/examenInterfacesCarlosMoraisBlanco",
     "onboarding.tips.debug.path": "C:/Users/cmorbla/Desktop/accesodatos/escoba/src/Main.java",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
