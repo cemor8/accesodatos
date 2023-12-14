@@ -51,8 +51,8 @@ public class IA extends Participante {
         if (escoba != null) {
             //si se puede, empiezo buscando alguna que tenga el 7 de oros
 
-            ArrayList<Carta> combinacion70ros = this.buscarCombinacion7OrosUnica(escoba);
-            if (combinacion70ros != null) {
+            ArrayList<Carta> combinacion70ros = this.buscarCombinacion7Oros(null,escoba);
+            if (!combinacion70ros.isEmpty()) {
                 System.out.println("La ia hace escoba con una combinacion con el 7 de oros: ");
                 System.out.println(combinacion70ros);
                 this.meterGanadas(combinacion70ros, cartasMesa);
@@ -62,7 +62,7 @@ public class IA extends Participante {
 
             // si no hay ninguna con el siete de oros, busco una con sietes
 
-            ArrayList<Carta> escobaCon7 = this.escobaCon7(escoba);
+            ArrayList<Carta> escobaCon7 = this.buscarSietes(null,escoba);
 
             if (!escobaCon7.isEmpty()) {
                 System.out.println("La ia hace escoba con una combinacion con sietes: ");
@@ -73,7 +73,7 @@ public class IA extends Participante {
 
             //si no hay con sietes, busco una con oros.
 
-            ArrayList<Carta> escobaConOros = this.devolverEscobaConOros(escoba);
+            ArrayList<Carta> escobaConOros = this.buscarOros(null,escoba);
 
             //como si no hay ninguna escoba con oros, la funcion devuelve la combinacion mas larga, siempre escobaConOros es una
             //combinacion
@@ -86,9 +86,9 @@ public class IA extends Participante {
 
         //Si no hay escobas, busco una combinacion con el siete de oros
 
-        ArrayList<ArrayList<Carta>> combinacion7Oros = this.buscarCombinacion7Oros(todasEscobas);
+        ArrayList<Carta> combinacion7Oros = this.buscarCombinacion7Oros(todasEscobas,null);
 
-        if (combinacion7Oros != null) {
+        if (!combinacion7Oros.isEmpty()) {
             System.out.println("La ia se lleva el 7 de oros con: ");
             System.out.println(combinacion7Oros);
             //this.meterGanadas(combinacion7Oros, cartasMesa);
@@ -97,45 +97,35 @@ public class IA extends Participante {
 
 
         //buscar combinaciones con sietes si no hay ninguna con el siete de oros
-        ArrayList<ArrayList<Carta>> combinacionesConSietes = new ArrayList<>();
-        this.buscarSietes(todasEscobas, combinacionesConSietes);
+        ArrayList<Carta> combinacionConSietes = this.buscarSietes(todasEscobas,null);
 
-        if (!combinacionesConSietes.isEmpty()) {
-            //buscar combinacion con mas sietes
+        if (!combinacionConSietes.isEmpty()) {
 
-
-
-
-
-            ArrayList<Carta> combinacionOros = this.preferenciasSietes(combinacionesConSietes);
-            if (combinacionOros == null) {
-                System.out.println("La Ia hace la siguiente combinacion : ");
-                System.out.println(combinacionesConSietes.get(combinacionesConSietes.size() - 1));
-                this.meterGanadas(combinacionesConSietes.get(combinacionesConSietes.size() - 1), cartasMesa);
-                return;
-            }
             System.out.println("La Ia hace la siguiente combinacion : ");
+            System.out.println(combinacionConSietes);
+            this.meterGanadas(combinacionConSietes, cartasMesa);
+            return;
+        }
+
+
+
+        // busco la combinacion de oros
+
+        ArrayList<Carta> combinacionOros = this.buscarOros(todasEscobas,null);;
+
+        // si se encuentra alguna la hago, el método ya se encarga de las preferencias
+        if (!combinacionOros.isEmpty()) {
+
+            System.out.println("La Ia hace la siguiente combinacion con oros: ");
             System.out.println(combinacionOros);
             this.meterGanadas(combinacionOros, cartasMesa);
             return;
         }
 
-
-
-
-        ArrayList<ArrayList<Carta>> combinacionesOros = this.buscarOros(todasEscobas,null);;
-
-
-        if (!combinacionesOros.isEmpty()) {
-
-            System.out.println("La Ia hace la siguiente combinacion : ");
-            System.out.println(mayor);
-            this.meterGanadas(mayor, cartasMesa);
-            return;
-        }
+        //combinacion mas larga posible, ya que no hay ninguna que haga escoba, tenga el velo o sietes, o tenga oros
 
         ArrayList<Carta> combinacionFinal = this.devolverMasLarga(todasEscobas);
-        System.out.println("La Ia hace la siguiente combinacion : ");
+        System.out.println("La Ia hace la siguiente combinacion porque es la unica que puede : ");
         System.out.println(combinacionFinal);
         this.meterGanadas(combinacionFinal, cartasMesa);
     }
@@ -143,37 +133,35 @@ public class IA extends Participante {
     /**
      * Método que busca si se puede hacer una combinacion con el siete de oros
      */
-    public ArrayList<ArrayList<Carta>> buscarCombinacion7Oros(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas) {
+    public ArrayList<Carta> buscarCombinacion7Oros(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas, ArrayList<ArrayList<Carta>> escobas) {
         ArrayList<ArrayList<Carta>> combinacionesCon7Oros = new ArrayList<>();
-        for (ArrayList<ArrayList<Carta>> combinacionPorCarta : todasEscobas) {
-            for (ArrayList<Carta> cadaCombinacion : combinacionPorCarta) {
+        if(escobas!=null){
+            for (ArrayList<Carta> cadaCombinacion : escobas) {
                 Optional<Carta> carta = cadaCombinacion.stream().filter(carta1 -> carta1.getPalo().equalsIgnoreCase("oros") && carta1.getValorNumerico() == 7).findAny();
                 if (carta.isEmpty()) {
                     continue;
                 }
                 combinacionesCon7Oros.add(cadaCombinacion);
             }
-        }
-        if (combinacionesCon7Oros.size() > 1) {
-
-        }
-
-        return combinacionesCon7Oros;
-    }
-
-    /**
-     * Método que busca si se puede hacer una combinacion con el siete de oros para hacer una escoba
-     */
-    public ArrayList<Carta> buscarCombinacion7OrosUnica(ArrayList<ArrayList<Carta>> escoba) {
-
-        for (ArrayList<Carta> cadaCombinacion : escoba) {
-            Optional<Carta> carta = cadaCombinacion.stream().filter(carta1 -> carta1.getPalo().equalsIgnoreCase("oros") && carta1.getValorNumerico() == 7).findAny();
-            if (carta.isEmpty()) {
-                continue;
+        }else {
+            for (ArrayList<ArrayList<Carta>> combinacionPorCarta : todasEscobas) {
+                for (ArrayList<Carta> cadaCombinacion : combinacionPorCarta) {
+                    Optional<Carta> carta = cadaCombinacion.stream().filter(carta1 -> carta1.getPalo().equalsIgnoreCase("oros") && carta1.getValorNumerico() == 7).findAny();
+                    if (carta.isEmpty()) {
+                        continue;
+                    }
+                    combinacionesCon7Oros.add(cadaCombinacion);
+                }
             }
-            return cadaCombinacion;
         }
-        return null;
+
+
+        if (combinacionesCon7Oros.size() > 1) {
+           return this.buscarSietes(null,combinacionesCon7Oros);
+        }else if(!combinacionesCon7Oros.isEmpty()){
+            return combinacionesCon7Oros.get(0);
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -183,6 +171,7 @@ public class IA extends Participante {
         ArrayList<ArrayList<Carta>> posiblesEscobas = new ArrayList<ArrayList<Carta>>();
         for (ArrayList<ArrayList<Carta>> combinacionPorCarta : todasEscobas) {
             for (ArrayList<Carta> cadaCombinacion : combinacionPorCarta) {
+                //como la combinacion lleva la carta de la mano le resto uno para buscar el mismo size que la lista de la mesa
                 if (cadaCombinacion.size() - 1 == cartasEnMesa.size()) {
                     posiblesEscobas.add(cadaCombinacion);
                 }
@@ -194,7 +183,7 @@ public class IA extends Participante {
     /**
      * Método que busca las combinaciones con sietes
      */
-    public ArrayList<ArrayList<Carta>> buscarSietes(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas, ArrayList<ArrayList<Carta>> listaCombinacionesCon7) {
+    public ArrayList<Carta> buscarSietes(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas, ArrayList<ArrayList<Carta>> listaCombinacionesCon7) {
         ArrayList<ArrayList<Carta>> combsSietes = new ArrayList<>();
         if (listaCombinacionesCon7 != null) {
             for (ArrayList<Carta> comb : listaCombinacionesCon7) {
@@ -217,7 +206,16 @@ public class IA extends Participante {
             }
 
         }
-        return combsSietes;
+
+        // busco prioridad en las combinaciones con sietes
+        if (combsSietes.size()>1){
+            return this.conMasSietes(combsSietes);
+        }else if(combsSietes.isEmpty()){
+            //si no hay sietes devuelvo una lista vacia
+            return new ArrayList<>();
+        }
+        // si solo hay una combinacion con sietes, la devuelvo
+        return combsSietes.get(0);
     }
 
     /**
@@ -225,7 +223,6 @@ public class IA extends Participante {
      * @param combinacionesConSietes lista de combinaciones con sietes
      * */
     public ArrayList<Carta> conMasSietes(ArrayList<ArrayList<Carta>> combinacionesConSietes){
-        ArrayList<ArrayList<Carta>> combsFinales = new ArrayList<>();
         HashMap<Integer,ArrayList<ArrayList<Carta>>> cartasYSuCantidad = new HashMap<>();
 
         //clasifico las cartas por su size
@@ -246,6 +243,7 @@ public class IA extends Participante {
             }
             return this.conMasOros(combinacionesConMasSietes);
         }
+
         return this.conMasOros(combinacionesConSietes);
 
 
@@ -284,13 +282,10 @@ public class IA extends Participante {
         return combsOros.get(combsOros.size()-1);
 
     }
-
-
-
     /**
      * Método que busca combinaciones con oros
      */
-    public ArrayList<ArrayList<Carta>> buscarOros(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas , ArrayList<ArrayList<Carta>> combinacionesDiferenciar) {
+    public ArrayList<Carta> buscarOros(ArrayList<ArrayList<ArrayList<Carta>>> todasEscobas , ArrayList<ArrayList<Carta>> combinacionesDiferenciar) {
         ArrayList<ArrayList<Carta>> listaConOros = new ArrayList<>();
         if(combinacionesDiferenciar != null){
             for (ArrayList<Carta> combinacion : combinacionesDiferenciar){
@@ -299,6 +294,11 @@ public class IA extends Participante {
                     continue;
                 }
                 listaConOros.add(combinacion);
+            }
+            //ordeno por si no hay ninguna con oros, ordenar por size
+
+            if (!combinacionesDiferenciar.isEmpty()) {
+                combinacionesDiferenciar.sort(Comparator.comparing(ArrayList::size));
             }
 
         }else {
@@ -312,7 +312,13 @@ public class IA extends Participante {
                 }
             }
         }
-        return listaConOros;
+
+        if(listaConOros.size()>1){
+            return this.conMasOros(listaConOros);
+        }else if(listaConOros.isEmpty()){
+            return new ArrayList<>();
+        }
+        return listaConOros.get(0);
     }
 
     /**
@@ -330,77 +336,6 @@ public class IA extends Participante {
         return mayor;
     }
 
-    public ArrayList<Carta> escobaCon7(ArrayList<ArrayList<Carta>> escobas) {
-        ArrayList<ArrayList<Carta>> escobasCon7 = new ArrayList<>();
-        for (ArrayList<Carta> cada_escoba : escobas) {
-            Optional<Carta> cartaOptional = cada_escoba.stream().filter(carta -> carta.getValorNumerico() == 7).findAny();
-            if (cartaOptional.isPresent()) {
-                escobasCon7.add(cada_escoba);
-            }
-        }
-        if (!escobasCon7.isEmpty() && escobasCon7.size() > 1) {
-            ArrayList<Carta> escobaFinal = this.preferenciasSietes(escobasCon7);
-            if (escobaFinal != null) {
-                return escobaFinal;
-            }
-            return escobasCon7.get(escobasCon7.size() - 1);
-        }
-
-        escobasCon7.sort(Comparator.comparing(ArrayList::size));
-        return escobasCon7.get(escobasCon7.size() - 1);
-
-    }
-
-
-    public ArrayList<Carta> preferenciasSietes(ArrayList<ArrayList<Carta>> combinacionesConSietes) {
-        ArrayList<ArrayList<Carta>> combsFinales = new ArrayList<>();
-        for (ArrayList<Carta> combinacion : combinacionesConSietes) {
-            Optional<Carta> carta = combinacion.stream().filter(carta1 -> carta1.getPalo().equalsIgnoreCase("oros")).findAny();
-            if (carta.isEmpty()) {
-                continue;
-            }
-            combsFinales.add(combinacion);
-        }
-        if (combsFinales.isEmpty()) {
-            combinacionesConSietes.sort(Comparator.comparing(ArrayList::size));
-            return combinacionesConSietes.get(combinacionesConSietes.size()-1);
-        }
-        ArrayList<Carta> mayor = new ArrayList<>();
-        int cantidad = 0;
-        for (ArrayList<Carta> combConSiete : combsFinales) {
-            int cartasOros = (int) combConSiete.stream().filter(carta -> carta.getPalo().equalsIgnoreCase("oros")).count();
-            if (cartasOros > cantidad) {
-                mayor = combConSiete;
-            }
-        }
-        return mayor;
-    }
-
-
-    public ArrayList<Carta> devolverEscobaConOros(ArrayList<ArrayList<Carta>> posiblesEscobas) {
-        ArrayList<ArrayList<Carta>> escobasConOros = new ArrayList<>();
-        for (ArrayList<Carta> combinaciones : posiblesEscobas) {
-            Optional<Carta> cartaOptional = combinaciones.stream().filter(carta -> carta.getPalo().equalsIgnoreCase("oros")).findAny();
-            if (cartaOptional.isEmpty()) {
-                continue;
-            }
-            escobasConOros.add(combinaciones);
-        }
-        if (escobasConOros.isEmpty()) {
-            posiblesEscobas.sort(Comparator.comparing(ArrayList::size));
-            return posiblesEscobas.get(0);
-        }
-
-        ArrayList<Carta> mayor = new ArrayList<>();
-        int cantidad = 0;
-        for (ArrayList<Carta> combinaciones : escobasConOros) {
-            int cartasOros = (int) combinaciones.stream().filter(carta -> carta.getPalo().equalsIgnoreCase("oros")).count();
-            if (cartasOros > cantidad) {
-                mayor = combinaciones;
-            }
-        }
-        return mayor;
-    }
 
 
     /**
