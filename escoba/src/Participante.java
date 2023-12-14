@@ -4,6 +4,7 @@ import java.util.List;
 public class Participante {
     private ArrayList<Carta> mano;
     private ArrayList<Carta> cartasGanadas = new ArrayList<>();
+    private Mesa mesa;
     private int puntosEscobas;
     private int puntosVelo;
     private int puntosSietes;
@@ -11,6 +12,7 @@ public class Participante {
     private int puntosOros;
     private int puntosTotales = 0;
     private boolean haConseguidoCartasEnRonda = false;
+    private int ultimaRondaObtieneCartas = 0;
 
     public Participante(ArrayList<Carta> mano) {
         this.mano = mano;
@@ -168,5 +170,21 @@ public class Participante {
         this.puntosOros = 0;
         this.puntosVelo = 0;
         this.puntosSietes = 0;
+    }
+
+    public int getUltimaRondaObtieneCartas() {
+        return ultimaRondaObtieneCartas;
+    }
+
+    public void setUltimaRondaObtieneCartas(int ultimaRondaObtieneCartas) {
+        this.ultimaRondaObtieneCartas = ultimaRondaObtieneCartas;
+    }
+
+    public Mesa getMesa() {
+        return mesa;
+    }
+
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
     }
 }

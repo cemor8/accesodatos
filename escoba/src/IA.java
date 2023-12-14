@@ -14,7 +14,7 @@ public class IA extends Participante {
     @Override
     public void jugar(ArrayList<Carta> cartasMesa) {
         System.out.println("cartas ia ");
-        System.out.println();
+        System.out.println(getMano());
 
         //si no hay cartas en la mesa dejo una directamente
 
@@ -48,14 +48,15 @@ public class IA extends Participante {
 
         //busco si se puede hacer escoba
         ArrayList<ArrayList<Carta>> escoba = this.buscarEscobas(todasEscobas, cartasMesa);
-        if (escoba != null) {
+        if (!escoba.isEmpty()) {
             //si se puede, empiezo buscando alguna que tenga el 7 de oros
-
+            System.out.println();
             ArrayList<Carta> combinacion70ros = this.buscarCombinacion7Oros(null,escoba);
             if (!combinacion70ros.isEmpty()) {
                 System.out.println("La ia hace escoba con una combinacion con el 7 de oros: ");
                 System.out.println(combinacion70ros);
                 this.meterGanadas(combinacion70ros, cartasMesa);
+                setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
                 setPuntosEscobas(getPuntosEscobas() + 1);
                 return;
             }
@@ -68,6 +69,8 @@ public class IA extends Participante {
                 System.out.println("La ia hace escoba con una combinacion con sietes: ");
                 System.out.println(escobaCon7);
                 this.meterGanadas(escobaCon7, cartasMesa);
+                setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
+                setPuntosEscobas(getPuntosEscobas()+1);
                 return;
             }
 
@@ -79,7 +82,8 @@ public class IA extends Participante {
             //combinacion
             System.out.println("La ia hace escoba con la combinacion mas larga: ");
             System.out.println(escobaConOros);
-            //this.meterGanadas(escoba, cartasMesa);
+            this.meterGanadas(escobaConOros, cartasMesa);
+            setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
             setPuntosEscobas(getPuntosEscobas() + 1);
             return;
         }
@@ -91,7 +95,8 @@ public class IA extends Participante {
         if (!combinacion7Oros.isEmpty()) {
             System.out.println("La ia se lleva el 7 de oros con: ");
             System.out.println(combinacion7Oros);
-            //this.meterGanadas(combinacion7Oros, cartasMesa);
+            this.meterGanadas(combinacion7Oros, cartasMesa);
+            setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
             return;
         }
 
@@ -104,6 +109,7 @@ public class IA extends Participante {
             System.out.println("La Ia hace la siguiente combinacion : ");
             System.out.println(combinacionConSietes);
             this.meterGanadas(combinacionConSietes, cartasMesa);
+            setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
             return;
         }
 
@@ -119,6 +125,7 @@ public class IA extends Participante {
             System.out.println("La Ia hace la siguiente combinacion con oros: ");
             System.out.println(combinacionOros);
             this.meterGanadas(combinacionOros, cartasMesa);
+            setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
             return;
         }
 
@@ -127,6 +134,7 @@ public class IA extends Participante {
         ArrayList<Carta> combinacionFinal = this.devolverMasLarga(todasEscobas);
         System.out.println("La Ia hace la siguiente combinacion porque es la unica que puede : ");
         System.out.println(combinacionFinal);
+        setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
         this.meterGanadas(combinacionFinal, cartasMesa);
     }
 

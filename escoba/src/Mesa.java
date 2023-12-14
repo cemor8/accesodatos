@@ -7,6 +7,7 @@ public class Mesa {
     private Baraja baraja;
     private ArrayList<Carta> cartasEnMesa = new ArrayList<>();
     private int puntosAJugar;
+    private int numeroTurno = 0;
 
     public Mesa(Participante participante1, Participante participante2, Baraja baraja, int puntosAJugar) {
         this.participante1 = participante1;
@@ -19,6 +20,8 @@ public class Mesa {
      * al inicio, luego se comprueba si hay baraja de mano para volver a colocar las cartas, por ultimo se empieza la partida
      * */
     public void iniciarPartida(){
+        this.participante1.setMesa(this);
+        this.participante2.setMesa(this);
         while (this.participante1.getPuntosTotales()<this.puntosAJugar && this.participante2.getPuntosTotales()<this.puntosAJugar){
             this.crearRonda();
         }
@@ -68,8 +71,8 @@ public class Mesa {
     public boolean jugarTurno(){
         //cambiar lo de las cartas en la ronda
 
+        this.numeroTurno+=1;
 
-        this.participante1.setHaConseguidoCartasEnRonda(false);
         this.participante1.jugar(this.cartasEnMesa);
         Participante temp = this.participante1;
         this.participante1 = this.participante2;
@@ -80,16 +83,17 @@ public class Mesa {
             this.repartirCartas(this.participante1.getMano());
             this.repartirCartas((this.participante2.getMano()));
             return false;
+
         }else if (this.participante1.getMano().isEmpty() && this.participante2.getMano().isEmpty() && this.baraja.getCartas().isEmpty()){
             if(!this.cartasEnMesa.isEmpty()){
-                if(this.participante1.isHaConseguidoCartasEnRonda()){
+                if(this.participante1.getUltimaRondaObtieneCartas() > this.participante2.getUltimaRondaObtieneCartas()){
                     this.participante1.getCartasGanadas().addAll(this.cartasEnMesa);
                 }else {
                     this.participante2.getCartasGanadas().addAll(this.cartasEnMesa);
-
                 }
                 this.cartasEnMesa = new ArrayList<>();
             }
+            this.numeroTurno = 0;
             this.resumenRonda();
             return true;
         }
@@ -103,13 +107,13 @@ public class Mesa {
      * */
     public void decidirOrden(){
         System.out.println("Se decide el orden");
-
+        this.baraja.barajar();
         Carta cartaJugador1 = baraja.sacarCarta();
         Carta cartaJugador2 = baraja.sacarCarta();
 
         this.baraja.meterCarta(cartaJugador1);
         this.baraja.meterCarta(cartaJugador2);
-        this.baraja.barajar();
+
 
         if(cartaJugador1.getValorNumerico() == cartaJugador2.getValorNumerico()){
             this.decidirOrden();
@@ -154,9 +158,10 @@ public class Mesa {
         //puntos por cartas
         System.out.println("\n");
         System.out.println("\n");
-        if(this.participante1.getMano().size() > this.participante2.getMano().size()){
+
+        if(this.participante1.getCartasGanadas().size() > this.participante2.getCartasGanadas().size()){
             this.participante1.setPuntosCartas(this.participante1.getPuntosCartas()+1);
-        }else if(this.participante2.getMano().size() > this.participante1.getMano().size()){
+        }else if(this.participante2.getCartasGanadas().size() > this.participante1.getCartasGanadas().size()){
             this.participante2.setPuntosCartas(this.participante1.getPuntosCartas()+1);
         }
 
@@ -247,5 +252,9 @@ public class Mesa {
                 System.out.println("Gano la IA la partida");
             }
         }
+    }
+
+    public int getNumeroTurno() {
+        return numeroTurno;
     }
 }

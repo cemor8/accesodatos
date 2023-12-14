@@ -48,6 +48,7 @@ public class Jugador extends Participante {
             }
             combinacion.remove(l);
         }
+        setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
         if (cartasEnMesa.isEmpty()) {
             setPuntosEscobas(getPuntosEscobas() + 1);
         }
