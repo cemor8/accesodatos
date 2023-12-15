@@ -12,13 +12,13 @@ public class Baraja {
 
                 switch (j) {
                     case 8:
-                        cartas.add(new Carta("sota", palo,j));
+                        cartas.add(new Carta("Sota", palo,j));
                         break;
                     case 9:
-                        cartas.add(new Carta("caballo", palo,j));
+                        cartas.add(new Carta("Caballo", palo,j));
                         break;
                     case 10:
-                        cartas.add(new Carta("rey", palo,j));
+                        cartas.add(new Carta("Rey", palo,j));
                         break;
                     default:
                         cartas.add(new Carta(String.valueOf(j), palo,j));
@@ -50,7 +50,9 @@ public class Baraja {
      * devuelve
      * */
     public Carta sacarCarta(){
-        return this.cartas.remove(0);
+        Carta carta = this.cartas.get(0);
+        this.cartas.remove(carta);
+        return carta;
     }
     /**
      * Método que mete una carta en la baraja

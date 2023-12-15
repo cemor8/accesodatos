@@ -78,9 +78,6 @@ public class Participante {
         this.puntosTotales += this.puntosEscobas + this.puntosVelo + this.puntosCartas + this.puntosOros + this.puntosSietes;
         return puntosTotales;
     }
-    public void repartir(){
-
-    }
     public ArrayList<ArrayList<Carta>> buscarPosiblesEscobas(Carta carta,ArrayList<Carta> cartasEnMesa){
         ArrayList<Carta> cartasEnviar = (ArrayList<Carta>) cartasEnMesa.clone();
         cartasEnviar.add(carta);
@@ -88,9 +85,11 @@ public class Participante {
     }
     public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual,Carta carta) {
         ArrayList<ArrayList<Carta>> combinacionesValidas = new ArrayList<>();
+
         if (suma == 0 && combinacionActual.contains(carta)) {
 
             // Se ha encontrado una combinación que suma 15
+
             if (!combinacionYaExiste(combinacionesValidas, combinacionActual)) {
                 System.out.println("Combinación que suma 15: " + combinacionActual);
                 System.out.println("\n");
@@ -109,6 +108,7 @@ public class Participante {
                 combinacionActual.remove(combinacionActual.size() - 1);
             }
         }
+
         if(combinacionesValidas.isEmpty()){
             return null;
         }else {
@@ -140,16 +140,18 @@ public class Participante {
     public Integer cantidadOros(){
         int i = 0;
         for (Carta cada_carta : this.cartasGanadas){
-            if(cada_carta.getPalo().equalsIgnoreCase("oros"));
-            i++;
+            if(cada_carta.getPalo().equalsIgnoreCase("oros")){
+                i+=1;
+            }
         }
         return i;
     }
     public boolean tiene7oros(){
         boolean tiene = false;
         for (Carta cada_carta : this.cartasGanadas){
-            if(cada_carta.getPalo().equalsIgnoreCase("oros") && cada_carta.getValorNumerico() == 7){
+            if (cada_carta.getPalo().equalsIgnoreCase("oros") && cada_carta.getValorNumerico() == 7) {
                 tiene = true;
+                break;
             }
 
         }

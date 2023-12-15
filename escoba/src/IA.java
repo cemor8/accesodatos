@@ -13,15 +13,23 @@ public class IA extends Participante {
      * */
     @Override
     public void jugar(ArrayList<Carta> cartasMesa) {
-        System.out.println("cartas ia ");
-        System.out.println(getMano());
+        System.out.println("\n-----Cartas IA-----\n");
+        StringBuilder mostrarCartas = new StringBuilder();
+        mostrarCartas.append("Lista de Cartas:\n");
+        for (Carta carta : getMano()) {
+            mostrarCartas.append(carta.toString());
+            mostrarCartas.append("\n");
+        }
+        System.out.println(mostrarCartas);
 
         //si no hay cartas en la mesa dejo una directamente
 
         if (cartasMesa.isEmpty()) {
             Carta cartaSeleccionada = this.dejarCarta();
             cartasMesa.add(cartaSeleccionada);
-            this.getMano().remove(cartaSeleccionada);
+            System.out.println("La IA deja la carta: \n");
+            System.out.println(cartaSeleccionada);
+            getMano().remove(cartaSeleccionada);
             return;
         }
 
@@ -40,7 +48,7 @@ public class IA extends Participante {
         if (todasEscobas.isEmpty()) {
             Carta cartaSeleccionada = this.dejarCarta();
             cartasMesa.add(cartaSeleccionada);
-            this.getMano().remove(cartaSeleccionada);
+            getMano().remove(cartaSeleccionada);
             System.out.println("La IA deja la carta: \n");
             System.out.println(cartaSeleccionada);
             return;
@@ -52,6 +60,7 @@ public class IA extends Participante {
             //si se puede, empiezo buscando alguna que tenga el 7 de oros
             System.out.println();
             ArrayList<Carta> combinacion70ros = this.buscarCombinacion7Oros(null,escoba);
+
             if (!combinacion70ros.isEmpty()) {
                 System.out.println("La ia hace escoba con una combinacion con el 7 de oros: ");
                 System.out.println(combinacion70ros);
@@ -78,14 +87,28 @@ public class IA extends Participante {
 
             ArrayList<Carta> escobaConOros = this.buscarOros(null,escoba);
 
-            //como si no hay ninguna escoba con oros, la funcion devuelve la combinacion mas larga, siempre escobaConOros es una
-            //combinacion
-            System.out.println("La ia hace escoba con la combinacion mas larga: ");
-            System.out.println(escobaConOros);
-            this.meterGanadas(escobaConOros, cartasMesa);
-            setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
-            setPuntosEscobas(getPuntosEscobas() + 1);
-            return;
+
+            if(!escobaConOros.isEmpty()){
+                System.out.println("La ia hace escoba con la combinacion con oros: ");
+                System.out.println(escobaConOros);
+                this.meterGanadas(escobaConOros, cartasMesa);
+                setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
+                setPuntosEscobas(getPuntosEscobas() + 1);
+                return;
+            }
+            escoba.sort(Comparator.comparing(ArrayList::size));
+
+            ArrayList<Carta> escobaFinal = escoba.get(escoba.size()-1);
+
+            if(!escobaFinal.isEmpty()){
+                System.out.println("La ia hace escoba con una combinacion larga: ");
+                System.out.println(escobaFinal);
+                this.meterGanadas(escobaFinal, cartasMesa);
+                setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
+                setPuntosEscobas(getPuntosEscobas() + 1);
+                return;
+            }
+
         }
 
         //Si no hay escobas, busco una combinacion con el siete de oros
@@ -364,11 +387,13 @@ public class IA extends Participante {
         int i = 0;
         while (i < cartas.size()) {
             getCartasGanadas().add(cartas.get(i));
+
             if (getMano().contains(cartas.get(i))) {
                 getMano().remove(cartas.get(i));
             } else {
                 cartasEnMesa.remove(cartas.get(i));
             }
+
             cartas.remove(i);
         }
     }

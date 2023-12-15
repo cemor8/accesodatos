@@ -52,8 +52,10 @@ public class Mesa {
 
         boolean rondaAcabada = false;
         while (!rondaAcabada){
-            System.out.println("Cartas en la mesa ");
-            System.out.println(this.cartasEnMesa);
+            System.out.println("\t\n-----Cartas En Mesa-----\n ");
+
+            this.mostrarCartasMesa();
+
             rondaAcabada = this.jugarTurno();
 
 
@@ -106,11 +108,12 @@ public class Mesa {
      * vuelven a meter las 2 cartas en la baraja, se baraja el mazo de cartas y se vuelve a sacar 2 cartas.
      * */
     public void decidirOrden(){
-        System.out.println("Se decide el orden");
+        System.out.println("\t\n-----Se decide el orden-----\n");
         this.baraja.barajar();
         Carta cartaJugador1 = baraja.sacarCarta();
         Carta cartaJugador2 = baraja.sacarCarta();
-
+        System.out.println(" Carta jugador: "+cartaJugador1+"\n");
+        System.out.println(" Carta IA: "+cartaJugador2+"\n");
         this.baraja.meterCarta(cartaJugador1);
         this.baraja.meterCarta(cartaJugador2);
 
@@ -130,7 +133,7 @@ public class Mesa {
      * Método que se encarga de repartir las cartas a los jugadores
      * */
     public void repartirCartas(ArrayList<Carta> mano){
-        System.out.println("repartiendo");
+        System.out.println("\nRepartiendo cartas");
         if(this.baraja.getCartas().isEmpty()){
             return;
         }
@@ -165,10 +168,19 @@ public class Mesa {
             this.participante2.setPuntosCartas(this.participante1.getPuntosCartas()+1);
         }
 
-        if(this.participante1.cantidadOros() > this.participante2.cantidadOros()){
+        //compruebo oros
+
+        if(this.participante1.cantidadOros() == 10){
             this.participante1.setPuntosOros(this.participante1.getPuntosOros()+2);
-        }else if(this.participante1.cantidadOros() < this.participante2.cantidadOros()){
+        }else if(this.participante2.cantidadOros() == 10){
             this.participante2.setPuntosOros(this.participante2.getPuntosOros()+2);
+        }else if(this.participante1.cantidadOros() > this.participante2.cantidadOros()){
+            this.participante1.setPuntosOros(this.participante1.getPuntosOros()+1);
+        }else if(this.participante1.cantidadOros() < this.participante2.cantidadOros()){
+            this.participante2.setPuntosOros(this.participante2.getPuntosOros()+1);
+        }else {
+            this.participante1.setPuntosOros(this.participante1.getPuntosOros()+1);
+            this.participante2.setPuntosOros(this.participante2.getPuntosOros()+1);
         }
 
         if(this.participante1.tiene7oros()){
@@ -189,6 +201,14 @@ public class Mesa {
 
     }
     public void mostrar(){
+        System.out.println("\n");
+        System.out.println(this.participante1.getCartasGanadas());
+        System.out.println(this.participante2.getCartasGanadas());
+        System.out.println(participante1.getUltimaRondaObtieneCartas());
+        System.out.println(participante2.getUltimaRondaObtieneCartas());
+        System.out.println("\n");
+
+
         if(participante1 instanceof Jugador){
             System.out.println("\nPUNTOS JUGADOR ");
             System.out.println("Puntos de Escobas: " + participante1.getPuntosEscobas());
@@ -256,5 +276,17 @@ public class Mesa {
 
     public int getNumeroTurno() {
         return numeroTurno;
+    }
+    public void mostrarCartasMesa(){
+
+        if(this.cartasEnMesa.isEmpty()){
+            System.out.println("\n\tNo hay cartas en la mesa");
+            return;
+        }
+        for (Carta carta : this.cartasEnMesa){
+            System.out.println("\t"+carta);
+        }
+        System.out.println("\n");
+
     }
 }

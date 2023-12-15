@@ -23,8 +23,6 @@ public class Carta {
 
     @Override
     public String toString() {
-        return "Carta{" +
-                "palo='" + palo + '\'' + ", valorNumerico=" + valorNumerico +
-                '}';
+        return "Carta : "+this.valor+" de "+this.palo+" valor numerico "+this.valorNumerico;
     }
 }

@@ -21,31 +21,35 @@ public class Jugador extends Participante {
     @Override
     public void jugar(ArrayList<Carta> cartasEnMesa) {
         if(cartasEnMesa.isEmpty()){
-            Carta cartaSeleccionada = this.pedirCarta("Introduce carta para dejar");
+            Carta cartaSeleccionada = this.pedirCarta("-----Introduce carta para dejar-----\n");
             cartasEnMesa.add(cartaSeleccionada);
             getMano().remove(cartaSeleccionada);
             return;
         }
 
-        Carta cartaSeleccionada = this.pedirCarta("Introduce carta para utilizar");
+        Carta cartaSeleccionada = this.pedirCarta("-----Introduce carta para utilizar-----\n");
         ArrayList<ArrayList<Carta>> posiblesEscobas = buscarPosiblesEscobas(cartaSeleccionada, cartasEnMesa);
 
         if (posiblesEscobas == null) {
-            System.out.println("No hay escobas disponibles con esa carta, se dejará en la mesa");
+            System.out.println("No hay escobas disponibles con esa carta, se dejará en la mesa\n");
             cartasEnMesa.add(cartaSeleccionada);
             getMano().remove(cartaSeleccionada);
             return;
         }
 
-        ArrayList<Carta> combinacion = this.pedirCombinacion(posiblesEscobas, "Introduce la combinacion a elegir");
+        ArrayList<Carta> combinacion = this.pedirCombinacion(posiblesEscobas, "Introduce la combinacion a elegir\n");
         int l = 0;
+
         while (l < combinacion.size()) {
+
             getCartasGanadas().add(combinacion.get(l));
+
             if (getMano().contains(combinacion.get(l))) {
                 getMano().remove(combinacion.get(l));
             } else {
                 cartasEnMesa.remove(combinacion.get(l));
             }
+
             combinacion.remove(l);
         }
         setUltimaRondaObtieneCartas(getMesa().getNumeroTurno());
