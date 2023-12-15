@@ -27,7 +27,7 @@ public class ControllerRegistrarse {
                 return;
             }else {
                 Optional<String> nombreOptional = this.nombresUsuarios.stream().filter(s -> s.equalsIgnoreCase(nombreUsuario)).findAny();
-                if(nombreOptional.isEmpty()){
+                if(nombreOptional.isPresent()){
                     System.out.println("Nombre de usuario existente");
                 }else {
                     this.crearUsuario(nombreUsuario);
@@ -59,12 +59,14 @@ public class ControllerRegistrarse {
                      "VALUES (?, ?, ?, ?, ?, ?)";;
 
             preparedStatement = connection.prepareStatement(insertSQL);
+
             preparedStatement.setInt(1, 0);
             preparedStatement.setInt(2, 0);
             preparedStatement.setInt(3, 0);
             preparedStatement.setInt(4, 0);
             preparedStatement.setInt(5, 0);
             preparedStatement.setString(6, nombreUsuario);
+            preparedStatement.executeUpdate();
             System.out.println("Usuario creado con éxito");
             preparedStatement.close();
             conexion.cerrarConexion();

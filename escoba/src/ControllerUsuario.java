@@ -38,12 +38,15 @@ public class ControllerUsuario {
             switch (opcion){
                 case 1:
                     this.mostrarPerfil();
+                    opcion = null;
                     break;
                 case 2:
                     this.opcionesRanking();
+                    opcion = null;
                     break;
                 case 3:
                     this.jugar();
+                    opcion = null;
                     break;
                 case 4:
                     this.borrarCuenta();
@@ -81,12 +84,12 @@ public class ControllerUsuario {
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String insertSQL = "delete from usuario where usuario.nombre_usuario = ?";
+            String insertSQL = "delete from esoba.usuario where esoba.usuario.nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1,this.usuario.getNombreUsuario());
             preparedStatement.executeUpdate();
 
-            insertSQL = "delete from clasificacion where clasificacion.nombre_usuario = ?";
+            insertSQL = "delete from esoba.clasificacion where esoba.clasificacion.nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1,this.usuario.getNombreUsuario());
             preparedStatement.executeUpdate();
@@ -129,9 +132,11 @@ public class ControllerUsuario {
             switch (opcion){
                 case 1:
                     this.mostrarClasificaciones(true);
+                    opcion=null;
                     break;
                 case 2:
                     this.mostrarClasificaciones(false);
+                    opcion=null;
                     break;
                 case 3:
                     this.mostrarMenu();
@@ -149,13 +154,13 @@ public class ControllerUsuario {
         for(Clasificacion clasificacion: this.clasificaciones){
             if(sola){
                 if(this.usuario.getClasificacion().equals(clasificacion)){
-                    System.out.println(i +" "+clasificacion);
+                    System.out.println("\t"+i +" "+clasificacion);
                     break;
                 }
                 i++;
                 continue;
             }
-            System.out.println(i +" "+clasificacion);
+            System.out.println("\t"+i +" "+clasificacion);
             i++;
         }
     }
@@ -168,7 +173,7 @@ public class ControllerUsuario {
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String updateSQL = "Select * from clasificacion";
+            String updateSQL = "Select * from esoba.clasificacion";
             preparedStatement = connection.prepareStatement(updateSQL);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -219,9 +224,11 @@ public class ControllerUsuario {
             switch (opcion){
                 case 1:
                     System.out.println(this.usuario);
+                    opcion = null;
                     break;
                 case 2:
                     this.modificarDatos();
+                    opcion = null;
                     break;
                 case 3:
                     this.mostrarMenu();
@@ -243,13 +250,13 @@ public class ControllerUsuario {
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String updateSQL = "UPDATE usuario SET nombre_usuario = ?, clave = ? WHERE nombre_usuario = ?";
+            String updateSQL = "UPDATE esoba.usuario SET esoba.usuario.nombre_usuario = ?, esoba.usuario.clave = ? WHERE esoba.usuario.nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(updateSQL);
             preparedStatement.setString(1,nuevoNombre);
             preparedStatement.setString(2,nuevapassword);
             preparedStatement.setString(3,nombreAntiguo);
 
-            updateSQL = "UPDATE clasificacion SET nombre_usuario = ? WHERE nombre_usuario = ?";
+            updateSQL = "UPDATE esoba.clasificacion SET esoba.clasificacion.nombre_usuario = ? WHERE  esoba.clasificacion.nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(updateSQL);
             preparedStatement.setString(1,nuevoNombre);
             preparedStatement.setString(2,nombreAntiguo);
@@ -338,5 +345,4 @@ public class ControllerUsuario {
         }
         return integerDevolver;
     }
-
 }

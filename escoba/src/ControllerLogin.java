@@ -65,27 +65,26 @@ public class ControllerLogin {
 
             String usarBaseDatos = "USE escoba";
             statement.executeUpdate(usarBaseDatos);
-            //crear tablas
+
+            //crear y usuarios
 
             String[] createQueries = {
-
+                    "CREATE DATABASE IF NOT EXISTS escoba",
+                    "USE escoba",
+                    "CREATE TABLE IF NOT EXISTS usuario (nombre_usuario VARCHAR(15) NOT NULL, clave VARCHAR(15) NOT NULL, PRIMARY KEY(nombre_usuario))",
+                    "CREATE TABLE IF NOT EXISTS clasificacion (id_clasificacion INT AUTO_INCREMENT, partidas_ganadas INT NOT NULL, puntos_oros INT NOT NULL, puntos_escobas INT NOT NULL, puntos_velo INT NOT NULL, puntos_cantidad_cartas INT NOT NULL, nombre_usuario VARCHAR(15) NOT NULL, PRIMARY KEY(id_clasificacion), FOREIGN KEY(nombre_usuario) REFERENCES usuario(nombre_usuario))",
+                    "CREATE USER IF NOT EXISTS 'admin_escoba'@'localhost' IDENTIFIED BY 'admin'",
+                    "GRANT ALL PRIVILEGES ON escoba.* TO 'admin_escoba'@'localhost'",
+                    "GRANT GRANT OPTION ON *.* TO 'admin_escoba'@'localhost'",
+                    "GRANT CREATE USER ON *.* TO 'admin_escoba'@'localhost' WITH GRANT OPTION",
+                    "GRANT DROP ON *.* TO 'admin_escoba'@'localhost'",
+                    "FLUSH PRIVILEGES"
             };
 
             for (String query : createQueries) {
                 statement.executeUpdate(query);
             }
-            //crear usuarios y asignar permisos
-
-            String[] queries = {
-
-            };
-
-            for (String query : queries) {
-                statement.executeUpdate(query);
-            }
             System.out.println("Base de datos creada con éxito, administrador : ");
-            System.out.println("Nombre usuario admin");
-            System.out.println("Contraseña admin");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -120,7 +119,7 @@ public class ControllerLogin {
             //obtener los usuarios de la tabla admin si se va a iniciar sesion con un admin o de la tabla usuarios si se va a usar un usuario
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String consulta = "SELECT clave from " + nombreTablaBuscar + " where nombre_usuario like ?";
+            String consulta = "SELECT clave from escoba." + nombreTablaBuscar + " where nombre_usuario like ?";
             PreparedStatement statement = connection.prepareStatement(consulta);
             statement.setString(1, "%" + nombreUsuario + "%");
             ResultSet resultados = statement.executeQuery();
