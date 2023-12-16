@@ -189,7 +189,7 @@ public class ControllerUsuario {
             }
             Optional<Clasificacion> clasificacionOptional = this.clasificaciones.stream().filter(clasificacion -> clasificacion.getNombre_usuario().equalsIgnoreCase(this.usuario.getNombreUsuario())).findAny();
             clasificacionOptional.ifPresent(clasificacion -> this.usuario.setClasificacion(clasificacion));
-            this.clasificaciones.sort(Comparator.comparing(Clasificacion::getPartidas_ganadas).thenComparing(Clasificacion::getPuntos_escobas).thenComparing(Clasificacion::getPuntos_velo).reversed());
+            this.clasificaciones.sort(Comparator.comparing(Clasificacion::getPartidas_ganadas).thenComparing(Clasificacion::getPuntos_escobas).thenComparing(Clasificacion::getPuntos_velo).thenComparing(Clasificacion::getPuntos_sietes).thenComparing(Clasificacion::getPuntos_oros).thenComparing(Clasificacion::getPuntos_cantidad_cartas).thenComparing(Clasificacion::getNombre_usuario).reversed());
             preparedStatement.close();
             connection.close();
             conexion.cerrarConexion();

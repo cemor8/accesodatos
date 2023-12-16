@@ -167,11 +167,11 @@ public class Participante {
         return i;
     }
     public void resetearPuntos(){
-        this.puntosCartas = 0;
-        this.puntosEscobas = 0;
-        this.puntosOros = 0;
-        this.puntosVelo = 0;
-        this.puntosSietes = 0;
+        setPuntosCartas(0);
+        setPuntosOros(0);
+        setPuntosVelo(0);
+        setPuntosSietes(0);
+        setPuntosEscobas(0);
     }
 
     public int getUltimaRondaObtieneCartas() {

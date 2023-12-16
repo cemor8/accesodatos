@@ -27,9 +27,27 @@ public class Mesa {
         this.participante2.setMesa(this);
 
         this.clasificacionAlmacenar = clasificacion;
-        this.sumarPartidaGanada();
         while (this.participante1.getPuntosTotales()<this.puntosAJugar && this.participante2.getPuntosTotales()<this.puntosAJugar){
             this.crearRonda();
+        }
+
+        this.actualizarClasificacion();
+        if (this.participante1.getPuntosTotales()>this.participante2.getPuntosTotales()){
+            if(this.participante1 instanceof Jugador){
+                Jugador jugador = (Jugador) this.participante1;
+                System.out.println("Ganador de la partida "+jugador.getPerfilUsuario().getNombreUsuario());
+                this.sumarPartidaGanada();
+            }else {
+                System.out.println("Gano la IA la partida");
+            }
+        }else {
+            if(this.participante2 instanceof Jugador){
+                Jugador jugador = (Jugador) this.participante2;
+                System.out.println("Ganador de la partida "+jugador.getPerfilUsuario().getNombreUsuario());
+                this.sumarPartidaGanada();
+            }else {
+                System.out.println("Gano la IA la partida");
+            }
         }
 
     }
@@ -204,8 +222,7 @@ public class Mesa {
         this.mostrar();
         this.participante1.setCartasGanadas(new ArrayList<>());
         this.participante2.setCartasGanadas(new ArrayList<>());
-        this.participante1.resetearPuntos();
-        this.participante2.resetearPuntos();
+
 
     }
     public void mostrar(){
@@ -267,6 +284,8 @@ public class Mesa {
             this.clasificacionAlmacenar.setPuntos_cantidad_cartas(this.clasificacionAlmacenar.getPuntos_cantidad_cartas() + this.participante2.getPuntosCartas());
             this.clasificacionAlmacenar.setPuntos_sietes(this.clasificacionAlmacenar.getPuntos_sietes() + this.participante2.getPuntosSietes());
         }
+        this.participante1.resetearPuntos();
+        this.participante2.resetearPuntos();
     }
 
 
@@ -275,24 +294,7 @@ public class Mesa {
         while (this.participante1.getPuntosTotales() == this.participante2.getPuntosTotales()){
             this.crearRonda();
         }
-        this.actualizarClasificacion();
-        if (this.participante1.getPuntosTotales()>this.participante2.getPuntosTotales()){
-            if(this.participante1 instanceof Jugador){
-                Jugador jugador = (Jugador) this.participante1;
-                System.out.println("Ganador de la partida "+jugador.getPerfilUsuario().getNombreUsuario());
-                this.sumarPartidaGanada();
-            }else {
-                System.out.println("Gano la IA la partida");
-            }
-        }else {
-            if(this.participante2 instanceof Jugador){
-                Jugador jugador = (Jugador) this.participante2;
-                System.out.println("Ganador de la partida "+jugador.getPerfilUsuario().getNombreUsuario());
-                this.sumarPartidaGanada();
-            }else {
-                System.out.println("Gano la IA la partida");
-            }
-        }
+
     }
     public void sumarPartidaGanada(){
         Conexion conexion = null;
