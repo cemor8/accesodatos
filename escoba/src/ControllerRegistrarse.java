@@ -18,6 +18,10 @@ public class ControllerRegistrarse {
         }
 
     };
+    /**
+     * Método que pide un nombre de usuario para crear un usuario, tambien compara con los nombres de usuario existentes para
+     * evitar que haya 2 usuarios con el mismo nombre
+     * */
     public void registrarse() {
         this.obtenerNombresUsuarios();
         while (true){
@@ -36,6 +40,10 @@ public class ControllerRegistrarse {
         }
 
     }
+    /**
+     * Método que pide la contraseña para crear el usuario, una vez se haya verificado que no hay ningun usuario repetido
+     * @param nombreUsuario nombre para el usuario
+     * */
     public void crearUsuario(String nombreUsuario){
         String passwordUsuario = this.devolverString("Introduce la contraseña ", this.columnasExpresiones.get("clave"), true);
 
@@ -108,7 +116,9 @@ public class ControllerRegistrarse {
             }
         }
     }
-
+    /**
+     * Método que busca los nombres de usuario existentes en la base de datos
+     * */
     public void obtenerNombresUsuarios(){
 
         Conexion conexion = null;

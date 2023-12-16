@@ -382,7 +382,9 @@ public class IA extends Participante {
         }
         return this.getMano().remove(0);
     }
-
+    /**
+     * Método que mete la combinacion de cartas en una lista de cartas ganadas
+     * */
     public void meterGanadas(ArrayList<Carta> cartas, ArrayList<Carta> cartasEnMesa) {
         int i = 0;
         while (i < cartas.size()) {

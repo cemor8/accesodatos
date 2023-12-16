@@ -30,7 +30,7 @@ public class Mesa {
         while (this.participante1.getPuntosTotales()<this.puntosAJugar && this.participante2.getPuntosTotales()<this.puntosAJugar){
             this.crearRonda();
         }
-
+        // Una vez acabada la partida se actualiza la clasificacion y se muestra el ganador
         this.actualizarClasificacion();
         if (this.participante1.getPuntosTotales()>this.participante2.getPuntosTotales()){
             if(this.participante1 instanceof Jugador){
@@ -95,8 +95,6 @@ public class Mesa {
      * participante 2.
      * */
     public boolean jugarTurno(){
-        //cambiar lo de las cartas en la ronda
-
         this.numeroTurno+=1;
 
         this.participante1.jugar(this.cartasEnMesa);
@@ -104,12 +102,12 @@ public class Mesa {
         this.participante1 = this.participante2;
         this.participante2 = temp;
 
-
+        // comprobar si hay que repartir cartas
         if(this.participante1.getMano().isEmpty() && this.participante2.getMano().isEmpty() && !this.baraja.getCartas().isEmpty()) {
             this.repartirCartas(this.participante1.getMano());
             this.repartirCartas((this.participante2.getMano()));
             return false;
-
+            // comprobar si se ha acabado la ronda
         }else if (this.participante1.getMano().isEmpty() && this.participante2.getMano().isEmpty() && this.baraja.getCartas().isEmpty()){
             if(!this.cartasEnMesa.isEmpty()){
                 if(this.participante1.getUltimaRondaObtieneCartas() > this.participante2.getUltimaRondaObtieneCartas()){
@@ -186,6 +184,7 @@ public class Mesa {
         System.out.println("\n");
         System.out.println("\n");
 
+        // puntos por cantidad de cartas
         if(this.participante1.getCartasGanadas().size() > this.participante2.getCartasGanadas().size()){
             this.participante1.setPuntosCartas(this.participante1.getPuntosCartas()+1);
         }else if(this.participante2.getCartasGanadas().size() > this.participante1.getCartasGanadas().size()){
@@ -193,7 +192,6 @@ public class Mesa {
         }
 
         //compruebo oros
-
         if(this.participante1.cantidadOros() == 10){
             this.participante1.setPuntosOros(this.participante1.getPuntosOros()+2);
         }else if(this.participante2.cantidadOros() == 10){
@@ -206,13 +204,13 @@ public class Mesa {
             this.participante1.setPuntosOros(this.participante1.getPuntosOros()+1);
             this.participante2.setPuntosOros(this.participante2.getPuntosOros()+1);
         }
-
+        // puntos de velo
         if(this.participante1.tiene7oros()){
             this.participante1.setPuntosVelo(this.participante1.getPuntosVelo() + 1);
         }else {
             this.participante2.setPuntosVelo(this.participante2.getPuntosVelo() + 1);
         }
-
+        //puntos de cantidad de sietes
         if(this.participante1.cantidadSietes() > this.participante2.cantidadSietes()){
             this.participante1.setPuntosSietes(this.participante1.getPuntosSietes() + 1);
         }else {
@@ -226,13 +224,6 @@ public class Mesa {
 
     }
     public void mostrar(){
-        System.out.println("\n");
-        System.out.println(this.participante1.getCartasGanadas());
-        System.out.println(this.participante2.getCartasGanadas());
-        System.out.println(participante1.getUltimaRondaObtieneCartas());
-        System.out.println(participante2.getUltimaRondaObtieneCartas());
-        System.out.println("\n");
-
 
         if(participante1 instanceof Jugador){
             System.out.println("\nPUNTOS JUGADOR ");
@@ -289,13 +280,18 @@ public class Mesa {
     }
 
 
-
+    /**
+     * Método que crea otra ronda si se ha empatado
+     * */
     public void comprobarDiferencia(){
         while (this.participante1.getPuntosTotales() == this.participante2.getPuntosTotales()){
             this.crearRonda();
         }
 
     }
+    /**
+     * Método que se encarga de sumar una partida ganada al jugador
+     * */
     public void sumarPartidaGanada(){
         Conexion conexion = null;
         Connection connection = null;
@@ -325,6 +321,10 @@ public class Mesa {
             }
         }
     }
+    /**
+     * Método que se encarga de sumar las puntuaciones que ha obtenido el jugador
+     * durante la partida a la base de datos
+     * */
     public void actualizarClasificacion(){
         Conexion conexion = null;
         Connection connection = null;
@@ -369,6 +369,9 @@ public class Mesa {
     public int getNumeroTurno() {
         return numeroTurno;
     }
+    /**
+     * Método que muestra las cartas de la mesa
+     * */
     public void mostrarCartasMesa(){
 
         if(this.cartasEnMesa.isEmpty()){

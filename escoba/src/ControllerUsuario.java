@@ -18,6 +18,9 @@ public class ControllerUsuario {
         this.usuario = usuario;
         this.obtenerClasificaciones();
     }
+    /**
+     * Método que muestra las opciones del programa al usuario.
+     * */
     public void mostrarMenu(){
         Integer opcion = null;
         while (opcion == null){
@@ -68,15 +71,23 @@ public class ControllerUsuario {
         ControllerLogin controllerLogin = new ControllerLogin();
         controllerLogin.mostrarOpcionesLogin();
     }
+    /**
+     * Método que se encarga de crear una nueva partida para que el usuario juegue,
+     * pide los puntos necesarios para ganar la partida
+     * */
     public void jugar(){
         Integer puntos = this.devolverInteger("Introduce los puntos para ganar la partida");
         IA ia = new IA(new ArrayList<>());
         Baraja baraja = new Baraja();
         Jugador jugador = new Jugador(this.usuario,new ArrayList<>());
         Mesa mesa = new Mesa(jugador,ia,baraja,puntos);
+        //la mesa recibe una clasificacion vacia para guardar las puntuaciones del usuario y luego modificar la base de datos
         mesa.iniciarPartida(new Clasificacion(this.usuario.getNombreUsuario(),0,0,0,0,0,0,this.usuario));
     }
-
+    /**
+     * Método que se encarga de borrar una cuenta de usuario, borra el usuario de la base de datos,
+     * la tabla de usuarios y la clasificacion asignada a el.
+     * */
     public void borrarCuenta(){
         Conexion conexion = null;
         Connection connection = null;
@@ -115,7 +126,10 @@ public class ControllerUsuario {
         }
     }
 
-
+    /**
+     * Método que muestra un menú para acceder a las clasificaciones globales o
+     * ver tu clasificacion personal.
+     * */
     public void opcionesRanking(){
         Integer opcion = null;
         while (opcion == null){
@@ -149,7 +163,10 @@ public class ControllerUsuario {
             }
         }
     }
-
+    /**
+     * Método que muestra las clasificaciones de la aplicacion
+     * @param sola si se muestra solo la del jugador o todas
+     * */
     public void mostrarClasificaciones(boolean sola){
         int i = 1;
         for(Clasificacion clasificacion: this.clasificaciones){
@@ -165,7 +182,9 @@ public class ControllerUsuario {
             i++;
         }
     }
-
+    /**
+     * Método que se encarga de obtener todas las clasificaciones de la base de datos y guardarlas en una lista
+     * */
     public void obtenerClasificaciones(){
         Conexion conexion = null;
         Connection connection = null;
@@ -208,7 +227,10 @@ public class ControllerUsuario {
             }
         }
     }
-
+    /**
+     * Método que se encarga de mostrar las opciones para acceder a los datos
+     * de la cuenta o modificarlos
+     * */
     public void mostrarPerfil(){
         Integer opcion = null;
         while (opcion == null){
@@ -243,6 +265,9 @@ public class ControllerUsuario {
             }
         }
     }
+    /**
+     * Método que modifica los datos de un usuario
+     * */
     public void modificarDatos(){
         String nombreAntiguo = this.usuario.getNombreUsuario();
         String nuevoNombre = this.devolverString("Introduce el nombre para tu usauario ", this.columnasExpresiones.get("nombre_usuario"), true);

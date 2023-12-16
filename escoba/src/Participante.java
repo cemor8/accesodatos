@@ -78,17 +78,33 @@ public class Participante {
         this.puntosTotales += this.puntosEscobas + this.puntosVelo + this.puntosCartas + this.puntosOros + this.puntosSietes;
         return puntosTotales;
     }
+    /**
+     * Método que busca todas las posibles combinaciones de 15 con la carta seleccionada
+     * @param carta carta seleccionada
+     * @param cartasEnMesa lista de cartas en mesa
+     * */
     public ArrayList<ArrayList<Carta>> buscarPosiblesEscobas(Carta carta,ArrayList<Carta> cartasEnMesa){
+        //meto la carta en la lista de cartas en mesa clonada
         ArrayList<Carta> cartasEnviar = (ArrayList<Carta>) cartasEnMesa.clone();
         cartasEnviar.add(carta);
         return comprobarCombinacion(cartasEnviar, 15, 0, new ArrayList<>(), carta);
     }
+    /**
+     * Método que busca las posibles combinaciones que sumen 15 en una lista de cartas, para que la combinacion
+     * sea válida, debe de contener la carta que se ha seleccionado
+     * @param carta carta seleccionada
+     * @param suma combinacion a buscar
+     * @param cartas lista de cartas en las que buscar la combinacion
+     * @param indice desde donde se empieza a recorrer la lista
+     * @param combinacionActual combinacion de cartas que se esta probando
+     * */
     public ArrayList<ArrayList<Carta>> comprobarCombinacion(ArrayList<Carta> cartas, int suma, int indice, ArrayList<Carta> combinacionActual,Carta carta) {
         ArrayList<ArrayList<Carta>> combinacionesValidas = new ArrayList<>();
-
+        // si se ha alcanzado 15 y la combinacion tiene la carta original
         if (suma == 0 && combinacionActual.contains(carta)) {
 
-            // Se ha encontrado una combinación que suma 15
+            // Se ha encontrado una combinación que suma 15, hay que comprobar si
+            //la combinacion ya existe dentro de la lista
 
             if (!combinacionYaExiste(combinacionesValidas, combinacionActual)) {
                 System.out.println("Combinación que suma 15: " + combinacionActual);
@@ -97,14 +113,20 @@ public class Participante {
             }
 
         }
-
+        // se recorren las cartas desde la posicion que recibe la funcion
         for (int i = indice; i < cartas.size(); i++) {
+            // si la suma sigue siendo mayor o igual a cero
             if (suma - cartas.get(i).getValorNumerico() >= 0) {
+                // se mete la carta en la combinacion y se vuelve a llamar al metodo incrementando la posicion desde donde buscar,
+                // como al inicio de la funcion se comprueba si la combinacion es valida, se añadiria la la lista de combinaciones validas
+                //en caso de que lo cumpliese, si no, se sigue intentando buscar combinaciones con las cartas
                 combinacionActual.add(cartas.get(i));
                 ArrayList<ArrayList<Carta>> combinaciones = comprobarCombinacion(cartas, suma - cartas.get(i).getValorNumerico(), i + 1, combinacionActual,carta);
+                // si se encuentran combinaciones se meten en la lista de combinaciones validas
                 if (combinaciones != null) {
                     combinacionesValidas.addAll(combinaciones);
                 }
+                // se elimina la ultima carta para seguir buscando diferentes combinaciones
                 combinacionActual.remove(combinacionActual.size() - 1);
             }
         }
@@ -115,6 +137,11 @@ public class Participante {
             return combinacionesValidas;
         }
     }
+    /**
+     * Método que se encarga de verificar si una combinacion es repetida
+     * @param combinacionActual combinacion a comprobar
+     * @param combinacionesValidas combinaciones encontradas
+     * */
     private boolean combinacionYaExiste(ArrayList<ArrayList<Carta>> combinacionesValidas, ArrayList<Carta> combinacionActual) {
         for (ArrayList<Carta> combinacion : combinacionesValidas) {
             if (combinacion.size() == combinacionActual.size() && combinacion.containsAll(combinacionActual)) {
@@ -127,16 +154,9 @@ public class Participante {
 
     public void jugar(ArrayList<Carta> cartasMesa){
     }
-
-    public boolean isHaConseguidoCartasEnRonda() {
-        return haConseguidoCartasEnRonda;
-    }
-
-    public void setHaConseguidoCartasEnRonda(boolean haConseguidoCartasEnRonda) {
-        this.haConseguidoCartasEnRonda = haConseguidoCartasEnRonda;
-    }
-
-
+    /**
+     * Método que busca la cantidad de oros que tiene el participante
+     * */
     public Integer cantidadOros(){
         int i = 0;
         for (Carta cada_carta : this.cartasGanadas){
@@ -146,6 +166,10 @@ public class Participante {
         }
         return i;
     }
+    /**
+     * Método que se encarga de verificar si el participante tiene el 7 de oros
+     * @return si lo tiene o no
+     * */
     public boolean tiene7oros(){
         boolean tiene = false;
         for (Carta cada_carta : this.cartasGanadas){
@@ -157,6 +181,10 @@ public class Participante {
         }
         return tiene;
     }
+    /**
+     * Método que se encarga de contar la cantidad de sietes que tiene
+     * el participante
+     * */
     public Integer cantidadSietes(){
         int i = 0;
         for (Carta cada_carta : this.cartasGanadas){
@@ -166,6 +194,9 @@ public class Participante {
         }
         return i;
     }
+    /**
+     * Método que resetea los puntos del participante a cero
+     * */
     public void resetearPuntos(){
         setPuntosCartas(0);
         setPuntosOros(0);
