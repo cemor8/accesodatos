@@ -11,6 +11,7 @@ create table clasificacion(
     puntos_oros int not null,
     puntos_escobas int not null,
     puntos_velo int not null,
+    puntos_sietes int not null,
     puntos_cantidad_cartas int not null,
     nombre_usuario varchar(15) not null,
     primary key(id_clasificacion),
@@ -18,7 +19,7 @@ create table clasificacion(
 );
 
 create user 'admin_escoba'@'localhost' identified with mysql_native_password by'admin';
-grant all privileges on gestionAgenda to "admin_escoba"@"localhost";
+grant all privileges on *.* to "admin_escoba"@"localhost";
 GRANT GRANT OPTION ON *.* TO 'admin'@'localhost';
 GRANT CREATE USER ON *.* TO 'admin_escoba'@'localhost' WITH GRANT OPTION;
 GRANT DROP ON *.* TO 'admin_escoba'@'localhost';

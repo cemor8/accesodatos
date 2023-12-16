@@ -32,4 +32,10 @@ public class Usuario {
     public void setClasificacion(Clasificacion clasificacion) {
         this.clasificacion = clasificacion;
     }
+
+    @Override
+    public String toString() {
+        return "Nombre de usuario: '" + nombreUsuario + '\'' +
+                "Clave: " + clave + '\'';
+    }
 }

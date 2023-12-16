@@ -46,6 +46,7 @@ public class ControllerUsuario {
                     break;
                 case 3:
                     this.jugar();
+                    this.obtenerClasificaciones();
                     opcion = null;
                     break;
                 case 4:
@@ -68,12 +69,12 @@ public class ControllerUsuario {
         controllerLogin.mostrarOpcionesLogin();
     }
     public void jugar(){
-        Integer puntos = this.devolverInteger("Introduce el nombre para tu usauario");
+        Integer puntos = this.devolverInteger("Introduce los puntos para ganar la partida");
         IA ia = new IA(new ArrayList<>());
         Baraja baraja = new Baraja();
         Jugador jugador = new Jugador(this.usuario,new ArrayList<>());
         Mesa mesa = new Mesa(jugador,ia,baraja,puntos);
-        mesa.iniciarPartida();
+        mesa.iniciarPartida(new Clasificacion(this.usuario.getNombreUsuario(),0,0,0,0,0,0,this.usuario));
     }
 
     public void borrarCuenta(){
@@ -173,7 +174,7 @@ public class ControllerUsuario {
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String updateSQL = "Select * from esoba.clasificacion";
+            String updateSQL = "Select * from escoba.clasificacion";
             preparedStatement = connection.prepareStatement(updateSQL);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -182,8 +183,9 @@ public class ControllerUsuario {
                 int puntosEscobas = resultSet.getInt("puntos_escobas");
                 int puntosVelo = resultSet.getInt("puntos_velo");
                 int puntosCantidadCartas = resultSet.getInt("puntos_cantidad_cartas");
+                int puuntosSietes = resultSet.getInt("puntos_sietes");
                 String nombreUsuario = resultSet.getString("nombre_usuario");
-                this.clasificaciones.add(new Clasificacion(nombreUsuario,partidasGanadas,puntosOros,puntosEscobas,puntosVelo, puntosCantidadCartas));
+                this.clasificaciones.add(new Clasificacion(nombreUsuario,partidasGanadas,puntosOros,puntosEscobas,puntosVelo, puntosCantidadCartas,puuntosSietes,null));
             }
             Optional<Clasificacion> clasificacionOptional = this.clasificaciones.stream().filter(clasificacion -> clasificacion.getNombre_usuario().equalsIgnoreCase(this.usuario.getNombreUsuario())).findAny();
             clasificacionOptional.ifPresent(clasificacion -> this.usuario.setClasificacion(clasificacion));
@@ -228,6 +230,7 @@ public class ControllerUsuario {
                     break;
                 case 2:
                     this.modificarDatos();
+                    this.obtenerClasificaciones();
                     opcion = null;
                     break;
                 case 3:
@@ -250,16 +253,37 @@ public class ControllerUsuario {
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String updateSQL = "UPDATE esoba.usuario SET esoba.usuario.nombre_usuario = ?, esoba.usuario.clave = ? WHERE esoba.usuario.nombre_usuario = ?";
+            String updateSQL = "UPDATE escoba.usuario SET nombre_usuario = ?, clave = ? WHERE nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(updateSQL);
             preparedStatement.setString(1,nuevoNombre);
             preparedStatement.setString(2,nuevapassword);
             preparedStatement.setString(3,nombreAntiguo);
 
-            updateSQL = "UPDATE esoba.clasificacion SET esoba.clasificacion.nombre_usuario = ? WHERE  esoba.clasificacion.nombre_usuario = ?";
+            updateSQL = "UPDATE escoba.clasificacion SET nombre_usuario = ? WHERE nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(updateSQL);
             preparedStatement.setString(1,nuevoNombre);
             preparedStatement.setString(2,nombreAntiguo);
+
+            Statement statement = connection.createStatement();
+            String crearUsuarioSQL = "CREATE USER \"" + nuevoNombre + "\"@\"localhost\" IDENTIFIED BY '" + nuevapassword + "'";
+            statement.executeUpdate(crearUsuarioSQL);
+            ArrayList<String> consultas = new ArrayList<>(List.of(
+                    "grant select on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
+                    "grant insert on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
+                    "grant update on escoba.clasificacion to " + "?" + "@" + "\"localhost\""
+            ));
+
+            for(String consulta : consultas){
+                preparedStatement=connection.prepareStatement(consulta);
+                preparedStatement.setString(1,nuevoNombre);
+                preparedStatement.executeUpdate();
+            }
+
+            //eliminar usuario anterior
+            String eliminarUsuarioSQL = "DROP USER \"" + nombreAntiguo + "\"@\"localhost\"";
+
+            //modificar nombre de usuario de la agenda
+            statement.executeUpdate(eliminarUsuarioSQL);
 
             System.out.println("Datos modificados con éxito");
             preparedStatement.close();

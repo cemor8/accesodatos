@@ -55,8 +55,8 @@ public class ControllerRegistrarse {
             preparedStatement.executeUpdate();
 
              insertSQL = "INSERT INTO clasificacion (partidas_ganadas, puntos_oros, puntos_escobas, " +
-                     "puntos_velo, puntos_cantidad_cartas, nombre_usuario) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";;
+                     "puntos_velo, puntos_sietes, puntos_cantidad_cartas, nombre_usuario) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             preparedStatement = connection.prepareStatement(insertSQL);
 
@@ -65,15 +65,32 @@ public class ControllerRegistrarse {
             preparedStatement.setInt(3, 0);
             preparedStatement.setInt(4, 0);
             preparedStatement.setInt(5, 0);
-            preparedStatement.setString(6, nombreUsuario);
+            preparedStatement.setInt(6,0);
+            preparedStatement.setString(7, nombreUsuario);
             preparedStatement.executeUpdate();
+            insertSQL= "CREATE USER '" + nombreUsuario + "'@'localhost' IDENTIFIED WITH mysql_native_password BY '" + passwordUsuario + "'";
+            preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.executeUpdate();
+
+            ArrayList<String> consultas = new ArrayList<>(List.of(
+                    "grant select on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
+                    "grant insert on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
+                    "grant update on escoba.clasificacion to " + "?" + "@" + "\"localhost\""
+            ));
+
+            for(String consulta : consultas){
+                preparedStatement = connection.prepareStatement(consulta);
+                preparedStatement.setString(1, nombreUsuario);
+                preparedStatement.executeUpdate();
+            }
+
             System.out.println("Usuario creado con éxito");
             preparedStatement.close();
             conexion.cerrarConexion();
             ControllerLogin controllerLogin = new ControllerLogin();
             controllerLogin.mostrarOpcionesLogin();
         }catch (SQLException err){
-            System.out.println(err.getErrorCode());
+            System.out.println(err.getMessage());
         }finally {
             try {
                 if (connection != null) {

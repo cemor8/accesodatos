@@ -5,14 +5,18 @@ public class Clasificacion {
     private int puntos_escobas;
     private int puntos_velo;
     private int puntos_cantidad_cartas;
+    private int puntos_sietes;
+    private Usuario usuario;
 
-    public Clasificacion(String nombre_usuario, int partidas_ganadas, int puntos_oros, int puntos_escobas, int puntos_velo, int puntos_cantidad_cartas) {
+    public Clasificacion(String nombre_usuario, int partidas_ganadas, int puntos_oros, int puntos_escobas, int puntos_velo, int puntos_cantidad_cartas, int puntos_sietes, Usuario usuario) {
         this.nombre_usuario = nombre_usuario;
         this.partidas_ganadas = partidas_ganadas;
         this.puntos_oros = puntos_oros;
         this.puntos_escobas = puntos_escobas;
         this.puntos_velo = puntos_velo;
         this.puntos_cantidad_cartas = puntos_cantidad_cartas;
+        this.puntos_sietes = puntos_sietes;
+        this.usuario = usuario;
     }
 
     public String getNombre_usuario() {
@@ -63,15 +67,26 @@ public class Clasificacion {
         this.puntos_cantidad_cartas = puntos_cantidad_cartas;
     }
 
+    public int getPuntos_sietes() {
+        return puntos_sietes;
+    }
+
+    public void setPuntos_sietes(int puntos_sietes) {
+        this.puntos_sietes = puntos_sietes;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-                "nombre_usuario='" + nombre_usuario + '\'' +
-                ", partidas_ganadas=" + partidas_ganadas +
-                ", puntos_oros=" + puntos_oros +
-                ", puntos_escobas=" + puntos_escobas +
-                ", puntos_velo=" + puntos_velo +
-                ", puntos_cantidad_cartas=" + puntos_cantidad_cartas +
-                '}';
+        return "Usuario: '" + nombre_usuario + '\'' +
+                ", Partidas ganadas: " + partidas_ganadas +
+                ", Puntos oros: " + puntos_oros +
+                ", Puntos escobas: " + puntos_escobas +
+                ", Puntos Velo: " + puntos_velo +
+                ", Puntos Cantidad de Cartas: " + puntos_cantidad_cartas +
+                ", Puntos Sietes: " + puntos_sietes;
     }
 }

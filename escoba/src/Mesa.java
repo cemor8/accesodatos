@@ -1,4 +1,6 @@
-import javax.print.DocFlavor;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Mesa {
@@ -8,6 +10,7 @@ public class Mesa {
     private ArrayList<Carta> cartasEnMesa = new ArrayList<>();
     private int puntosAJugar;
     private int numeroTurno = 0;
+    Clasificacion clasificacionAlmacenar = null;
 
     public Mesa(Participante participante1, Participante participante2, Baraja baraja, int puntosAJugar) {
         this.participante1 = participante1;
@@ -19,9 +22,12 @@ public class Mesa {
      * Método que inicia una partida en el juego de la escoba, primero se comprueba quien empieza y quien reparte
      * al inicio, luego se comprueba si hay baraja de mano para volver a colocar las cartas, por ultimo se empieza la partida
      * */
-    public void iniciarPartida(){
+    public void iniciarPartida(Clasificacion clasificacion){
         this.participante1.setMesa(this);
         this.participante2.setMesa(this);
+
+        this.clasificacionAlmacenar = clasificacion;
+        this.sumarPartidaGanada();
         while (this.participante1.getPuntosTotales()<this.puntosAJugar && this.participante2.getPuntosTotales()<this.puntosAJugar){
             this.crearRonda();
         }
@@ -196,6 +202,8 @@ public class Mesa {
         }
 
         this.mostrar();
+        this.participante1.setCartasGanadas(new ArrayList<>());
+        this.participante2.setCartasGanadas(new ArrayList<>());
         this.participante1.resetearPuntos();
         this.participante2.resetearPuntos();
 
@@ -216,7 +224,14 @@ public class Mesa {
             System.out.println("Puntos de Velo: " + participante1.getPuntosVelo());
             System.out.println("Puntos de Oros: " + participante1.getPuntosOros());
             System.out.println("Puntos de Cartas: " + participante1.getPuntosCartas());
+            System.out.println("-----------");
             System.out.println("Puntos totales: "+participante1.getPuntosTotales()+"\n");
+
+            this.clasificacionAlmacenar.setPuntos_escobas(this.clasificacionAlmacenar.getPuntos_escobas() + this.participante1.getPuntosEscobas());
+            this.clasificacionAlmacenar.setPuntos_oros(this.clasificacionAlmacenar.getPuntos_oros() + this.participante1.getPuntosOros());
+            this.clasificacionAlmacenar.setPuntos_velo(this.clasificacionAlmacenar.getPuntos_velo() + this.participante1.getPuntosVelo());
+            this.clasificacionAlmacenar.setPuntos_cantidad_cartas(this.clasificacionAlmacenar.getPuntos_cantidad_cartas() + this.participante1.getPuntosCartas());
+            this.clasificacionAlmacenar.setPuntos_sietes(this.clasificacionAlmacenar.getPuntos_sietes() + this.participante1.getPuntosSietes());
 
             System.out.println("\nPUNTOS IA ");
             System.out.println("Puntos de Escobas: " + participante2.getPuntosEscobas());
@@ -224,6 +239,7 @@ public class Mesa {
             System.out.println("Puntos de Velo: " + participante2.getPuntosVelo());
             System.out.println("Puntos de Oros: " + participante2.getPuntosOros());
             System.out.println("Puntos de Cartas: " + participante2.getPuntosCartas());
+            System.out.println("-----------");
             System.out.println("Puntos totales: "+participante2.getPuntosTotales()+"\n");
 
         }else {
@@ -233,6 +249,7 @@ public class Mesa {
             System.out.println("Puntos de Velo: " + participante1.getPuntosVelo());
             System.out.println("Puntos de Oros: " + participante1.getPuntosOros());
             System.out.println("Puntos de Cartas: " + participante1.getPuntosCartas());
+            System.out.println("-----------");
             System.out.println("Puntos totales: "+participante1.getPuntosTotales()+"\n");
 
             System.out.println("\nPUNTOS Jugador ");
@@ -241,7 +258,14 @@ public class Mesa {
             System.out.println("Puntos de Velo: " + participante2.getPuntosVelo());
             System.out.println("Puntos de Oros: " + participante2.getPuntosOros());
             System.out.println("Puntos de Cartas: " + participante2.getPuntosCartas());
+            System.out.println("-----------");
             System.out.println("Puntos totales: "+participante2.getPuntosTotales()+"\n");
+
+            this.clasificacionAlmacenar.setPuntos_escobas(this.clasificacionAlmacenar.getPuntos_escobas() + this.participante2.getPuntosEscobas());
+            this.clasificacionAlmacenar.setPuntos_oros(this.clasificacionAlmacenar.getPuntos_oros() + this.participante2.getPuntosOros());
+            this.clasificacionAlmacenar.setPuntos_velo(this.clasificacionAlmacenar.getPuntos_velo() + this.participante2.getPuntosVelo());
+            this.clasificacionAlmacenar.setPuntos_cantidad_cartas(this.clasificacionAlmacenar.getPuntos_cantidad_cartas() + this.participante2.getPuntosCartas());
+            this.clasificacionAlmacenar.setPuntos_sietes(this.clasificacionAlmacenar.getPuntos_sietes() + this.participante2.getPuntosSietes());
         }
     }
 
@@ -251,13 +275,12 @@ public class Mesa {
         while (this.participante1.getPuntosTotales() == this.participante2.getPuntosTotales()){
             this.crearRonda();
         }
+        this.actualizarClasificacion();
         if (this.participante1.getPuntosTotales()>this.participante2.getPuntosTotales()){
             if(this.participante1 instanceof Jugador){
                 Jugador jugador = (Jugador) this.participante1;
                 System.out.println("Ganador de la partida "+jugador.getPerfilUsuario().getNombreUsuario());
-
-                //sumar partida ganada
-
+                this.sumarPartidaGanada();
             }else {
                 System.out.println("Gano la IA la partida");
             }
@@ -265,11 +288,78 @@ public class Mesa {
             if(this.participante2 instanceof Jugador){
                 Jugador jugador = (Jugador) this.participante2;
                 System.out.println("Ganador de la partida "+jugador.getPerfilUsuario().getNombreUsuario());
-
-                //sumar partida ganada
-
+                this.sumarPartidaGanada();
             }else {
                 System.out.println("Gano la IA la partida");
+            }
+        }
+    }
+    public void sumarPartidaGanada(){
+        Conexion conexion = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.clasificacionAlmacenar.getUsuario().getNombreUsuario(),this.clasificacionAlmacenar.getUsuario().getClave(),false);
+            String updateSQL = "UPDATE escoba.clasificacion SET escoba.clasificacion.partidas_ganadas = partidas_ganadas + 1 WHERE nombre_usuario = ?";
+            preparedStatement = connection.prepareStatement(updateSQL);
+            preparedStatement.setString(1,this.clasificacionAlmacenar.getUsuario().getNombreUsuario());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+            conexion.cerrarConexion();
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException err) {
+                    System.out.println(err.getMessage());
+                }
+            }
+            if (conexion != null) {
+                conexion.cerrarConexion();
+            }
+        }
+    }
+    public void actualizarClasificacion(){
+        Conexion conexion = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.clasificacionAlmacenar.getUsuario().getNombreUsuario(),this.clasificacionAlmacenar.getUsuario().getClave(),false);
+            String updateSQL = "UPDATE clasificacion SET " +
+                    "puntos_oros = puntos_oros + ?, " +
+                    "puntos_escobas = puntos_escobas + ?, " +
+                    "puntos_velo = puntos_velo + ?, " +
+                    "puntos_cantidad_cartas = puntos_cantidad_cartas + ?, " +
+                    "puntos_sietes = puntos_sietes + ? " +
+                    "WHERE nombre_usuario = ?";
+            preparedStatement = connection.prepareStatement(updateSQL);
+            preparedStatement.setInt(1, this.clasificacionAlmacenar.getPuntos_oros());
+            preparedStatement.setInt(2, this.clasificacionAlmacenar.getPuntos_escobas());
+            preparedStatement.setInt(3, this.clasificacionAlmacenar.getPuntos_velo());
+            preparedStatement.setInt(4, this.clasificacionAlmacenar.getPuntos_cantidad_cartas());
+            preparedStatement.setInt(5, this.clasificacionAlmacenar.getPuntos_sietes());
+            preparedStatement.setString(6,this.clasificacionAlmacenar.getUsuario().getNombreUsuario());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+            conexion.cerrarConexion();
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException err) {
+                    System.out.println(err.getMessage());
+                }
+            }
+            if (conexion != null) {
+                conexion.cerrarConexion();
             }
         }
     }
