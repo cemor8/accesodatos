@@ -63,7 +63,10 @@ public class Mesa {
         //compruebo si hay baraja de mano
 
         while (this.barajaMano()){
+            System.out.println("\t\n-----Escoba de Mano-----\n");
+            System.out.println(this.cartasEnMesa);
             this.participante2.getCartasGanadas().addAll(this.cartasEnMesa);
+            this.participante2.setPuntosEscobas(this.participante2.getPuntosEscobas() + 1);
             this.cartasEnMesa = new ArrayList<>();
             this.baraja.ponerEnMesa(this.cartasEnMesa);
         }

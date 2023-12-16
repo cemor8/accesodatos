@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca2b5fbd-2de7-4d8f-8bf8-94a4e8a77250" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/ControllerRegistrarse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ControllerRegistrarse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ControllerUsuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ControllerUsuario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/IA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Mesa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Mesa.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Participante.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Participante.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +39,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/carlos/Desktop/accesodatos/AgendaBaseDatos&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/carlos/Desktop/accesodatos/escoba&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/cmorbla/Desktop/accesodatos/escoba/src/Main.java&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
