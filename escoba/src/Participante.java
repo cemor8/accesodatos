@@ -113,6 +113,7 @@ public class Participante {
             }
 
         }
+        // se buscan mas combinaciones
         // se recorren las cartas desde la posicion que recibe la funcion
         for (int i = indice; i < cartas.size(); i++) {
             // si la suma sigue siendo mayor o igual a cero

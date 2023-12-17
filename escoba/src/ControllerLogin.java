@@ -84,7 +84,7 @@ public class ControllerLogin {
             for (String query : createQueries) {
                 statement.executeUpdate(query);
             }
-            System.out.println("Base de datos creada con éxito, administrador : ");
+            System.out.println("Base de datos creada con éxito");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
