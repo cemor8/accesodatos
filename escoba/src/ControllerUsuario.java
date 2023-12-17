@@ -11,6 +11,7 @@ public class ControllerUsuario {
         }
 
     };
+    private ArrayList<String> nombresUsuarios = new ArrayList<>();
     private Usuario usuario;
     private ArrayList<Clasificacion> clasificaciones = new ArrayList<>();
 
@@ -92,20 +93,26 @@ public class ControllerUsuario {
         Conexion conexion = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Statement statement = null;
         this.clasificaciones = new ArrayList<>();
         try {
             conexion = new Conexion();
             connection = conexion.hacerConexion("admin_escoba", "admin",false);
-            String insertSQL = "delete from esoba.usuario where esoba.usuario.nombre_usuario = ?";
+            String insertSQL = "delete from escoba.usuario where nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1,this.usuario.getNombreUsuario());
             preparedStatement.executeUpdate();
 
-            insertSQL = "delete from esoba.clasificacion where esoba.clasificacion.nombre_usuario = ?";
+            insertSQL = "delete from escoba.clasificacion where nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1,this.usuario.getNombreUsuario());
             preparedStatement.executeUpdate();
 
+            String eliminarUsuarioSQL = "DROP USER \"" + this.usuario.getNombreUsuario() + "\"@\"localhost\"";
+
+            statement = connection.createStatement();
+            statement.executeUpdate(eliminarUsuarioSQL);
+            statement.close();
             preparedStatement.close();
             connection.close();
             conexion.cerrarConexion();
@@ -266,11 +273,66 @@ public class ControllerUsuario {
         }
     }
     /**
+     * Método que busca los nombres de usuario existentes en la base de datos
+     * */
+    public void obtenerNombresUsuarios(){
+
+        Conexion conexion = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        this.nombresUsuarios = new ArrayList<>();
+        try {
+            conexion = new Conexion();
+            connection = conexion.hacerConexion(this.usuario.getNombreUsuario(), this.usuario.getClave(),false);
+            String insertSQL = "select nombre_usuario from escoba.usuario";
+            preparedStatement = connection.prepareStatement(insertSQL);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String usuario = resultSet.getString("nombre_usuario");
+                this.nombresUsuarios.add(usuario);
+
+            }
+            preparedStatement.close();
+            conexion.cerrarConexion();
+        }catch (SQLException err){
+            System.out.println(err.getErrorCode());
+        }finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException err) {
+                System.out.println(err.getMessage());
+            }
+
+            if (conexion != null) {
+                conexion.cerrarConexion();
+            }
+        }
+    }
+    public String comprobarNombreExistente(){
+        this.obtenerNombresUsuarios();
+        while (true){
+            String nombreBuscar = this.devolverString("Introduce el nombre para tu usuario ", this.columnasExpresiones.get("nombre_usuario"), true);
+            Optional<String> nombreOptional = this.nombresUsuarios.stream().filter(s -> s.equalsIgnoreCase(nombreBuscar)).findAny();
+            if(nombreOptional.isEmpty()|| this.usuario.getNombreUsuario().equalsIgnoreCase(nombreBuscar)){
+                return nombreBuscar;
+            }
+            System.out.println("Nombre de usuario existente");
+        }
+
+    }
+
+    /**
      * Método que modifica los datos de un usuario
      * */
     public void modificarDatos(){
         String nombreAntiguo = this.usuario.getNombreUsuario();
-        String nuevoNombre = this.devolverString("Introduce el nombre para tu usauario ", this.columnasExpresiones.get("nombre_usuario"), true);
+        String nuevoNombre = this.comprobarNombreExistente();
+
         String nuevapassword = this.devolverString("Introduce la contraseña ", this.columnasExpresiones.get("clave"), true);
         Conexion conexion = null;
         Connection connection = null;
@@ -283,19 +345,20 @@ public class ControllerUsuario {
             preparedStatement.setString(1,nuevoNombre);
             preparedStatement.setString(2,nuevapassword);
             preparedStatement.setString(3,nombreAntiguo);
-
+            preparedStatement.executeUpdate();
             updateSQL = "UPDATE escoba.clasificacion SET nombre_usuario = ? WHERE nombre_usuario = ?";
             preparedStatement = connection.prepareStatement(updateSQL);
             preparedStatement.setString(1,nuevoNombre);
             preparedStatement.setString(2,nombreAntiguo);
-
+            preparedStatement.executeUpdate();
             Statement statement = connection.createStatement();
             String crearUsuarioSQL = "CREATE USER \"" + nuevoNombre + "\"@\"localhost\" IDENTIFIED BY '" + nuevapassword + "'";
             statement.executeUpdate(crearUsuarioSQL);
             ArrayList<String> consultas = new ArrayList<>(List.of(
                     "grant select on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
                     "grant insert on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
-                    "grant update on escoba.clasificacion to " + "?" + "@" + "\"localhost\""
+                    "grant update on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
+                    "grant select on escoba.usuario to " + "?" + "@" + "\"localhost\""
             ));
 
             for(String consulta : consultas){
@@ -309,7 +372,7 @@ public class ControllerUsuario {
 
             //modificar nombre de usuario de la agenda
             statement.executeUpdate(eliminarUsuarioSQL);
-
+            this.usuario = new Usuario(nuevoNombre,nuevapassword,null);
             System.out.println("Datos modificados con éxito");
             preparedStatement.close();
             connection.close();
@@ -394,4 +457,6 @@ public class ControllerUsuario {
         }
         return integerDevolver;
     }
+
 }
+

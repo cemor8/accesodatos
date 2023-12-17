@@ -25,7 +25,7 @@ public class ControllerRegistrarse {
     public void registrarse() {
         this.obtenerNombresUsuarios();
         while (true){
-            String nombreUsuario = this.devolverString("Introduce el nombre para tu usauario ", this.columnasExpresiones.get("nombre_usuario"), true);
+            String nombreUsuario = this.devolverString("Introduce el nombre para tu usuario ", this.columnasExpresiones.get("nombre_usuario"), true);
             if(this.nombresUsuarios.isEmpty()){
                 this.crearUsuario(nombreUsuario);
                 return;
@@ -35,6 +35,7 @@ public class ControllerRegistrarse {
                     System.out.println("Nombre de usuario existente");
                 }else {
                     this.crearUsuario(nombreUsuario);
+                    return;
                 }
             }
         }
@@ -83,7 +84,8 @@ public class ControllerRegistrarse {
             ArrayList<String> consultas = new ArrayList<>(List.of(
                     "grant select on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
                     "grant insert on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
-                    "grant update on escoba.clasificacion to " + "?" + "@" + "\"localhost\""
+                    "grant update on escoba.clasificacion to " + "?" + "@" + "\"localhost\"",
+                    "grant select on escoba.usuario to " + "?" + "@" + "\"localhost\""
             ));
 
             for(String consulta : consultas){
