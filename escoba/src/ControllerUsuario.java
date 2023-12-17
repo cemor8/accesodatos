@@ -179,7 +179,7 @@ public class ControllerUsuario {
         for(Clasificacion clasificacion: this.clasificaciones){
             if(sola){
                 if(this.usuario.getClasificacion().equals(clasificacion)){
-                    System.out.println("\t"+i +" "+clasificacion);
+                    System.out.println("\t"+i +" "+clasificacion+" \n");
                     break;
                 }
                 i++;

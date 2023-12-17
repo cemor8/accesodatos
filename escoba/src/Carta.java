@@ -23,6 +23,6 @@ public class Carta {
 
     @Override
     public String toString() {
-        return "Carta : "+this.valor+" de "+this.palo+" valor numerico "+this.valorNumerico;
+        return "Carta : "+this.valor+" de "+this.palo;
     }
 }

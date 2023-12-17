@@ -36,6 +36,6 @@ public class Usuario {
     @Override
     public String toString() {
         return "Nombre de usuario: '" + nombreUsuario + '\'' +
-                "Clave: " + clave + '\'';
+                " Clave: " + clave + '\'';
     }
 }

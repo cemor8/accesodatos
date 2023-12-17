@@ -87,7 +87,7 @@ public class Participante {
         //meto la carta en la lista de cartas en mesa clonada
         ArrayList<Carta> cartasEnviar = (ArrayList<Carta>) cartasEnMesa.clone();
         cartasEnviar.add(carta);
-        return comprobarCombinacion(cartasEnviar, 15, 0, new ArrayList<>(), carta);
+        return this.comprobarCombinacion(cartasEnviar, 15, 0, new ArrayList<>(), carta);
     }
     /**
      * Método que busca las posibles combinaciones que sumen 15 en una lista de cartas, para que la combinacion
@@ -106,7 +106,7 @@ public class Participante {
             // Se ha encontrado una combinación que suma 15, hay que comprobar si
             //la combinacion ya existe dentro de la lista
 
-            if (!combinacionYaExiste(combinacionesValidas, combinacionActual)) {
+            if (!this.combinacionYaExiste(combinacionesValidas, combinacionActual)) {
                 System.out.println("Combinación que suma 15: " + combinacionActual);
                 System.out.println("\n");
                 combinacionesValidas.add(new ArrayList<>(combinacionActual));
@@ -121,7 +121,7 @@ public class Participante {
                 // como al inicio de la funcion se comprueba si la combinacion es valida, se añadiria la la lista de combinaciones validas
                 //en caso de que lo cumpliese, si no, se sigue intentando buscar combinaciones con las cartas
                 combinacionActual.add(cartas.get(i));
-                ArrayList<ArrayList<Carta>> combinaciones = comprobarCombinacion(cartas, suma - cartas.get(i).getValorNumerico(), i + 1, combinacionActual,carta);
+                ArrayList<ArrayList<Carta>> combinaciones = this.comprobarCombinacion(cartas, suma - cartas.get(i).getValorNumerico(), i + 1, combinacionActual,carta);
                 // si se encuentran combinaciones se meten en la lista de combinaciones validas
                 if (combinaciones != null) {
                     combinacionesValidas.addAll(combinaciones);
